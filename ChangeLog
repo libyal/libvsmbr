@@ -1,0 +1,27 @@
+TODO
+* add Python bindings
+* add tests
+
+20160108
+* 2016 update
+
+20150105
+* 2015 update
+
+20141226
+* removed README.macosx
+
+20140201
+* 2014 update
+* updated dependencies
+
+20130923
+* 2013 update
+* updated dependencies
+
+20121215
+* worked on stand-alone version
+
+20121214
+* created stand-alone version based on libsmal
+

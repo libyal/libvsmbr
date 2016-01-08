@@ -1,0 +1,51 @@
+Source: libvsmbr
+Section: libs
+Priority: extra
+Maintainer: Joachim Metz <joachim.metz@gmail.com>
+Build-Depends: debhelper (>= 7), autotools-dev, libfuse-dev, python-dev
+Standards-Version: 3.9.5
+Homepage: https://github.com/libyal/libvsmbr/
+
+Package: libvsmbr
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: libvsmbr-dbg
+Description: Library to access the Master Boot Record (MBR) volume system
+ libvsmbr is a library to access the Master Boot Record (MBR) volume system.
+
+Package: libvsmbr-dbg
+Architecture: any
+Section: debug
+Depends: libvsmbr (= ${binary:Version}), ${misc:Depends}
+Description: Debugging symbols for libvsmbr
+ Debugging symbols for libvsmbr.
+
+Package: libvsmbr-dev
+Section: libdevel
+Architecture: any
+Depends: libvsmbr (= ${binary:Version}), ${misc:Depends}
+Description: Header files and libraries for developing applications for libvsmbr
+ Header files and libraries for developing applications for libvsmbr.
+
+Package: libvsmbr-tools
+Section: utils
+Architecture: any
+Depends: libvsmbr (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Several tools for Several tools for reading Master Boot Record (MBR) volume systems
+ Several tools for Several tools for reading Master Boot Record (MBR) volume systems.
+
+Package: libvsmbr-python
+Section: python
+Architecture: any
+Depends: libvsmbr (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Suggests: libvsmbr-python-dbg
+Description: Python bindings for libvsmbr
+ Python bindings for libvsmbr.
+
+Package: libvsmbr-python-dbg
+Section: debug
+Architecture: any
+Depends: libvsmbr-python (= ${binary:Version}), ${misc:Depends}
+Description: Debugging symbols for libvsmbr-python
+ Debugging symbols for libvsmbr-python.
+
