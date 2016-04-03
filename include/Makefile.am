@@ -1,13 +1,13 @@
 include_HEADERS = \
-        libvsmbr.h
+	libvsmbr.h
 
 pkginclude_HEADERS = \
-        libvsmbr/codepage.h \
-        libvsmbr/definitions.h \
-        libvsmbr/error.h \
-        libvsmbr/extern.h \
-        libvsmbr/features.h \
-        libvsmbr/types.h
+	libvsmbr/codepage.h \
+	libvsmbr/definitions.h \
+	libvsmbr/error.h \
+	libvsmbr/extern.h \
+	libvsmbr/features.h \
+	libvsmbr/types.h
 
 EXTRA_DIST = \
 	libvsmbr.h.in \
