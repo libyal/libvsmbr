@@ -1,6 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vsmbr_test_error", "vsmbr_test_error\vsmbr_test_error.vcproj", "{4C618080-28F3-42AD-BF12-6DDB73B21DC8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{307B0D8A-4093-4A8E-95CF-07FB53D1EAFD} = {307B0D8A-4093-4A8E-95CF-07FB53D1EAFD}
+		{20FFC4C9-F44C-45F6-A827-4819B4DF3C9F} = {20FFC4C9-F44C-45F6-A827-4819B4DF3C9F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vsmbr_test_get_version", "vsmbr_test_get_version\vsmbr_test_get_version.vcproj", "{28D42D5D-EF46-43F9-B5A6-55B416E30DD2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{307B0D8A-4093-4A8E-95CF-07FB53D1EAFD} = {307B0D8A-4093-4A8E-95CF-07FB53D1EAFD}
+		{20FFC4C9-F44C-45F6-A827-4819B4DF3C9F} = {20FFC4C9-F44C-45F6-A827-4819B4DF3C9F}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libclocale", "libclocale\libclocale.vcproj", "{6F873325-0F9C-445F-9684-431FCB8C43C8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{20FFC4C9-F44C-45F6-A827-4819B4DF3C9F} = {20FFC4C9-F44C-45F6-A827-4819B4DF3C9F}
@@ -118,6 +130,14 @@ Global
 		VSDebug|Win32 = VSDebug|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C618080-28F3-42AD-BF12-6DDB73B21DC8}.Release|Win32.ActiveCfg = Release|Win32
+		{4C618080-28F3-42AD-BF12-6DDB73B21DC8}.Release|Win32.Build.0 = Release|Win32
+		{4C618080-28F3-42AD-BF12-6DDB73B21DC8}.VSDebug|Win32.ActiveCfg = VSDebug|Win32
+		{4C618080-28F3-42AD-BF12-6DDB73B21DC8}.VSDebug|Win32.Build.0 = VSDebug|Win32
+		{28D42D5D-EF46-43F9-B5A6-55B416E30DD2}.Release|Win32.ActiveCfg = Release|Win32
+		{28D42D5D-EF46-43F9-B5A6-55B416E30DD2}.Release|Win32.Build.0 = Release|Win32
+		{28D42D5D-EF46-43F9-B5A6-55B416E30DD2}.VSDebug|Win32.ActiveCfg = VSDebug|Win32
+		{28D42D5D-EF46-43F9-B5A6-55B416E30DD2}.VSDebug|Win32.Build.0 = VSDebug|Win32
 		{6F873325-0F9C-445F-9684-431FCB8C43C8}.Release|Win32.ActiveCfg = Release|Win32
 		{6F873325-0F9C-445F-9684-431FCB8C43C8}.Release|Win32.Build.0 = Release|Win32
 		{6F873325-0F9C-445F-9684-431FCB8C43C8}.VSDebug|Win32.ActiveCfg = VSDebug|Win32

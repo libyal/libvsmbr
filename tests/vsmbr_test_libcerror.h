@@ -1,5 +1,5 @@
 /*
- * The internal libcstring header
+ * The internal libcerror header
  *
  * Copyright (C) 2010-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,33 +19,32 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _VSMBRTOOLS_LIBCSTRING_H )
-#define _VSMBRTOOLS_LIBCSTRING_H
+#if !defined( _VSMBR_TEST_LIBCERROR_H )
+#define _VSMBR_TEST_LIBCERROR_H
 
 #include <common.h>
 
-/* Define HAVE_LOCAL_LIBCSTRING for local use of libcstring
+/* Define HAVE_LOCAL_LIBCERROR for local use of libcerror
  */
-#if defined( HAVE_LOCAL_LIBCSTRING )
+#if defined( HAVE_LOCAL_LIBCERROR )
 
-#include <libcstring_definitions.h>
-#include <libcstring_narrow_string.h>
-#include <libcstring_system_string.h>
-#include <libcstring_types.h>
-#include <libcstring_wide_string.h>
+#include <libcerror_definitions.h>
+#include <libcerror_error.h>
+#include <libcerror_system.h>
+#include <libcerror_types.h>
 
 #else
 
-/* If libtool DLL support is enabled set LIBCSTRING_DLL_IMPORT
- * before including libcstring.h
+/* If libtool DLL support is enabled set LIBCERROR_DLL_IMPORT
+ * before including libcerror.h
  */
-#if defined( _WIN32 ) && defined( DLL_IMPORT ) && !defined( HAVE_STATIC_EXECUTABLES )
-#define LIBCSTRING_DLL_IMPORT
+#if defined( _WIN32 ) && defined( DLL_IMPORT )
+#define LIBCERROR_DLL_IMPORT
 #endif
 
-#include <libcstring.h>
+#include <libcerror.h>
 
-#endif /* defined( HAVE_LOCAL_LIBCSTRING ) */
+#endif /* defined( HAVE_LOCAL_LIBCERROR ) */
 
-#endif /* !defined( _VSMBRTOOLS_LIBCSTRING_H ) */
+#endif /* !defined( _VSMBR_TEST_LIBCERROR_H ) */
 

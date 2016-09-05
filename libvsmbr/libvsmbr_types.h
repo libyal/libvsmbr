@@ -34,16 +34,16 @@
 /* The following type definitions hide internal data structures
  */
 #if defined( HAVE_DEBUG_OUTPUT ) && !defined( WINAPI )
-typedef struct libvsmbr_handle {}		libvsmbr_handle_t;
-typedef struct libvsmbr_partition {}		libvsmbr_partition_t;
+typedef struct libvsmbr_handle {}	libvsmbr_handle_t;
+typedef struct libvsmbr_partition {}	libvsmbr_partition_t;
 
 #else
 typedef intptr_t libvsmbr_handle_t;
 typedef intptr_t libvsmbr_partition_t;
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) && !defined( WINAPI ) */
 
 #endif /* defined( HAVE_LOCAL_LIBVSMBR ) */
 
-#endif
+#endif /* !defined( _LIBVSMBR_INTERNAL_TYPES_H ) */
 

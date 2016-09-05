@@ -1,5 +1,5 @@
 /*
- * Notification function
+ * Notification functions
  *
  * Copyright (C) 2010-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -23,9 +23,8 @@
 #define _LIBVSMBR_NOTIFY_H
 
 #include <common.h>
+#include <file_stream.h>
 #include <types.h>
-
-#include <stdio.h>
 
 #include "libvsmbr_extern.h"
 #include "libvsmbr_libcerror.h"
@@ -54,11 +53,11 @@ LIBVSMBR_EXTERN \
 int libvsmbr_notify_stream_close(
      libcerror_error_t **error );
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBVSMBR ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_NOTIFY_H ) */
 

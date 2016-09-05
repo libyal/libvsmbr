@@ -13,6 +13,8 @@ MSVSCPP_FILES = \
 	libuna/libuna.vcproj \
 	libvsmbr/libvsmbr.vcproj \
 	pyvsmbr/pyvsmbr.vcproj \
+	vsmbr_test_error/vsmbr_test_error.vcproj \
+	vsmbr_test_get_version/vsmbr_test_get_version.vcproj \
 	vsmbrinfo/vsmbrinfo.vcproj \
 	libvsmbr.sln
 

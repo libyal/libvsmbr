@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libvsmbr],
- [20160108],
+ [20160905],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -206,7 +206,6 @@ AC_CONFIG_FILES([common/types.h])
 AC_CONFIG_FILES([dpkg/changelog])
 AC_CONFIG_FILES([dpkg/copyright])
 AC_CONFIG_FILES([libvsmbr/libvsmbr.rc])
-AC_CONFIG_FILES([pyvsmbr/setup.py])
 AC_CONFIG_FILES([libvsmbr.pc])
 AC_CONFIG_FILES([libvsmbr.spec])
 dnl Have configure write its configuration

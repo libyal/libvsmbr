@@ -1,5 +1,5 @@
 /*
- * The internal libcstring header
+ * The internal libvsmbr header
  *
  * Copyright (C) 2010-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,33 +19,19 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _VSMBRTOOLS_LIBCSTRING_H )
-#define _VSMBRTOOLS_LIBCSTRING_H
+#if !defined( _VSMBR_TEST_LIBVSMBR_H )
+#define _VSMBR_TEST_LIBVSMBR_H
 
 #include <common.h>
 
-/* Define HAVE_LOCAL_LIBCSTRING for local use of libcstring
+/* If Cygwin libtool DLL support is enabled and do not want to create static
+ * executables set LIBVSMBR_DLL_IMPORT before including libvsmbr.h
  */
-#if defined( HAVE_LOCAL_LIBCSTRING )
-
-#include <libcstring_definitions.h>
-#include <libcstring_narrow_string.h>
-#include <libcstring_system_string.h>
-#include <libcstring_types.h>
-#include <libcstring_wide_string.h>
-
-#else
-
-/* If libtool DLL support is enabled set LIBCSTRING_DLL_IMPORT
- * before including libcstring.h
- */
-#if defined( _WIN32 ) && defined( DLL_IMPORT ) && !defined( HAVE_STATIC_EXECUTABLES )
-#define LIBCSTRING_DLL_IMPORT
+#if defined( _WIN32 ) && defined( DLL_EXPORT ) && !defined( HAVE_STATIC_EXECUTABLES )
+#define LIBVSMBR_DLL_IMPORT
 #endif
 
-#include <libcstring.h>
+#include <libvsmbr.h>
 
-#endif /* defined( HAVE_LOCAL_LIBCSTRING ) */
-
-#endif /* !defined( _VSMBRTOOLS_LIBCSTRING_H ) */
+#endif /* !defined( _VSMBR_TEST_LIBVSMBR_H ) */
 

@@ -19,8 +19,8 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _VSMBRTOOLS_LIBCSTRING_H )
-#define _VSMBRTOOLS_LIBCSTRING_H
+#if !defined( _VSMBR_TEST_LIBCSTRING_H )
+#define _VSMBR_TEST_LIBCSTRING_H
 
 #include <common.h>
 
@@ -39,7 +39,7 @@
 /* If libtool DLL support is enabled set LIBCSTRING_DLL_IMPORT
  * before including libcstring.h
  */
-#if defined( _WIN32 ) && defined( DLL_IMPORT ) && !defined( HAVE_STATIC_EXECUTABLES )
+#if defined( _WIN32 ) && defined( DLL_IMPORT )
 #define LIBCSTRING_DLL_IMPORT
 #endif
 
@@ -47,5 +47,5 @@
 
 #endif /* defined( HAVE_LOCAL_LIBCSTRING ) */
 
-#endif /* !defined( _VSMBRTOOLS_LIBCSTRING_H ) */
+#endif /* !defined( _VSMBR_TEST_LIBCSTRING_H ) */
 
