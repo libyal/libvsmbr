@@ -17,7 +17,7 @@ EXTRA_DIST = \
 
 check_PROGRAMS = \
 	vsmbr_test_error \
-	vsmbr_test_get_version
+	vsmbr_test_support
 
 vsmbr_test_error_SOURCES = \
 	vsmbr_test_error.c \
@@ -30,14 +30,14 @@ vsmbr_test_error_LDADD = \
 	../libvsmbr/libvsmbr.la \
 	@LIBCSTRING_LIBADD@
 
-vsmbr_test_get_version_SOURCES = \
-	vsmbr_test_get_version.c \
+vsmbr_test_support_SOURCES = \
 	vsmbr_test_libcstring.h \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_macros.h \
+	vsmbr_test_support.c \
 	vsmbr_test_unused.h
 
-vsmbr_test_get_version_LDADD = \
+vsmbr_test_support_LDADD = \
 	../libvsmbr/libvsmbr.la \
 	@LIBCSTRING_LIBADD@
 

@@ -125,7 +125,7 @@ stamp-h[1-9]
 /tests/input
 /tests/tmp*
 /tests/vsmbr_test_error
-/tests/vsmbr_test_get_version
+/tests/vsmbr_test_support
 
 # Local library dependencies specific files
 /libbfio

@@ -123,23 +123,23 @@ int main(
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_error_free",
-	 vsmbr_test_error_free() )
+	 vsmbr_test_error_free );
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_error_fprint",
-	 vsmbr_test_error_fprint() )
+	 vsmbr_test_error_fprint );
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_error_sprint",
-	 vsmbr_test_error_sprint() )
+	 vsmbr_test_error_sprint );
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_error_backtrace_fprint",
-	 vsmbr_test_error_backtrace_fprint() )
+	 vsmbr_test_error_backtrace_fprint );
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_error_backtrace_sprint",
-	 vsmbr_test_error_backtrace_sprint() )
+	 vsmbr_test_error_backtrace_sprint );
 
 	return( EXIT_SUCCESS );
 

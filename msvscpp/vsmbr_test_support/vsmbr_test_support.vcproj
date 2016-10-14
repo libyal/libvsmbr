@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="vsmbr_test_get_version"
-	ProjectGUID="{28D42D5D-EF46-43F9-B5A6-55B416E30DD2}"
-	RootNamespace="vsmbr_test_get_version"
+	Name="vsmbr_test_support"
+	ProjectGUID="{8C7D0CE6-DE66-43A5-849B-E973AF9B46AD}"
+	RootNamespace="vsmbr_test_support"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -176,7 +176,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tests\vsmbr_test_get_version.c"
+				RelativePath="..\..\tests\vsmbr_test_support.c"
 				>
 			</File>
 		</Filter>
