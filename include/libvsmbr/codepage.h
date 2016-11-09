@@ -118,5 +118,5 @@ enum LIBVSMBR_CODEPAGES
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_CODEPAGE_H ) */
 

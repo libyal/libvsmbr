@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
 	@LIBCLOCALE_CPPFLAGS@ \
@@ -25,7 +24,6 @@ vsmbrinfo_SOURCES = \
 	vsmbrtools_libcerror.h \
 	vsmbrtools_libclocale.h \
 	vsmbrtools_libcnotify.h \
-	vsmbrtools_libcstring.h \
 	vsmbrtools_libcsystem.h \
 	vsmbrtools_libvsmbr.h \
 	vsmbrtools_libuna.h \
@@ -38,7 +36,6 @@ vsmbrinfo_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCERROR_LIBADD@ \
-	@LIBCSTRING_LIBADD@ \
 	@LIBINTL@
 
 MAINTAINERCLEANFILES = \

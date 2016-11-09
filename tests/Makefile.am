@@ -1,7 +1,6 @@
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
-	@LIBCSTRING_CPPFLAGS@ \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBVSMBR_DLL_IMPORT@
 
@@ -21,17 +20,15 @@ check_PROGRAMS = \
 
 vsmbr_test_error_SOURCES = \
 	vsmbr_test_error.c \
-	vsmbr_test_libcstring.h \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_macros.h \
 	vsmbr_test_unused.h
 
 vsmbr_test_error_LDADD = \
-	../libvsmbr/libvsmbr.la \
-	@LIBCSTRING_LIBADD@
+	../libvsmbr/libvsmbr.la
 
 vsmbr_test_support_SOURCES = \
-	vsmbr_test_libcstring.h \
+	vsmbr_test_libcerror.h \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_macros.h \
 	vsmbr_test_support.c \
@@ -39,7 +36,7 @@ vsmbr_test_support_SOURCES = \
 
 vsmbr_test_support_LDADD = \
 	../libvsmbr/libvsmbr.la \
-	@LIBCSTRING_LIBADD@
+	@LIBCERROR_LIBADD@
 
 MAINTAINERCLEANFILES = \
 	Makefile.in

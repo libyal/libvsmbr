@@ -1,5 +1,5 @@
 /*
- * Common include file
+ * Library partition type testing program
  *
  * Copyright (C) 2010-2016, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,25 +19,38 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _COMMON_H )
-#define _COMMON_H
+#include <common.h>
+#include <file_stream.h>
+#include <types.h>
 
-#if defined( HAVE_CONFIG_H )
-#include "config.h"
+#if defined( HAVE_STDLIB_H ) || defined( WINAPI )
+#include <stdlib.h>
 #endif
 
-/* Include the Borland/CodeGear C++ Builder compiler specific configuration
- */
-#if defined( __BORLANDC__ )
-#include "config_borlandc.h"
+#include "vsmbr_test_libcerror.h"
+#include "vsmbr_test_libvsmbr.h"
+#include "vsmbr_test_macros.h"
+#include "vsmbr_test_memory.h"
+#include "vsmbr_test_unused.h"
 
-/* Include the Microsoft Visual Studio C++ compiler specific configuration
+/* The main program
  */
-#elif defined( _MSC_VER )
-#include "config_msc.h"
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+int wmain(
+     int argc VSMBR_TEST_ATTRIBUTE_UNUSED,
+     wchar_t * const argv[] VSMBR_TEST_ATTRIBUTE_UNUSED )
+#else
+int main(
+     int argc VSMBR_TEST_ATTRIBUTE_UNUSED,
+     char * const argv[] VSMBR_TEST_ATTRIBUTE_UNUSED )
 #endif
+{
+	VSMBR_TEST_UNREFERENCED_PARAMETER( argc )
+	VSMBR_TEST_UNREFERENCED_PARAMETER( argv )
 
-#include "config_winapi.h"
+	return( EXIT_SUCCESS );
 
-#endif /* !defined( _COMMON_H ) */
+on_error:
+	return( EXIT_FAILURE );
+}
 

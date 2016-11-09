@@ -20,12 +20,15 @@
  */
 
 #include <common.h>
+#include <file_stream.h>
+#include <narrow_string.h>
+#include <types.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
 #endif
 
-#include "vsmbr_test_libcstring.h"
+#include "vsmbr_test_libcerror.h"
 #include "vsmbr_test_libvsmbr.h"
 #include "vsmbr_test_macros.h"
 #include "vsmbr_test_unused.h"
@@ -41,7 +44,7 @@ int vsmbr_test_get_version(
 
 	version_string = libvsmbr_get_version();
 
-	result = libcstring_narrow_string_compare(
+	result = narrow_string_compare(
 	          version_string,
 	          LIBVSMBR_VERSION_STRING,
 	          9 );
@@ -57,9 +60,112 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_get_codepage function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_get_codepage(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int codepage             = 0;
+	int result               = 0;
+
+	result = libvsmbr_get_codepage(
+	          &codepage,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        VSMBR_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	/* Test error cases
+	 */
+	result = libvsmbr_get_codepage(
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+        VSMBR_TEST_ASSERT_IS_NOT_NULL(
+         "error",
+         error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_set_codepage function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_set_codepage(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	result = libvsmbr_set_codepage(
+	          0,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+        VSMBR_TEST_ASSERT_IS_NULL(
+         "error",
+         error );
+
+	/* Test error cases
+	 */
+	result = libvsmbr_set_codepage(
+	          -1,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+        VSMBR_TEST_ASSERT_IS_NOT_NULL(
+         "error",
+         error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
-#if defined( LIBCSTRING_HAVE_WIDE_SYSTEM_CHARACTER )
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 int wmain(
      int argc VSMBR_TEST_ATTRIBUTE_UNUSED,
      wchar_t * const argv[] VSMBR_TEST_ATTRIBUTE_UNUSED )
