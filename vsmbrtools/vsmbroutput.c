@@ -1,7 +1,7 @@
 /*
  * Common output functions for the vsmbrtools
  *
- * Copyright (C) 2010-2016, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2010-2017, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -45,7 +45,7 @@ void vsmbroutput_copyright_fprint(
 	}
 	fprintf(
 	 stream,
-	 "Copyright (C) 2010-2016, Joachim Metz <%s>.\n"
+	 "Copyright (C) 2010-2017, Joachim Metz <%s>.\n"
 	 "This is free software; see the source for copying conditions. There is NO\n"
 	 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",
 	 PACKAGE_BUGREPORT );
