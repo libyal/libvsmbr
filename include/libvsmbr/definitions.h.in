@@ -24,18 +24,18 @@
 
 #include <libvsmbr/types.h>
 
-#define LIBVSMBR_VERSION					@VERSION@
+#define LIBVSMBR_VERSION		@VERSION@
 
 /* The version string
  */
-#define LIBVSMBR_VERSION_STRING					"@VERSION@"
+#define LIBVSMBR_VERSION_STRING		"@VERSION@"
 
 /* The byte order definitions
  */
 enum LIBVSMBR_ENDIAN
 {
-	LIBVSMBR_ENDIAN_BIG					= (int) 'b',
-	LIBVSMBR_ENDIAN_LITTLE					= (int) 'l',
+	LIBVSMBR_ENDIAN_BIG		= (int) 'b',
+	LIBVSMBR_ENDIAN_LITTLE		= (int) 'l',
 };
 
 /* The access flags definitions
@@ -45,18 +45,18 @@ enum LIBVSMBR_ENDIAN
  */
 enum LIBVSMBR_ACCESS_FLAGS
 {
-	LIBVSMBR_ACCESS_FLAG_READ				= 0x01,
+	LIBVSMBR_ACCESS_FLAG_READ	= 0x01,
 /* Reserved: not supported yet */
-	LIBVSMBR_ACCESS_FLAG_WRITE				= 0x02
+	LIBVSMBR_ACCESS_FLAG_WRITE	= 0x02
 };
 
 /* The file access macros
  */
-#define LIBVSMBR_OPEN_READ					( LIBVSMBR_ACCESS_FLAG_READ )
+#define LIBVSMBR_OPEN_READ		( LIBVSMBR_ACCESS_FLAG_READ )
 /* Reserved: not supported yet */
-#define LIBVSMBR_OPEN_WRITE					( LIBVSMBR_ACCESS_FLAG_WRITE )
+#define LIBVSMBR_OPEN_WRITE		( LIBVSMBR_ACCESS_FLAG_WRITE )
 /* Reserved: not supported yet */
-#define LIBVSMBR_OPEN_READ_WRITE				( LIBVSMBR_ACCESS_FLAG_READ | LIBVSMBR_ACCESS_FLAG_WRITE )
+#define LIBVSMBR_OPEN_READ_WRITE	( LIBVSMBR_ACCESS_FLAG_READ | LIBVSMBR_ACCESS_FLAG_WRITE )
 
 #endif /* !defined( _LIBVSMBR_DEFINITIONS_H ) */
 

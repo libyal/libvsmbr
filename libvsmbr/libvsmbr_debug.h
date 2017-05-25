@@ -44,5 +44,5 @@ int libvsmbr_debug_print_read_offsets(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_DEBUG_H ) */
 

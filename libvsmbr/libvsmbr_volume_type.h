@@ -53,5 +53,5 @@ const char *libvsmbr_volume_type_get_description(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_VOLUME_TYPE_H ) */
 

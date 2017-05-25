@@ -34,12 +34,14 @@
 #endif
 
 #include "info_handle.h"
-#include "vsmbroutput.h"
+#include "vsmbrtools_getopt.h"
 #include "vsmbrtools_libcerror.h"
 #include "vsmbrtools_libclocale.h"
 #include "vsmbrtools_libcnotify.h"
-#include "vsmbrtools_libcsystem.h"
 #include "vsmbrtools_libvsmbr.h"
+#include "vsmbrtools_output.h"
+#include "vsmbrtools_signal.h"
+#include "vsmbrtools_unused.h"
 
 info_handle_t *vsmbrinfo_info_handle = NULL;
 int vsmbrinfo_abort                  = 0;
@@ -72,12 +74,12 @@ void usage_fprint(
 /* Signal handler for vsmbrinfo
  */
 void vsmbrinfo_signal_handler(
-      libcsystem_signal_t signal LIBCSYSTEM_ATTRIBUTE_UNUSED )
+      vsmbrtools_signal_t signal VSMBRTOOLS_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
 	static char *function    = "vsmbrinfo_signal_handler";
 
-	LIBCSYSTEM_UNREFERENCED_PARAMETER( signal )
+	VSMBRTOOLS_UNREFERENCED_PARAMETER( signal )
 
 	vsmbrinfo_abort = 1;
 
@@ -99,8 +101,13 @@ void vsmbrinfo_signal_handler(
 	}
 	/* Force stdin to close otherwise any function reading it will remain blocked
 	 */
-	if( libcsystem_file_io_close(
+#if defined( WINAPI ) && !defined( __CYGWIN__ )
+	if( _close(
 	     0 ) != 0 )
+#else
+	if( close(
+	     0 ) != 0 )
+#endif
 	{
 		libcnotify_printf(
 		 "%s: unable to close stdin.\n",
@@ -140,13 +147,13 @@ int main( int argc, char * const argv[] )
 
 		goto on_error;
 	}
-	if( libcsystem_initialize(
+	if( vsmbrtools_output_initialize(
 	     _IONBF,
 	     &error ) != 1 )
 	{
 		fprintf(
 		 stderr,
-		 "Unable to initialize system values.\n" );
+		 "Unable to initialize output settings.\n" );
 
 		goto on_error;
 	}
@@ -154,7 +161,7 @@ int main( int argc, char * const argv[] )
 	 stdout,
 	 program );
 
-	while( ( option = libcsystem_getopt(
+	while( ( option = vsmbrtools_getopt(
 	                   argc,
 	                   argv,
 	                   _SYSTEM_STRING( "c:hvV" ) ) ) != (system_integer_t) -1 )

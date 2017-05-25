@@ -113,7 +113,6 @@ stamp-h[1-9]
 /common/config.h.in
 /common/types.h
 /dpkg/changelog
-/dpkg/copyright
 /include/libvsmbr.h
 /include/libvsmbr/definitions.h
 /include/libvsmbr/features.h
@@ -122,11 +121,18 @@ stamp-h[1-9]
 /libvsmbr/libvsmbr_definitions.h
 /vsmbrtools/vsmbrinfo
 /vsmbrtools/vsmbrmount
-/pyvsmbr/setup.py
 /tests/input
 /tests/tmp*
+/tests/vsmbr_test_chs_address
 /tests/vsmbr_test_error
+/tests/vsmbr_test_handle
+/tests/vsmbr_test_io_handle
+/tests/vsmbr_test_notify
+/tests/vsmbr_test_partition
+/tests/vsmbr_test_partition_values
+/tests/vsmbr_test_section_values
 /tests/vsmbr_test_support
+/tests/vsmbr_test_volume_type
 
 # Local library dependencies specific files
 /libbfio
@@ -137,6 +143,5 @@ stamp-h[1-9]
 /libcnotify
 /libcpath
 /libcsplit
-/libcsystem
 /libcthreads
 /libuna

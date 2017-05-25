@@ -62,5 +62,5 @@ int libvsmbr_section_values_free(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_SECTION_VALUES_H ) */
 

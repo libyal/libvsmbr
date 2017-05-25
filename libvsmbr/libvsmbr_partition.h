@@ -19,8 +19,8 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBVSMBR_INTERNAL_PARTITION_H )
-#define _LIBVSMBR_INTERNAL_PARTITION_H
+#if !defined( _LIBVSMBR_PARTITION_H )
+#define _LIBVSMBR_PARTITION_H
 
 #include <common.h>
 #include <types.h>
@@ -61,5 +61,5 @@ int libvsmbr_partition_free(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_PARTITION_H ) */
 

@@ -38,9 +38,9 @@
 #include <libvsmbr/extern.h>
 
 #else
-#define LIBVSMBR_EXTERN	extern
+#define LIBVSMBR_EXTERN	/* extern */
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBVSMBR ) */
 
 #endif /* !defined( _LIBVSMBR_INTERNAL_EXTERN_H ) */
 

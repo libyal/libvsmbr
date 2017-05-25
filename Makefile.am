@@ -14,7 +14,6 @@ SUBDIRS = \
 	libcpath \
 	libbfio \
 	libvsmbr \
-	libcsystem \
 	vsmbrtools \
 	pyvsmbr \
 	po \
@@ -28,10 +27,9 @@ DPKG_FILES = \
 	dpkg/compat \
 	dpkg/control \
 	dpkg/copyright \
-	dpkg/copyright.in \
 	dpkg/rules \
-	dpkg/libvsmbr-dev.docs \
-	dpkg/libvsmbr.docs \
+	dpkg/libvsmbr-dev.install \
+	dpkg/libvsmbr.install \
 	dpkg/source/format
 
 GETTEXT_FILES = \
@@ -103,7 +101,6 @@ splint:
 	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libbfio && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libvsmbr && $(MAKE) splint $(AM_MAKEFLAGS))
-	(cd $(srcdir)/libcsystem && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/vsmbrtools && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/pyvsmbr && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))

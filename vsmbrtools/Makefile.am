@@ -10,7 +10,6 @@ AM_CPPFLAGS = \
 	@LIBCFILE_CPPFLAGS@ \
 	@LIBCPATH_CPPFLAGS@ \
 	@LIBBFIO_CPPFLAGS@ \
-	@LIBCSYSTEM_CPPFLAGS@ \
 	@LIBVSMBR_DLL_IMPORT@
 
 AM_LDFLAGS = @STATIC_LDFLAGS@
@@ -19,18 +18,21 @@ bin_PROGRAMS = \
 	vsmbrinfo
 
 vsmbrinfo_SOURCES = \
+	info_handle.c info_handle.h \
+	vsmbrtools_getopt.c vsmbrtools_getopt.h \
+	vsmbrtools_i18n.h \
 	vsmbrinfo.c \
-	vsmbroutput.c vsmbroutput.h \
+	vsmbrtools_libbfio.h \
 	vsmbrtools_libcerror.h \
 	vsmbrtools_libclocale.h \
 	vsmbrtools_libcnotify.h \
-	vsmbrtools_libcsystem.h \
-	vsmbrtools_libvsmbr.h \
 	vsmbrtools_libuna.h \
-	info_handle.c info_handle.h
+	vsmbrtools_libvsmbr.h \
+	vsmbrtools_output.c vsmbrtools_output.h \
+	vsmbrtools_signal.c vsmbrtools_signal.h \
+	vsmbrtools_unused.h
 
 vsmbrinfo_LDADD = \
-	@LIBCSYSTEM_LIBADD@ \
 	@LIBUNA_LIBADD@ \
 	../libvsmbr/libvsmbr.la \
 	@LIBCNOTIFY_LIBADD@ \

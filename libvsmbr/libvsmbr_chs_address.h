@@ -67,5 +67,5 @@ int libvsmbr_chs_address_copy_from_byte_stream(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_CHS_ADDRESS_H ) */
 

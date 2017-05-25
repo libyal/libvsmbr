@@ -7,13 +7,20 @@ MSVSCPP_FILES = \
 	libcnotify/libcnotify.vcproj \
 	libcpath/libcpath.vcproj \
 	libcsplit/libcsplit.vcproj \
-	libcsystem/libcsystem.vcproj \
 	libcthreads/libcthreads.vcproj \
 	libuna/libuna.vcproj \
 	libvsmbr/libvsmbr.vcproj \
 	pyvsmbr/pyvsmbr.vcproj \
+	vsmbr_test_chs_address/vsmbr_test_chs_address.vcproj \
 	vsmbr_test_error/vsmbr_test_error.vcproj \
+	vsmbr_test_handle/vsmbr_test_handle.vcproj \
+	vsmbr_test_io_handle/vsmbr_test_io_handle.vcproj \
+	vsmbr_test_notify/vsmbr_test_notify.vcproj \
+	vsmbr_test_partition/vsmbr_test_partition.vcproj \
+	vsmbr_test_partition_values/vsmbr_test_partition_values.vcproj \
+	vsmbr_test_section_values/vsmbr_test_section_values.vcproj \
 	vsmbr_test_support/vsmbr_test_support.vcproj \
+	vsmbr_test_volume_type/vsmbr_test_volume_type.vcproj \
 	vsmbrinfo/vsmbrinfo.vcproj \
 	libvsmbr.sln
 

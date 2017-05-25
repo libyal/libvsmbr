@@ -72,5 +72,5 @@ int libvsmbr_io_handle_read_eprs(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_IO_HANDLE_H ) */
 

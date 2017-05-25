@@ -62,5 +62,5 @@ int libvsmbr_partition_values_free(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_PARTITION_VALUES_H ) */
 

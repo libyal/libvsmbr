@@ -79,6 +79,38 @@ int libvsmbr_set_codepage(
      int codepage,
      libvsmbr_error_t **error );
 
+/* Determines if a file contains a VSS volume signature
+ * Returns 1 if true, 0 if not or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_check_volume_signature(
+     const char *filename,
+     libvsmbr_error_t **error );
+
+#if defined( LIBVSMBR_HAVE_WIDE_CHARACTER_TYPE )
+
+/* Determines if a file contains a VSS volume signature
+ * Returns 1 if true, 0 if not or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_check_volume_signature_wide(
+     const wchar_t *filename,
+     libvsmbr_error_t **error );
+
+#endif /* defined( LIBVSMBR_HAVE_WIDE_CHARACTER_TYPE ) */
+
+#if defined( LIBVSMBR_HAVE_BFIO )
+
+/* Determines if a file contains a VSS volume signature using a Basic File IO (bfio) handle
+ * Returns 1 if true, 0 if not or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_check_volume_signature_file_io_handle(
+     libbfio_handle_t *file_io_handle,
+     libvsmbr_error_t **error );
+
+#endif /* defined( LIBVSMBR_HAVE_BFIO ) */
+
 /* -------------------------------------------------------------------------
  * Notify functions
  * ------------------------------------------------------------------------- */
@@ -199,6 +231,7 @@ int libvsmbr_handle_open(
      libvsmbr_error_t **error );
 
 #if defined( LIBVSMBR_HAVE_WIDE_CHARACTER_TYPE )
+
 /* Opens a handle
  * Returns 1 if successful or -1 on error
  */
@@ -208,9 +241,11 @@ int libvsmbr_handle_open_wide(
      const wchar_t *filename,
      int access_flags,
      libvsmbr_error_t **error );
-#endif
+
+#endif /* defined( LIBVSMBR_HAVE_WIDE_CHARACTER_TYPE ) */
 
 #if defined( LIBVSMBR_HAVE_BFIO )
+
 /* Opens a handle using a Basic File IO (bfio) handle
  * Returns 1 if successful or -1 on error
  */
@@ -220,7 +255,8 @@ int libvsmbr_handle_open_handle_io_handle(
      libbfio_handle_t *file_io_handle,
      int access_flags,
      libvsmbr_error_t **error );
-#endif
+
+#endif /* defined( LIBVSMBR_HAVE_BFIO ) */
 
 /* Closes a handle
  * Returns 0 if successful or -1 on error
@@ -230,9 +266,21 @@ int libvsmbr_handle_close(
      libvsmbr_handle_t *handle,
      libvsmbr_error_t **error );
 
+/* -------------------------------------------------------------------------
+ * Partition functions
+ * ------------------------------------------------------------------------- */
+
+/* Frees a partition
+ * Returns 1 if successful or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_partition_free(
+     libvsmbr_partition_t **partition,
+     libvsmbr_error_t **error );
+
 #if defined( __cplusplus )
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_H ) */
 

@@ -1,4 +1,4 @@
-.Dd January  5, 2015
+.Dd February 12, 2017
 .Dt libvsmbr 3
 .Os libvsmbr
 .Sh NAME
@@ -52,7 +52,7 @@ Handle functions
 .Fn libvsmbr_handle_signal_abort "libvsmbr_handle_t *handle, libvsmbr_error_t **error"
 .Ft int
 .Fn libvsmbr_handle_open "libvsmbr_handle_t *handle, const char *filename, int access_flags, libvsmbr_error_t **error"
-.Ft #endif int
+.Ft int
 .Fn libvsmbr_handle_close "libvsmbr_handle_t *handle, libvsmbr_error_t **error"
 .Pp
 Available when compiled with wide character string support:
@@ -60,7 +60,7 @@ Available when compiled with wide character string support:
 .Fn libvsmbr_handle_open_wide "libvsmbr_handle_t *handle, const wchar_t *filename, int access_flags, libvsmbr_error_t **error"
 .Pp
 Available when compiled with libbfio support:
-.Ft #endif int
+.Ft int
 .Fn libvsmbr_handle_open_handle_io_handle "libvsmbr_handle_t *handle, libbfio_handle_t *file_io_handle, int access_flags, libvsmbr_error_t **error"
 .Sh DESCRIPTION
 The
@@ -73,6 +73,7 @@ For the actual return values see "libvsmbr.h".
 None
 .Sh FILES
 None
+.Sh NOTES
 libvsmbr allows to be compiled with wide character support (wchar_t).
 
 To compile libvsmbr with wide character support use:

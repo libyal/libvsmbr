@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libvsmbr],
- [20161109],
+ [20170525],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -84,20 +84,21 @@ AX_LIBCPATH_CHECK_ENABLE
 dnl Check for enabling libbfio for basic file IO support
 AX_LIBBFIO_CHECK_ENABLE
 
-dnl Check for enabling libcsystem for cross-platform C generic system functions
-AX_LIBCSYSTEM_CHECK_ENABLE
+dnl Check for library function support
+AX_LIBVSMBR_CHECK_LOCAL
 
-dnl Check if vsmbrtools should be build as static executables
-AX_COMMON_CHECK_ENABLE_STATIC_EXECUTABLES
+dnl Check for vsmbrtools function support
+AX_VSMBRTOOLS_CHECK_LOCAL
 
-dnl Check if libvsmbr should be build with verbose output
-AX_COMMON_CHECK_ENABLE_VERBOSE_OUTPUT
-
-dnl Check if libvsmbr should be build with debug output
-AX_COMMON_CHECK_ENABLE_DEBUG_OUTPUT
-
-dnl Check if libevt python bindings (pyevt) should be build
+dnl Check if libevt python bindings (pyvsmbr) should be build
+AX_PYTHON_CHECK_PYPREFIX
 AX_PYTHON_CHECK_ENABLE
+AX_PYTHON2_CHECK_ENABLE
+AX_PYTHON3_CHECK_ENABLE
+
+AM_CONDITIONAL(
+ HAVE_PYTHON_TESTS,
+ [test "x${ac_cv_enable_python}" != xno || test "x${ac_cv_enable_python2}" != xno || test "x${ac_cv_enable_python3}" != xno])
 
 dnl Headers included in various places
 AC_CHECK_HEADERS([stdarg.h varargs.h])
@@ -107,29 +108,6 @@ AS_IF(
  [AC_MSG_FAILURE(
   [Missing headers: stdarg.h and varargs.h],
   [1])
- ])
-
-dnl Check if DLL support is needed
-AS_IF(
- [test "x$enable_shared" = xyes],
- [AS_CASE(
-  [$host],
-  [*cygwin* | *mingw*],
-  [AC_DEFINE(
-   [HAVE_DLLMAIN],
-   [1],
-   [Define to 1 to enable the DllMain function.])
-  AC_SUBST(
-   [HAVE_DLLMAIN],
-   [1])
-
-  AS_IF(
-   [test "x$ac_cv_enable_static_executables" = xno],
-   [AC_SUBST(
-    [LIBVSMBR_DLL_IMPORT],
-    ["-DLIBVSMBR_DLL_IMPORT"])
-   ])
-  ])
  ])
 
 dnl Set additional compiler flags
@@ -143,13 +121,6 @@ AS_IF(
   [Requires:])
  AC_SUBST(
   [libvsmbr_spec_build_requires],
-  [BuildRequires:])
- ])
-
-AS_IF(
- [test "x$ac_cv_libcsystem" = xyes],
- [AC_SUBST(
-  [libvsmbr_spec_tools_build_requires],
   [BuildRequires:])
  ])
 
@@ -183,9 +154,10 @@ AC_CONFIG_FILES([libcfile/Makefile])
 AC_CONFIG_FILES([libcpath/Makefile])
 AC_CONFIG_FILES([libbfio/Makefile])
 AC_CONFIG_FILES([libvsmbr/Makefile])
-AC_CONFIG_FILES([libcsystem/Makefile])
 AC_CONFIG_FILES([vsmbrtools/Makefile])
 AC_CONFIG_FILES([pyvsmbr/Makefile])
+AC_CONFIG_FILES([pyvsmbr-python2/Makefile])
+AC_CONFIG_FILES([pyvsmbr-python3/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([po/Makevars])
 AC_CONFIG_FILES([manuals/Makefile])
@@ -200,7 +172,6 @@ AC_CONFIG_FILES([libvsmbr/libvsmbr_definitions.h])
 dnl Have configure make distribution specific files
 AC_CONFIG_FILES([common/types.h])
 AC_CONFIG_FILES([dpkg/changelog])
-AC_CONFIG_FILES([dpkg/copyright])
 AC_CONFIG_FILES([libvsmbr/libvsmbr.rc])
 AC_CONFIG_FILES([libvsmbr.pc])
 AC_CONFIG_FILES([libvsmbr.spec])
@@ -222,13 +193,14 @@ Building:
    libcfile support:                           $ac_cv_libcfile
    libcpath support:                           $ac_cv_libcpath
    libbfio support:                            $ac_cv_libbfio
-   libcsystem support:                         $ac_cv_libcsystem
 
 Features:
    Multi-threading support:                    $ac_cv_libcthreads_multi_threading
    Wide character type support:                $ac_cv_enable_wide_character_type
    vsmbrtools are build as static executables: $ac_cv_enable_static_executables
    Python (pyvsmbr) support:                   $ac_cv_enable_python
+   Python version 2 (pyvsmbr) support:         $ac_cv_enable_python2
+   Python version 3 (pyvsmbr) support:         $ac_cv_enable_python3
    Verbose output:                             $ac_cv_enable_verbose_output
    Debug output:                               $ac_cv_enable_debug_output
 ]);

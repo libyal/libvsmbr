@@ -68,5 +68,5 @@ struct vsmbr_partition_entry
 }
 #endif
 
-#endif
+#endif /* !defined( _VSMBR_PARTITION_H ) */
 

@@ -112,5 +112,5 @@ int libvsmbr_handle_open_read(
 }
 #endif
 
-#endif
+#endif /* !defined( _LIBVSMBR_INTERNAL_HANDLE_H ) */
 

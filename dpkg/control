@@ -1,10 +1,10 @@
 Source: libvsmbr
-Section: libs
 Priority: extra
 Maintainer: Joachim Metz <joachim.metz@gmail.com>
-Build-Depends: debhelper (>= 7), autotools-dev, libfuse-dev, python-all-dev
+Build-Depends: debhelper (>= 9), dh-autoreconf, pkg-config, python-dev, python3-dev
 Standards-Version: 3.9.5
-Homepage: https://github.com/libyal/libvsmbr/
+Section: libs
+Homepage: https://github.com/libyal/libvsmbr
 
 Package: libvsmbr
 Architecture: any
@@ -34,13 +34,20 @@ Depends: libvsmbr (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Several tools for Several tools for reading Master Boot Record (MBR) volume systems
  Several tools for Several tools for reading Master Boot Record (MBR) volume systems.
 
+Package: libvsmbr-tools-dbg
+Section: debug
+Architecture: any
+Depends: libvsmbr-tools (= ${binary:Version}), ${misc:Depends}
+Description: Debugging symbols for libvsmbr-tools
+ Debugging symbols for libvsmbr-tools.
+
 Package: libvsmbr-python
 Section: python
 Architecture: any
 Depends: libvsmbr (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Suggests: libvsmbr-python-dbg
-Description: Python bindings for libvsmbr
- Python bindings for libvsmbr.
+Description: Python 2 bindings for libvsmbr
+ Python 2 bindings for libvsmbr.
 
 Package: libvsmbr-python-dbg
 Section: debug
@@ -48,4 +55,19 @@ Architecture: any
 Depends: libvsmbr-python (= ${binary:Version}), ${misc:Depends}
 Description: Debugging symbols for libvsmbr-python
  Debugging symbols for libvsmbr-python.
+
+Package: libvsmbr-python3
+Section: python
+Architecture: any
+Depends: libvsmbr (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Suggests: libvsmbr-python3-dbg
+Description: Python 3 bindings for libvsmbr
+ Python 3 bindings for libvsmbr.
+
+Package: libvsmbr-python3-dbg
+Section: debug
+Architecture: any
+Depends: libvsmbr-python3 (= ${binary:Version}), ${misc:Depends}
+Description: Debugging symbols for libvsmbr-python3
+ Debugging symbols for libvsmbr-python3.
 

@@ -88,5 +88,5 @@ struct vsmbr_boot_record_modern
 }
 #endif
 
-#endif
+#endif /* !defined( _VSMBR_BOOT_RECORD_H ) */
 
