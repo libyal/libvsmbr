@@ -35,7 +35,7 @@
 
 #include "../libvsmbr/libvsmbr_partition.h"
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
 /* Tests the libvsmbr_partition_initialize function
  * Returns 1 if successful or 0 if not
@@ -232,7 +232,7 @@ on_error:
 	return( 0 );
 }
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 /* Tests the libvsmbr_partition_free function
  * Returns 1 if successful or 0 if not
@@ -272,9 +272,9 @@ on_error:
 	return( 0 );
 }
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 /* The main program
  */
@@ -291,13 +291,13 @@ int main(
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argc )
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argv )
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_partition_initialize",
 	 vsmbr_test_partition_initialize );
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_partition_free",

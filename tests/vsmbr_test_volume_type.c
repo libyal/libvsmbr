@@ -48,11 +48,11 @@ int main(
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argc )
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argv )
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
 	/* TODO: add tests for libvsmbr_volume_type_get_description */
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 

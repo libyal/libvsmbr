@@ -1418,11 +1418,11 @@ int main(
 		 vsmbr_test_handle_signal_abort,
 		 handle );
 
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
 		/* TODO: add tests for libvsmbr_handle_open_read */
 
-#endif /* defined( __GNUC__ ) */
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 		/* Clean up
 		 */
