@@ -79,9 +79,9 @@ int vsmbr_test_get_codepage(
 	 result,
 	 1 );
 
-        VSMBR_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -94,9 +94,9 @@ int vsmbr_test_get_codepage(
 	 result,
 	 -1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -130,9 +130,9 @@ int vsmbr_test_set_codepage(
 	 result,
 	 1 );
 
-        VSMBR_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -145,9 +145,9 @@ int vsmbr_test_set_codepage(
 	 result,
 	 -1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );

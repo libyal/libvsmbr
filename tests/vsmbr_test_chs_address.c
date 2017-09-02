@@ -64,13 +64,13 @@ int vsmbr_test_chs_address_initialize(
 	 result,
 	 1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "chs_address",
-         chs_address );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "chs_address",
+	 chs_address );
 
-        VSMBR_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libvsmbr_chs_address_free(
 	          &chs_address,
@@ -81,13 +81,13 @@ int vsmbr_test_chs_address_initialize(
 	 result,
 	 1 );
 
-        VSMBR_TEST_ASSERT_IS_NULL(
-         "chs_address",
-         chs_address );
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "chs_address",
+	 chs_address );
 
-        VSMBR_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -100,9 +100,9 @@ int vsmbr_test_chs_address_initialize(
 	 result,
 	 -1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -118,9 +118,9 @@ int vsmbr_test_chs_address_initialize(
 	 result,
 	 -1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -252,9 +252,9 @@ int vsmbr_test_chs_address_free(
 	 result,
 	 -1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );

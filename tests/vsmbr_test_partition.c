@@ -64,13 +64,13 @@ int vsmbr_test_partition_initialize(
 	 result,
 	 1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "partition",
-         partition );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
 
-        VSMBR_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	result = libvsmbr_partition_free(
 	          &partition,
@@ -81,13 +81,13 @@ int vsmbr_test_partition_initialize(
 	 result,
 	 1 );
 
-        VSMBR_TEST_ASSERT_IS_NULL(
-         "partition",
-         partition );
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
 
-        VSMBR_TEST_ASSERT_IS_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
@@ -100,9 +100,9 @@ int vsmbr_test_partition_initialize(
 	 result,
 	 -1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -118,9 +118,9 @@ int vsmbr_test_partition_initialize(
 	 result,
 	 -1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
@@ -254,9 +254,9 @@ int vsmbr_test_partition_free(
 	 result,
 	 -1 );
 
-        VSMBR_TEST_ASSERT_IS_NOT_NULL(
-         "error",
-         error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
 	libcerror_error_free(
 	 &error );
