@@ -26,6 +26,7 @@
 
 #include "vsmbrtools_i18n.h"
 #include "vsmbrtools_libbfio.h"
+#include "vsmbrtools_libcerror.h"
 #include "vsmbrtools_libuna.h"
 #include "vsmbrtools_libvsmbr.h"
 #include "vsmbrtools_output.h"

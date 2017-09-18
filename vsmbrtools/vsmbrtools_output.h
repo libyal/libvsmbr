@@ -19,12 +19,14 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _VSMBROUTPUT_H )
-#define _VSMBROUTPUT_H
+#if !defined( _VSMBRTOOLS_OUTPUT_H )
+#define _VSMBRTOOLS_OUTPUT_H
 
 #include <common.h>
 #include <file_stream.h>
 #include <types.h>
+
+#include "vsmbrtools_libcerror.h"
 
 #if defined( __cplusplus )
 extern "C" {
@@ -49,5 +51,5 @@ void vsmbroutput_version_detailed_fprint(
 }
 #endif
 
-#endif /* !defined( _VSMBROUTPUT_H ) */
+#endif /* !defined( _VSMBRTOOLS_OUTPUT_H ) */
 

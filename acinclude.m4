@@ -1,3 +1,7 @@
+dnl Checks for required headers and functions
+dnl
+dnl Version: 20170918
+
 dnl Function to detect if libvsmbr dependencies are available
 AC_DEFUN([AX_LIBVSMBR_CHECK_LOCAL],
   [dnl Check for internationalization functions in libvsmbr/libvsmbr_i18n.c
