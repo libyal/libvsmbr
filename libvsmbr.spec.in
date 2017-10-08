@@ -5,13 +5,13 @@ Summary: Library to access the Master Boot Record (MBR) volume system
 Group: System Environment/Libraries
 License: LGPL
 Source: %{name}-%{version}.tar.gz
-URL: https://github.com/libyal/libvsmbr/
+URL: https://github.com/libyal/libvsmbr
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 @libvsmbr_spec_requires@ @ax_libbfio_spec_requires@ @ax_libcdata_spec_requires@ @ax_libcerror_spec_requires@ @ax_libcfile_spec_requires@ @ax_libclocale_spec_requires@ @ax_libcnotify_spec_requires@ @ax_libcpath_spec_requires@ @ax_libcsplit_spec_requires@ @ax_libcthreads_spec_requires@ @ax_libuna_spec_requires@
 @libvsmbr_spec_build_requires@ @ax_libbfio_spec_build_requires@ @ax_libcdata_spec_build_requires@ @ax_libcerror_spec_build_requires@ @ax_libcfile_spec_build_requires@ @ax_libclocale_spec_build_requires@ @ax_libcnotify_spec_build_requires@ @ax_libcpath_spec_build_requires@ @ax_libcsplit_spec_build_requires@ @ax_libcthreads_spec_build_requires@ @ax_libuna_spec_build_requires@
 
 %description
-libvsmbr is a library to access the Master Boot Record (MBR) volume system
+Library to access the Master Boot Record (MBR) volume system
 
 %package devel
 Summary: Header files and libraries for developing applications for libvsmbr
@@ -21,28 +21,37 @@ Requires: libvsmbr = %{version}-%{release}
 %description devel
 Header files and libraries for developing applications for libvsmbr.
 
-%package tools
-Summary: Several tools for reading Master Boot Record (MBR) volume systems
-Group: Applications/System
-Requires: libvsmbr = %{version}-%{release}
-
-%description tools
-Several tools for reading Master Boot Record (MBR) volume systems
-
 %package python
-Summary: Python bindings for libvsmbr
+Summary: Python 2 bindings for libvsmbr
 Group: System Environment/Libraries
 Requires: libvsmbr = %{version}-%{release} python
 BuildRequires: python-devel
 
 %description python
-Python bindings for libvsmbr
+Python 2 bindings for libvsmbr
+
+%package python3
+Summary: Python 3 bindings for libvsmbr
+Group: System Environment/Libraries
+Requires: libvsmbr = %{version}-%{release} python3
+BuildRequires: python3-devel
+
+%description python3
+Python 3 bindings for libvsmbr
+
+%package tools
+Summary: Several tools for Several tools for reading Master Boot Record (MBR) volume systems
+Group: Applications/System
+Requires: libvsmbr = %{version}-%{release}
+
+%description tools
+Several tools for Several tools for reading Master Boot Record (MBR) volume systems
 
 %prep
 %setup -q
 
 %build
-%configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} --enable-python
+%configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} --enable-python2 --enable-python3
 make %{?_smp_mflags}
 
 %install
@@ -71,18 +80,25 @@ rm -rf %{buildroot}
 %{_includedir}/*
 %{_mandir}/man3/*
 
-%files tools
-%defattr(644,root,root,755)
-%doc AUTHORS COPYING NEWS README
-%attr(755,root,root) %{_bindir}/vsmbrinfo
-%{_mandir}/man1/*
-
 %files python
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README
-%{_libdir}/python*/site-packages/*.a
-%{_libdir}/python*/site-packages/*.la
-%{_libdir}/python*/site-packages/*.so
+%{_libdir}/python2*/site-packages/*.a
+%{_libdir}/python2*/site-packages/*.la
+%{_libdir}/python2*/site-packages/*.so
+
+%files python3
+%defattr(644,root,root,755)
+%doc AUTHORS COPYING NEWS README
+%{_libdir}/python3*/site-packages/*.a
+%{_libdir}/python3*/site-packages/*.la
+%{_libdir}/python3*/site-packages/*.so
+
+%files tools
+%defattr(644,root,root,755)
+%doc AUTHORS COPYING NEWS README
+%attr(755,root,root) %{_bindir}/*
+%{_mandir}/man1/*
 
 %changelog
 * @SPEC_DATE@ Joachim Metz <joachim.metz@gmail.com> @VERSION@-1
