@@ -79,7 +79,7 @@ int libvsmbr_set_codepage(
      int codepage,
      libvsmbr_error_t **error );
 
-/* Determines if a file contains a VSS volume signature
+/* Determines if a file contains a MBR volume signature
  * Returns 1 if true, 0 if not or -1 on error
  */
 LIBVSMBR_EXTERN \
@@ -89,7 +89,7 @@ int libvsmbr_check_volume_signature(
 
 #if defined( LIBVSMBR_HAVE_WIDE_CHARACTER_TYPE )
 
-/* Determines if a file contains a VSS volume signature
+/* Determines if a file contains a MBR volume signature
  * Returns 1 if true, 0 if not or -1 on error
  */
 LIBVSMBR_EXTERN \
@@ -101,7 +101,7 @@ int libvsmbr_check_volume_signature_wide(
 
 #if defined( LIBVSMBR_HAVE_BFIO )
 
-/* Determines if a file contains a VSS volume signature using a Basic File IO (bfio) handle
+/* Determines if a file contains a MBR volume signature using a Basic File IO (bfio) handle
  * Returns 1 if true, 0 if not or -1 on error
  */
 LIBVSMBR_EXTERN \
