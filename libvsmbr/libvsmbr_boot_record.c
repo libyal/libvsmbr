@@ -92,6 +92,25 @@ int libvsmbr_boot_record_initialize(
 		 "%s: unable to clear boot record.",
 		 function );
 
+		memory_free(
+		 *boot_record );
+
+		*boot_record = NULL;
+
+		return( -1 );
+	}
+	if( libcdata_array_initialize(
+	     &( ( *boot_record )->partition_entries ),
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create partition entries array.",
+		 function );
+
 		goto on_error;
 	}
 	return( 1 );
@@ -115,6 +134,7 @@ int libvsmbr_boot_record_free(
      libcerror_error_t **error )
 {
 	static char *function = "libvsmbr_boot_record_free";
+	int result            = 1;
 
 	if( boot_record == NULL )
 	{
@@ -129,12 +149,26 @@ int libvsmbr_boot_record_free(
 	}
 	if( *boot_record != NULL )
 	{
+		if( libcdata_array_free(
+		     &( ( *boot_record )->partition_entries ),
+		     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_partition_entry_free,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free the partition entries array.",
+			 function );
+
+			result = -1;
+		}
 		memory_free(
 		 *boot_record );
 
 		*boot_record = NULL;
 	}
-	return( 1 );
+	return( result );
 }
 
 /* Reads a boot record
@@ -243,8 +277,6 @@ on_error:
 		memory_free(
 		 data );
 	}
-/* TODO clear partition entries array */
-
 	return( -1 );
 }
 
@@ -260,8 +292,8 @@ int libvsmbr_boot_record_read_data(
 	libvsmbr_partition_entry_t *partition_entry = NULL;
 	static char *function                       = "libvsmbr_boot_record_read_data";
 	size_t data_offset                          = 0;
-	uint32_t disk_identity                      = 0;
 	uint8_t partition_entry_index               = 0;
+	int entry_index                             = 0;
 
 	if( boot_record == NULL )
 	{
@@ -325,7 +357,7 @@ int libvsmbr_boot_record_read_data(
 /* TODO make conditional */
 	byte_stream_copy_to_uint32_little_endian(
 	 ( (vsmbr_boot_record_modern_t *) data )->disk_identity,
-	 disk_identity );
+	 boot_record->disk_identity );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -333,7 +365,7 @@ int libvsmbr_boot_record_read_data(
 		libcnotify_printf(
 		 "%s: disk identity\t\t\t\t: 0x%08" PRIx32 "\n",
 		 function,
-		 disk_identity );
+		 boot_record->disk_identity );
 
 		libcnotify_printf(
 		 "\n" );
@@ -377,20 +409,23 @@ int libvsmbr_boot_record_read_data(
 		}
 		data_offset += sizeof( vsmbr_partition_entry_t );
 
-/* TODO: add to partition entries array */
-		if( libvsmbr_partition_entry_free(
-		     &partition_entry,
+		if( libcdata_array_append_entry(
+		     boot_record->partition_entries,
+		     &entry_index,
+		     (intptr_t *) partition_entry,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free partition entry.",
-			 function );
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append partition entry: %" PRIu8 " to array.",
+			 function,
+			 partition_entry_index );
 
 			goto on_error;
 		}
+		partition_entry = NULL;
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -414,7 +449,11 @@ on_error:
 		 &partition_entry,
 		 NULL );
 	}
-/* TODO clear partition entries array */
+	libcdata_array_empty(
+	 boot_record->partition_entries,
+	 (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_partition_entry_free,
+	 NULL );
+
 	return( -1 );
 }
 

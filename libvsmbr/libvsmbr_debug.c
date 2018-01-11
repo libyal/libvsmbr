@@ -29,6 +29,18 @@
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
+/* Prints the partition entry flags
+ */
+void libvsmbr_debug_print_partition_entry_flags(
+      uint8_t partition_entry_flags )
+{
+	if( ( partition_entry_flags & 0x80 ) != 0 )
+	{
+		libcnotify_printf(
+		 "\tIs boot-able\n" );
+	}
+}
+
 /* Prints the read offsets
  * Returns 1 if successful or -1 on error
  */
@@ -105,5 +117,5 @@ int libvsmbr_debug_print_read_offsets(
 	return( 1 );
 }
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 

@@ -25,6 +25,7 @@
 #include <types.h>
 
 #include "libvsmbr_chs_address.h"
+#include "libvsmbr_debug.h"
 #include "libvsmbr_definitions.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcnotify.h"
@@ -230,6 +231,10 @@ int libvsmbr_partition_entry_read_data(
 		 function,
 		 partition_entry->index,
 		 partition_entry->flags );
+		libvsmbr_debug_print_partition_entry_flags(
+		 partition_entry->flags );
+		libcnotify_printf(
+		 "\n" );
 
 		byte_stream_copy_to_uint24_little_endian(
 		 ( (vsmbr_partition_entry_t *) data )->start_address_chs,

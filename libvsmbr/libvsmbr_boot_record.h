@@ -26,6 +26,7 @@
 #include <types.h>
 
 #include "libvsmbr_libbfio.h"
+#include "libvsmbr_libcdata.h"
 #include "libvsmbr_libcerror.h"
 
 #if defined( __cplusplus )
@@ -36,17 +37,13 @@ typedef struct libvsmbr_boot_record libvsmbr_boot_record_t;
 
 struct libvsmbr_boot_record
 {
-	/* The type
+	/* The disk identity
 	 */
-	uint8_t type;
+	uint32_t disk_identity;
 
-	/* The offset
+	/* The partition entries array
 	 */
-	off64_t offset;
-
-	/* The size
-	 */
-	size64_t size;
+	libcdata_array_t *partition_entries;
 };
 
 int libvsmbr_boot_record_initialize(

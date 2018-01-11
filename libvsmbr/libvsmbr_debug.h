@@ -34,11 +34,14 @@ extern "C" {
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
+void libvsmbr_debug_print_partition_entry_flags(
+      uint8_t partition_entry_flags );
+
 int libvsmbr_debug_print_read_offsets(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
 #if defined( __cplusplus )
 }

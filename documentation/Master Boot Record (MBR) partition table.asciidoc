@@ -190,7 +190,22 @@ The AST/NEC MS-DOS and SpeedStor MBR is used by:
 
 The AST/NEC MS-DOS and SpeedStor MBR is 512 bytes of size and consists of:
 
-[yellow-background]*TODO: complete move to asciidoc*
+[cols="1,1,1,5",options="header"]
+|===
+| Offset | Size | Value | Description
+| 0 | 380 | | The boot (loader) code
+| *380* | *2* | *"\x5a\xa5"* | *The AST/NEC MS-DOS signature* +
+[yellow-background]*Not used by SpeedStor*
+| *382* | *16* | | *Partition table entry 8*
+| *398* | *16* | | *Partition table entry 7*
+| *414* | *16* | | *Partition table entry 6*
+| *430* | *16* | | *Partition table entry 5*
+| 446 | 16 | | Partition table entry 1
+| 462 | 16 | | Partition table entry 2
+| 478 | 16 | | Partition table entry 3
+| 494 | 16 | | Partition table entry 4
+| 510 | 2 | "\x55\xaa" | The (boot) signature
+|===
 
 === The Disk Manager MBR
 The Disk Manager MBR is 512 bytes of size and consists of:
