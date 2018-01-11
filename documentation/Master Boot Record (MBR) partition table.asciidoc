@@ -170,7 +170,25 @@ The Advanced Active Partitions (AAP) MBR is used by:
 
 The AAP MBR is 512 bytes of size and consists of:
 
-[yellow-background]*TODO: complete move to asciidoc*
+[cols="1,1,1,5",options="header"]
+|===
+| Offset | Size | Value | Description
+| 0 | 428 | | The boot (loader) code
+| 428 | 2 | "\x78\x56" | The AAP signature
+| 430 | 1 | | [yellow-background]*AAP physical drive (80h-FEh; 00h: not used; 01h-7Fh, FFh: reserved*
+| 431 | 3 | | [yellow-background]*CHS (start) address of AAP partition/image file or VBR/EBR*
+| 434 | 1 | | [yellow-background]*Reserved for AAP partition type (00h if not used) (optional)*
+| 435 | 3 | | [yellow-background]*Reserved for CHS end address in AAP (optional; byte at offset +1B5h is also used for MBR checksum (PTS DE, BootWizard); 000000h if not used)*
+| 438 | 4 | | [yellow-background]*Start LBA of AAP image file or VBR/EBR or relative sectors of AAP partition (copied to offset +01Ch in the loaded sector over the "hidden sectors" entry of a DOS 3.31 BPB (or emulation thereof) to also support EBR booting)*
+| 442 | 4 | | [yellow-background]*Reserved for sectors in AAP (optional; 00000000h if not used)*
+| 446 | 16 | | Partition table entry 1
+| 462 | 16 | | Partition table entry 2
+| 478 | 16 | | Partition table entry 3
+| 494 | 16 | | Partition table entry 4
+| 510 | 2 | "\x55\xaa" | The (boot) signature
+|===
+
+[yellow-background]*TODO: determine if the AAP is optional*
 
 === The NEWLDR MBR
 The NEWLDR MBR is a variant based on the Advanced Active Partitions (AAP) MBR 
@@ -180,7 +198,35 @@ and is used by:
 
 The NEWLDR MBR is 512 bytes of size and consists of:
 
-[yellow-background]*TODO: complete move to asciidoc*
+[cols="1,1,1,5",options="header"]
+|===
+| Offset | Size | Value | Description
+| 0 | 2 | 0xeb, ...  | The initial jump instruction of the boot (loader) code
+| 2 | 6 | "NEWLDR" | The NEWLDR signature
+| 8 | 1 | | [yellow-background]*LOADER physical drive and boot flag (80h-FEh, 00h-7Eh, FFh, 7Fh) (if not used, this and following 3 bytes must be all 0)*
+| 9 | 3 | | [yellow-background]*CHS address of LOADER boot sector or image file (f.e. IBMBIO.LDR) (000000h if not used)*
+| 12 | 1 | | [yellow-background]*allowed DL minimum, else take from partition table (80h: default; 00h: always use DL; FFh: always use table entry)*
+| 13 | 3 | 0x000000 | [yellow-background]*Unknown (Reserved)**
+| 16 | 4 | | [yellow-background]*LBA of LOADER boot sector or image file (optional, 00000000h if not used)*
+| 20 | 2 | | [yellow-background]*patch offset of VBR boot unit (default 0000h if not used, else 0024h or 01FDh)*
+| 22 | 2 | | [yellow-background]*checksum (0000h if not used)*
+| 24 | 6 | | [yellow-background]*OEM loader signature ("MSWIN4" for REAL/32, see also offset +0DAh, corresponds with OEM label at offset +003h in VBRs (optional)*
+| 30 | 398 | | The boot (loader) code
+| 428 | 2 | "\x78\x56" | The AAP signature
+| 430 | 1 | | [yellow-background]*AAP physical drive (80h-FEh; 00h: not used; 01h-7Fh, FFh: reserved*
+| 431 | 3 | | [yellow-background]*CHS (start) address of AAP partition/image file or VBR/EBR*
+| 434 | 1 | | [yellow-background]*Reserved for AAP partition type (00h if not used) (optional)*
+| 435 | 3 | | [yellow-background]*Reserved for CHS end address in AAP (optional; byte at offset +1B5h is also used for MBR checksum (PTS DE, BootWizard); 000000h if not used)*
+| 438 | 4 | | [yellow-background]*Start LBA of AAP image file or VBR/EBR or relative sectors of AAP partition (copied to offset +01Ch in the loaded sector over the "hidden sectors" entry of a DOS 3.31 BPB (or emulation thereof) to also support EBR booting)*
+| 442 | 4 | | [yellow-background]*Reserved for sectors in AAP (optional; 00000000h if not used)*
+| 446 | 16 | | Partition table entry 1
+| 462 | 16 | | Partition table entry 2
+| 478 | 16 | | Partition table entry 3
+| 494 | 16 | | Partition table entry 4
+| 510 | 2 | "\x55\xaa" | The (boot) signature
+|===
+
+[yellow-background]*TODO: determine if the AAP is optional*
 
 === The AST/NEC MS-DOS and SpeedStor MBR
 The AST/NEC MS-DOS and SpeedStor MBR is used by:
@@ -195,7 +241,7 @@ The AST/NEC MS-DOS and SpeedStor MBR is 512 bytes of size and consists of:
 | Offset | Size | Value | Description
 | 0 | 380 | | The boot (loader) code
 | *380* | *2* | *"\x5a\xa5"* | *The AST/NEC MS-DOS signature* +
-[yellow-background]*Not used by SpeedStor*
+[yellow-background]*TODO: determine if this is not used by SpeedStor?*
 | *382* | *16* | | *Partition table entry 8*
 | *398* | *16* | | *Partition table entry 7*
 | *414* | *16* | | *Partition table entry 6*

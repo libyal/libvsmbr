@@ -59,6 +59,10 @@ struct libvsmbr_internal_handle
 	/* Value to indicate if the file IO handle was created inside the library
 	 */
 	uint8_t file_io_handle_created_in_library;
+
+	/* Value to indicate if the file IO handle was opened inside the library
+	 */
+	uint8_t file_io_handle_opened_in_library;
 };
 
 LIBVSMBR_EXTERN \
@@ -84,13 +88,15 @@ int libvsmbr_handle_open(
      libcerror_error_t **error );
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
+
 LIBVSMBR_EXTERN \
 int libvsmbr_handle_open_wide(
      libvsmbr_handle_t *handle,
      wchar_t const *filename,
      int access_flags,
      libcerror_error_t **error );
-#endif
+
+#endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
 LIBVSMBR_EXTERN \
 int libvsmbr_handle_open_file_io_handle(
@@ -106,6 +112,7 @@ int libvsmbr_handle_close(
 
 int libvsmbr_handle_open_read(
      libvsmbr_internal_handle_t *internal_handle,
+     libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

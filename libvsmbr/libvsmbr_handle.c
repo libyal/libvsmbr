@@ -33,6 +33,7 @@
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcnotify.h"
+#include "libvsmbr_partition_entry.h"
 #include "libvsmbr_partition_values.h"
 #include "libvsmbr_section_values.h"
 #include "libvsmbr_types.h"
@@ -564,7 +565,7 @@ on_error:
 	return( -1 );
 }
 
-#endif
+#endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
 /* Opens a handle using a Basic File IO (bfio) handle
  * Returns 1 if successful or -1 on error
@@ -579,6 +580,7 @@ int libvsmbr_handle_open_file_io_handle(
 	static char *function                       = "libvsmbr_handle_open_file_io_handle";
 	int bfio_access_flags                       = 0;
 	int file_io_handle_is_open                  = 0;
+	int file_io_handle_opened_in_library        = 0;
 
 	if( handle == NULL )
 	{
@@ -599,7 +601,7 @@ int libvsmbr_handle_open_file_io_handle(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid internal handle - file IO handle already set.",
+		 "%s: invalid handle - file IO handle already set.",
 		 function );
 
 		return( -1 );
@@ -642,10 +644,8 @@ int libvsmbr_handle_open_file_io_handle(
 	{
 		bfio_access_flags = LIBBFIO_ACCESS_FLAG_READ;
 	}
-	internal_handle->file_io_handle = file_io_handle;
-
 	file_io_handle_is_open = libbfio_handle_is_open(
-	                          internal_handle->file_io_handle,
+	                          file_io_handle,
 	                          error );
 
 	if( file_io_handle_is_open == -1 )
@@ -657,12 +657,12 @@ int libvsmbr_handle_open_file_io_handle(
 		 "%s: unable to open file.",
 		 function );
 
-		return( -1 );
+		goto on_error;
 	}
 	else if( file_io_handle_is_open == 0 )
 	{
 		if( libbfio_handle_open(
-		     internal_handle->file_io_handle,
+		     file_io_handle,
 		     bfio_access_flags,
 		     error ) != 1 )
 		{
@@ -673,23 +673,38 @@ int libvsmbr_handle_open_file_io_handle(
 			 "%s: unable to open file IO handle.",
 			 function );
 
-			return( -1 );
+			goto on_error;
 		}
+		file_io_handle_opened_in_library = 1;
 	}
 	if( libvsmbr_handle_open_read(
 	     internal_handle,
+	     file_io_handle,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read from handle.",
+		 "%s: unable to read from file IO handle.",
 		 function );
 
-		return( -1 );
+		goto on_error;
 	}
+	internal_handle->file_io_handle                   = file_io_handle;
+	internal_handle->file_io_handle_opened_in_library = file_io_handle_opened_in_library;
+
 	return( 1 );
+
+on_error:
+	if( ( file_io_handle_is_open == 0 )
+	 && ( file_io_handle_opened_in_library != 0 ) )
+	{
+		libbfio_handle_close(
+		 file_io_handle,
+		 error );
+	}
+	return( -1 );
 }
 
 /* Closes a handle
@@ -813,13 +828,19 @@ int libvsmbr_handle_close(
  */
 int libvsmbr_handle_open_read(
      libvsmbr_internal_handle_t *internal_handle,
+     libbfio_handle_t *file_io_handle,
      libcerror_error_t **error )
 {
-	libvsmbr_boot_record_t *boot_record           = NULL;
-	libvsmbr_partition_values_t *partition_values = NULL;
-	static char *function                         = "libvsmbr_handle_open_read";
-	uint8_t partition_entry_index                 = 0;
-	int entry_index                               = 0;
+	libvsmbr_boot_record_t *extended_partition_record = NULL;
+	libvsmbr_boot_record_t *master_boot_record        = NULL;
+	libvsmbr_partition_entry_t *partition_entry       = NULL;
+	libvsmbr_partition_values_t *partition_values     = NULL;
+	static char *function                             = "libvsmbr_handle_open_read";
+	off64_t extended_partition_record_offset          = 0;
+	uint8_t first_partition_entry                     = 1;
+	uint8_t partition_entry_index                     = 0;
+	int entry_index                                   = 0;
+	int result                                        = 0;
 
 	if( internal_handle == NULL )
 	{
@@ -832,22 +853,30 @@ int libvsmbr_handle_open_read(
 
 		return( -1 );
 	}
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "%s: reading Master Boot Record (MBR).\n",
+		 function );
+	}
+#endif
 	if( libvsmbr_boot_record_initialize(
-	     &boot_record,
+	     &master_boot_record,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create boot record.",
+		 "%s: unable to create master boot record.",
 		 function );
 
 		goto on_error;
 	}
 	if( libvsmbr_boot_record_read_file_io_handle(
-	     boot_record,
-	     internal_handle->file_io_handle,
+	     master_boot_record,
+	     file_io_handle,
 	     0,
 	     error ) != 1 )
 	{
@@ -855,75 +884,179 @@ int libvsmbr_handle_open_read(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read MBR.",
+		 "%s: unable to read master boot record.",
 		 function );
 
 		return( -1 );
 	}
-#ifdef TODO
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "%s: reading Extended Partition Records (EPRs).\n",
+		 function );
+	}
+#endif
 	for( partition_entry_index = 0;
 	     partition_entry_index < 4;
 	     partition_entry_index++ )
 	{
+/* TODO move get partition entry from array into boot record function */
+		if( libcdata_array_get_entry_by_index(
+		     master_boot_record->partition_entries,
+		     (int) partition_entry_index,
+		     (intptr_t **) &partition_entry,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+			 "%s: unable to retrieve partition entry: %" PRIu8 ".",
+			 function,
+			 partition_entry_index );
+
+			goto on_error;
+		}
+		if( partition_entry == NULL )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
+			 "%s: missing partition entry: %" PRIu8 ".",
+			 function,
+			 partition_entry_index );
+
+			goto on_error;
+		}
 		/* Ignore empty partition entries
 		 */
 		if( partition_entry->type == 0 )
 		{
 			continue;
 		}
-		if( libvsmbr_partition_values_initialize(
-		     &partition_values,
-		     error ) != 1 )
+		if( partition_entry->type == 0x05 )
 		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-			 "%s: unable to create partition values.",
-			 function );
+			extended_partition_record_offset = partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector;
 
-			goto on_error;
+			if( libvsmbr_boot_record_initialize(
+			     &extended_partition_record,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+				 "%s: unable to create extended partition record.",
+				 function );
+
+				goto on_error;
+			}
+			result = libvsmbr_boot_record_read_file_io_handle(
+			          extended_partition_record,
+			          file_io_handle,
+			          extended_partition_record_offset,
+			          error );
+
+			if( ( result != 1 )
+			 && ( first_partition_entry == 1 )
+			 && ( internal_handle->io_handle->bytes_per_sector == 512 ) )
+			{
+/* TODO free error */
+				internal_handle->io_handle->bytes_per_sector = 4096;
+
+				extended_partition_record_offset = partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector;
+
+				result = libvsmbr_boot_record_read_file_io_handle(
+				          extended_partition_record,
+				          file_io_handle,
+				          extended_partition_record_offset,
+				          error );
+			}
+			if( result != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_IO,
+				 LIBCERROR_IO_ERROR_READ_FAILED,
+				 "%s: unable to read extended partition record.",
+				 function );
+
+				goto on_error;
+			}
+			if( libvsmbr_boot_record_free(
+			     &extended_partition_record,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+				 "%s: unable to free extended partition record.",
+				 function );
+
+				goto on_error;
+			}
 		}
-		partition_values->type = partition_entry->type;
+		else
+		{
+/* TODO do bytes per sector check for known volume types and GPT */
+#ifdef TODO
+			if( libvsmbr_partition_values_initialize(
+			     &partition_values,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+				 "%s: unable to create partition values.",
+				 function );
 
-		partition_values->offset = partition_entry->start_address_lba * io_handle->bytes_per_sector;
-		partition_values->size   = partition_entry->number_of_sectors * io_handle->bytes_per_sector;
+				goto on_error;
+			}
+			partition_values->type = partition_entry->type;
+
+			partition_values->offset = partition_entry->start_address_lba * io_handle->bytes_per_sector;
+			partition_values->size   = partition_entry->number_of_sectors * io_handle->bytes_per_sector;
 
 /* TODO offset and size sanity check */
 
-		if( libcdata_array_append_entry(
-		     partitions_array,
-		     &entry_index,
-		     (intptr_t *) partition_values,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
-			 "%s: unable to append partition entry: %" PRIu8 " to array.",
-			 function,
-			 partition_entry_index );
+			if( libcdata_array_append_entry(
+			     partitions_array,
+			     &entry_index,
+			     (intptr_t *) partition_values,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+				 "%s: unable to append partition entry: %" PRIu8 " to array.",
+				 function,
+				 partition_entry_index );
 
-			goto on_error;
+				goto on_error;
+			}
+			partition_values = NULL;
+#endif /* TODO */
 		}
-		partition_values = NULL;
+		first_partition_entry = 0;
 	}
-#endif
 	if( libvsmbr_boot_record_free(
-	     &boot_record,
+	     &master_boot_record,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-		 "%s: unable to free boot record.",
+		 "%s: unable to free master boot record.",
 		 function );
 
 		goto on_error;
 	}
-/* TODO */
 	return( 1 );
 
 on_error:
@@ -933,10 +1066,16 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
-	if( boot_record != NULL )
+	if( extended_partition_record != NULL )
 	{
 		libvsmbr_boot_record_free(
-		 &boot_record,
+		 &extended_partition_record,
+		 NULL );
+	}
+	if( master_boot_record != NULL )
+	{
+		libvsmbr_boot_record_free(
+		 &master_boot_record,
 		 NULL );
 	}
 	return( -1 );

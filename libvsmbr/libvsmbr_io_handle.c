@@ -20,23 +20,11 @@
  */
 
 #include <common.h>
-#include <byte_stream.h>
 #include <memory.h>
 #include <types.h>
 
-#include "libvsmbr_chs_address.h"
-#include "libvsmbr_definitions.h"
 #include "libvsmbr_io_handle.h"
-#include "libvsmbr_libbfio.h"
-#include "libvsmbr_libcdata.h"
 #include "libvsmbr_libcerror.h"
-#include "libvsmbr_libcnotify.h"
-#include "libvsmbr_partition_values.h"
-#include "libvsmbr_section_values.h"
-#include "libvsmbr_volume_type.h"
-
-#include "vsmbr_boot_record.h"
-#include "vsmbr_partition_entry.h"
 
 /* Creates an IO handle
  * Make sure the value io_handle is referencing, is set to NULL
@@ -143,6 +131,47 @@ int libvsmbr_io_handle_free(
 	return( 1 );
 }
 
+/* Clears the IO handle
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_io_handle_clear(
+     libvsmbr_io_handle_t *io_handle,
+     libcerror_error_t **error )
+{
+	static char *function = "libvsmbr_io_handle_clear";
+
+	if( io_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid IO handle.",
+		 function );
+
+		return( -1 );
+	}
+	if( memory_set(
+	     io_handle,
+	     0,
+	     sizeof( libvsmbr_io_handle_t ) ) == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_MEMORY,
+		 LIBCERROR_MEMORY_ERROR_SET_FAILED,
+		 "%s: unable to clear IO handle.",
+		 function );
+
+		return( -1 );
+	}
+	io_handle->bytes_per_sector = 512;
+
+	return( 1 );
+}
+
+#ifdef TODO
+
 /* Reads Extended Partition Records (EPRs)
  * Returns 1 if successful or -1 on error
  */
@@ -153,6 +182,7 @@ int libvsmbr_io_handle_read_eprs(
      libcdata_array_t *partitions_array,
      libcerror_error_t **error )
 {
+	libvsmbr_boot_record_t *boot_record           = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	vsmbr_partition_entry_t *partition_entry      = NULL;
 	uint8_t *data                                 = NULL;
@@ -165,7 +195,6 @@ int libvsmbr_io_handle_read_eprs(
 	int entry_index                               = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
-	libvsmbr_chs_address_t *chs_address           = NULL;
 	uint32_t value_32bit                          = 0;
 #endif
 
@@ -180,226 +209,8 @@ int libvsmbr_io_handle_read_eprs(
 
 		return( -1 );
 	}
-	data = (uint8_t *) memory_allocate(
-			    sizeof( vsmbr_boot_record_classical_t ) );
-
-	if( data == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_MEMORY,
-		 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-		 "%s: unable to create data.",
-		 function );
-
-		goto on_error;
-	}
 	while( file_offset < (off64_t) file_size )
 	{
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			libcnotify_printf(
-			 "%s: reading Extended Partition Record (EPR) at offset: %" PRIi64"\n",
-			 function,
-			 file_offset );
-		}
-#endif
-		if( libbfio_handle_seek_offset(
-		     file_io_handle,
-		     file_offset,
-		     SEEK_SET,
-		     error ) == -1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_IO,
-			 LIBCERROR_IO_ERROR_SEEK_FAILED,
-			 "%s: unable to seek offset: %" PRIi64 " (0x%08" PRIx64 ").",
-			 function,
-			 file_offset,
-			 file_offset );
-
-			goto on_error;
-		}
-		read_count = libbfio_handle_read_buffer(
-			      file_io_handle,
-			      data,
-			      sizeof( vsmbr_boot_record_classical_t ),
-			      error );
-
-		if( read_count != (ssize_t) sizeof( vsmbr_boot_record_classical_t ) )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_IO,
-			 LIBCERROR_IO_ERROR_READ_FAILED,
-			 "%s: unable to read boot record data.",
-			 function );
-
-			goto on_error;
-		}
-#if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
-		{
-			libcnotify_printf(
-			 "%s: boot record data:\n",
-			 function );
-			libcnotify_print_data(
-			 data,
-			 sizeof( vsmbr_boot_record_classical_t ),
-			 0 );
-		}
-#endif
-		if( ( ( (vsmbr_boot_record_classical_t *) data )->boot_signature[ 0 ] != 0x55 )
-		 || ( ( (vsmbr_boot_record_classical_t *) data )->boot_signature[ 1 ] != 0xaa ) )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-			 "%s: invalid boot signature: 0x%02" PRIx8 " 0x%02", PRIx8 ".",
-			 function,
-			 ( (vsmbr_boot_record_classical_t *) data )->boot_signature[ 0 ],
-			 ( (vsmbr_boot_record_classical_t *) data )->boot_signature[ 1 ] );
-
-			return( -1 );
-		}
-		has_extended_partition = 0;
-
-		partition_entry = (vsmbr_partition_entry_t *) ( (vsmbr_boot_record_classical_t *) data )->partition_entries;
-
-		for( partition_entry_index = 0;
-		     partition_entry_index < 4;
-		     partition_entry_index++ )
-		{
-#if defined( HAVE_DEBUG_OUTPUT )
-			if( libcnotify_verbose != 0 )
-			{
-				if( libvsmbr_chs_address_initialize(
-				     &chs_address,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-					 "%s: unable to create CHS address.",
-					 function );
-
-					goto on_error;
-				}
-				libcnotify_printf(
-				 "%s: partition entry: %" PRIu8 " flags\t\t: 0x%02" PRIx8 "\n",
-				 function,
-				 partition_entry_index,
-				 partition_entry->flags );
-
-				byte_stream_copy_to_uint24_little_endian(
-				 partition_entry->start_address_chs,
-				 value_32bit );
-
-				if( libvsmbr_chs_address_copy_from_byte_stream(
-				     chs_address,
-				     partition_entry->start_address_chs,
-				     3,
-				     LIBVSMBR_ENDIAN_LITTLE,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-					 "%s: unable to copy CHS address from byte stream.",
-					 function );
-
-					goto on_error;
-				}
-				libcnotify_printf(
-				 "%s: partition entry: %" PRIu8 " CHS start address\t: 0x%06" PRIx32 " (C: %" PRIu16 ", H: %" PRIu8 ", S: %" PRIu8 ")\n",
-				 function,
-				 partition_entry_index,
-				 value_32bit,
-				 chs_address->cylinder,
-				 chs_address->head,
-				 chs_address->sector );
-
-				libcnotify_printf(
-				 "%s: partition entry: %" PRIu8 " type\t\t: 0x%02" PRIx8 " (%s)\n",
-				 function,
-				 partition_entry_index,
-				 partition_entry->type,
-				 libvsmbr_volume_type_get_description(
-				  partition_entry->type ) );
-
-				if( libvsmbr_chs_address_copy_from_byte_stream(
-				     chs_address,
-				     partition_entry->end_address_chs,
-				     3,
-				     LIBVSMBR_ENDIAN_LITTLE,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_COPY_FAILED,
-					 "%s: unable to copy CHS address from byte stream.",
-					 function );
-
-					goto on_error;
-				}
-				byte_stream_copy_to_uint24_little_endian(
-				 partition_entry->end_address_chs,
-				 value_32bit );
-
-				libcnotify_printf(
-				 "%s: partition entry: %" PRIu8 " CHS end address\t: 0x%06" PRIx32 " (C: %" PRIu16 ", H: %" PRIu8 ", S: %" PRIu8 ")\n",
-				 function,
-				 partition_entry_index,
-				 value_32bit,
-				 chs_address->cylinder,
-				 chs_address->head,
-				 chs_address->sector );
-
-				byte_stream_copy_to_uint32_little_endian(
-				 partition_entry->start_address_lba,
-				 value_32bit );
-
-				libcnotify_printf(
-				 "%s: partition entry: %" PRIu8 " LBA start address\t: %" PRIu32 " (0x%08" PRIx32 ")\n",
-				 function,
-				 partition_entry_index,
-				 value_32bit,
-				 value_32bit );
-
-				byte_stream_copy_to_uint32_little_endian(
-				 partition_entry->number_of_sectors,
-				 value_32bit );
-
-				libcnotify_printf(
-				 "%s: partition entry: %" PRIu8 " size\t\t: %" PRIu32 "\n",
-				 function,
-				 partition_entry_index,
-				 value_32bit );
-
-				libcnotify_printf(
-				 "\n" );
-
-				if( libvsmbr_chs_address_free(
-				     &chs_address,
-				     error ) != 1 )
-				{
-					libcerror_error_set(
-					 error,
-					 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-					 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-					 "%s: unable to free CHS address.",
-					 function );
-
-					goto on_error;
-				}
-			}
-#endif
 			/* Ignore empty partition entries
 			 */
 			if( partition_entry->type != 0 )
@@ -485,32 +296,23 @@ fprintf( stderr, "X: %" PRIi64 ", %" PRIu64 "\n", file_offset, file_size );
 			break;
 		}
 	}
-	memory_free(
-	 data );
-
 	return( 1 );
 
 on_error:
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( chs_address != NULL )
-	{
-		libvsmbr_chs_address_free(
-		 &chs_address,
-		 NULL );
-	}
-#endif
 	if( partition_values != NULL )
 	{
 		libvsmbr_partition_values_free(
 		 &partition_values,
 		 NULL );
 	}
-/* TODO clear partitions array */
-	if( data != NULL )
+	if( boot_record != NULL )
 	{
-		memory_free(
-		 data );
+		libvsmbr_boot_record_free(
+		 &boot_record,
+		 NULL );
 	}
 	return( -1 );
 }
+
+#endif /* TODO */
 

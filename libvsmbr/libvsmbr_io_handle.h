@@ -54,11 +54,8 @@ int libvsmbr_io_handle_free(
      libvsmbr_io_handle_t **io_handle,
      libcerror_error_t **error );
 
-int libvsmbr_io_handle_read_eprs(
+int libvsmbr_io_handle_clear(
      libvsmbr_io_handle_t *io_handle,
-     libbfio_handle_t *file_io_handle,
-     libcdata_array_t *sections_array,
-     libcdata_array_t *partitions_array,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

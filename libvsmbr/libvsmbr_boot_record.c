@@ -199,8 +199,10 @@ int libvsmbr_boot_record_read_file_io_handle(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: reading boot record at offset: 0\n",
-		 function );
+		 "%s: reading boot record at offset: %" PRIu64 " (0x%08" PRIx64 ").\n",
+		 function,
+		 file_offset,
+		 file_offset );
 	}
 #endif
 	if( libbfio_handle_seek_offset(
