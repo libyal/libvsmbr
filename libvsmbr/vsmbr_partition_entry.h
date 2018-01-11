@@ -1,5 +1,5 @@
 /*
- * The IO handle functions
+ * Master Boot Record (MBR) partition table definitions
  *
  * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,51 +19,54 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBVSMBR_IO_HANDLE_H )
-#define _LIBVSMBR_IO_HANDLE_H
+#if !defined( _VSMBR_PARTITION_H )
+#define _VSMBR_PARTITION_H
 
 #include <common.h>
 #include <types.h>
-
-#include "libvsmbr_libbfio.h"
-#include "libvsmbr_libcdata.h"
-#include "libvsmbr_libcerror.h"
 
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-typedef struct libvsmbr_io_handle libvsmbr_io_handle_t;
+typedef struct vsmbr_partition_entry vsmbr_partition_entry_t;
 
-struct libvsmbr_io_handle
+struct vsmbr_partition_entry
 {
-	/* The number of bytes per sector
+	/* Flags
+	 * Consists of 1 byte
 	 */
-	size_t bytes_per_sector;
+	uint8_t flags;
 
-	/* Value to indicate if abort was signalled
+	/* Partition start address in CHS
+	 * Consists of 3 bytes
 	 */
-	int abort;
+	uint8_t start_address_chs[ 3 ];
+
+	/* Partition type
+	 * Consists of 1 byte
+	 */
+	uint8_t type;
+
+	/* Partition end address in CHS
+	 * Consists of 3 bytes
+	 */
+	uint8_t end_address_chs[ 3 ];
+
+	/* Partition start address in LBA
+	 * Consists of 4 bytes
+	 */
+	uint8_t start_address_lba[ 4 ];
+
+	/* Partition number of sectors
+	 * Consists of 4 bytes
+	 */
+	uint8_t number_of_sectors[ 4 ];
 };
-
-int libvsmbr_io_handle_initialize(
-     libvsmbr_io_handle_t **io_handle,
-     libcerror_error_t **error );
-
-int libvsmbr_io_handle_free(
-     libvsmbr_io_handle_t **io_handle,
-     libcerror_error_t **error );
-
-int libvsmbr_io_handle_read_eprs(
-     libvsmbr_io_handle_t *io_handle,
-     libbfio_handle_t *file_io_handle,
-     libcdata_array_t *sections_array,
-     libcdata_array_t *partitions_array,
-     libcerror_error_t **error );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _LIBVSMBR_IO_HANDLE_H ) */
+#endif /* !defined( _VSMBR_PARTITION_H ) */
 

@@ -25,8 +25,6 @@
 #include <common.h>
 #include <types.h>
 
-#include "libvsmbr_libbfio.h"
-#include "libvsmbr_libcdata.h"
 #include "libvsmbr_libcerror.h"
 
 #if defined( __cplusplus )

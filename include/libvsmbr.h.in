@@ -49,6 +49,12 @@ LIBVSMBR_EXTERN \
 const char *libvsmbr_get_version(
              void );
 
+/* Returns the access flags for reading
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_get_access_flags_read(
+     void );
+
 /* Returns the access flags for reading and writing
  */
 LIBVSMBR_EXTERN \

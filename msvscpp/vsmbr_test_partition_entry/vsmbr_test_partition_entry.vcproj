@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="vsmbr_test_handle"
-	ProjectGUID="{07DC46DC-C6DB-49B1-8F35-5CC20A88E761}"
-	RootNamespace="vsmbr_test_handle"
+	Name="vsmbr_test_partition_entry"
+	ProjectGUID="{9DC5F85B-A664-4D00-B2FA-668CCED9674E}"
+	RootNamespace="vsmbr_test_partition_entry"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -176,19 +176,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tests\vsmbr_test_functions.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\vsmbr_test_getopt.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\vsmbr_test_handle.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tests\vsmbr_test_memory.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\vsmbr_test_partition_entry.c"
 				>
 			</File>
 		</Filter>
@@ -198,31 +190,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\tests\vsmbr_test_functions.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\vsmbr_test_getopt.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\vsmbr_test_libbfio.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tests\vsmbr_test_libcerror.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\vsmbr_test_libclocale.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\vsmbr_test_libcnotify.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\vsmbr_test_libuna.h"
 				>
 			</File>
 			<File

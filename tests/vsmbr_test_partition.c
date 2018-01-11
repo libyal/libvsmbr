@@ -272,10 +272,6 @@ on_error:
 	return( 0 );
 }
 
-#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
-
-#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
-
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )

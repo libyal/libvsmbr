@@ -72,6 +72,14 @@ fixed location on the storage media defined by the storage media.
 Logical block:
 abstract location on the storage media defined by software.
 
+=== 512 versus 4096 bytes per sector
+
+....
+MBR sigature at offset 510 for both 512 and 4k sector size
+
+check offset of first partition start (sector 1) which should be at 4096 instead of 512
+....
+
 == Cylinder Head Sector (CHS) address
 The Cylinder Head Sector (CHS) address is 24 bits of size and consists of:
 
@@ -253,8 +261,7 @@ See section: <<partition_types,Partition types>>
 Value in CHS relative from the start of the harddisk
 | 8 | 4 | | The partition start address +
 Value in LBA (sectors) relative from the start of the harddisk
-| 12 | 4 | | Size +
-Value in sectors
+| 12 | 4 | | Size of the partition in number of sectors
 |===
 
 === [[partition_flags]]Partition flags

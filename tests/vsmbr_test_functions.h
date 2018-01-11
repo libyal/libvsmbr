@@ -1,5 +1,5 @@
 /*
- * The IO handle functions
+ * Functions for testing
  *
  * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,51 +19,37 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBVSMBR_IO_HANDLE_H )
-#define _LIBVSMBR_IO_HANDLE_H
+#if !defined( _VSMBR_TEST_FUNCTIONS_H )
+#define _VSMBR_TEST_FUNCTIONS_H
 
 #include <common.h>
 #include <types.h>
 
-#include "libvsmbr_libbfio.h"
-#include "libvsmbr_libcdata.h"
-#include "libvsmbr_libcerror.h"
+#include "vsmbr_test_libcerror.h"
 
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-typedef struct libvsmbr_io_handle libvsmbr_io_handle_t;
-
-struct libvsmbr_io_handle
-{
-	/* The number of bytes per sector
-	 */
-	size_t bytes_per_sector;
-
-	/* Value to indicate if abort was signalled
-	 */
-	int abort;
-};
-
-int libvsmbr_io_handle_initialize(
-     libvsmbr_io_handle_t **io_handle,
+int vsmbr_test_get_narrow_source(
+     const system_character_t *source,
+     char *narrow_string,
+     size_t narrow_string_size,
      libcerror_error_t **error );
 
-int libvsmbr_io_handle_free(
-     libvsmbr_io_handle_t **io_handle,
+#if defined( HAVE_WIDE_CHARACTER_TYPE )
+
+int vsmbr_test_get_wide_source(
+     const system_character_t *source,
+     wchar_t *wide_string,
+     size_t wide_string_size,
      libcerror_error_t **error );
 
-int libvsmbr_io_handle_read_eprs(
-     libvsmbr_io_handle_t *io_handle,
-     libbfio_handle_t *file_io_handle,
-     libcdata_array_t *sections_array,
-     libcdata_array_t *partitions_array,
-     libcerror_error_t **error );
+#endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _LIBVSMBR_IO_HANDLE_H ) */
+#endif /* !defined( _VSMBR_TEST_FUNCTIONS_H ) */
 

@@ -174,6 +174,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libvsmbr\libvsmbr_boot_record.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_chs_address.c"
 				>
 			</File>
@@ -202,6 +206,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libvsmbr\libvsmbr_partition_entry.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_partition_values.c"
 				>
 			</File>
@@ -223,6 +231,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\..\libvsmbr\libvsmbr_boot_record.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_chs_address.h"
 				>
@@ -280,6 +292,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libvsmbr\libvsmbr_partition_entry.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_partition_values.h"
 				>
 			</File>
@@ -308,7 +324,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libvsmbr\vsmbr_partition.h"
+				RelativePath="..\..\libvsmbr\vsmbr_partition_entry.h"
 				>
 			</File>
 		</Filter>

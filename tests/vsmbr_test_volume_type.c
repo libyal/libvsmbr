@@ -33,6 +33,8 @@
 #include "vsmbr_test_memory.h"
 #include "vsmbr_test_unused.h"
 
+#include "../libvsmbr/libvsmbr_volume_type.h"
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )

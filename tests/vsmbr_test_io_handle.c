@@ -297,8 +297,6 @@ int main(
 	 "libvsmbr_io_handle_free",
 	 vsmbr_test_io_handle_free );
 
-	/* TODO: add tests for libvsmbr_io_handle_read_mbr */
-
 	/* TODO: add tests for libvsmbr_io_handle_read_eprs */
 
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */

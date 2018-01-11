@@ -15,6 +15,7 @@ lib_LTLIBRARIES = libvsmbr.la
 
 libvsmbr_la_SOURCES = \
 	libvsmbr.c \
+	libvsmbr_boot_record.c libvsmbr_boot_record.h \
 	libvsmbr_chs_address.c libvsmbr_chs_address.h \
 	libvsmbr_debug.c libvsmbr_debug.h \
 	libvsmbr_definitions.h \
@@ -29,6 +30,7 @@ libvsmbr_la_SOURCES = \
 	libvsmbr_libcnotify.h \
 	libvsmbr_notify.c libvsmbr_notify.h \
 	libvsmbr_partition.c libvsmbr_partition.h \
+	libvsmbr_partition_entry.c libvsmbr_partition_entry.h \
 	libvsmbr_partition_values.c libvsmbr_partition_values.h \
 	libvsmbr_section_values.c libvsmbr_section_values.h \
 	libvsmbr_support.c libvsmbr_support.h \
@@ -36,7 +38,7 @@ libvsmbr_la_SOURCES = \
 	libvsmbr_unused.h \
 	libvsmbr_volume_type.c libvsmbr_volume_type.h \
 	vsmbr_boot_record.h \
-	vsmbr_partition.h
+	vsmbr_partition_entry.h
 
 libvsmbr_la_LIBADD = \
 	@LIBCERROR_LIBADD@ \

@@ -25,6 +25,7 @@
 #include <types.h>
 #include <wide_string.h>
 
+#include "libvsmbr_boot_record.h"
 #include "libvsmbr_debug.h"
 #include "libvsmbr_definitions.h"
 #include "libvsmbr_handle.h"
@@ -814,7 +815,11 @@ int libvsmbr_handle_open_read(
      libvsmbr_internal_handle_t *internal_handle,
      libcerror_error_t **error )
 {
-	static char *function = "libvsmbr_handle_open_read";
+	libvsmbr_boot_record_t *boot_record           = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	static char *function                         = "libvsmbr_handle_open_read";
+	uint8_t partition_entry_index                 = 0;
+	int entry_index                               = 0;
 
 	if( internal_handle == NULL )
 	{
@@ -827,11 +832,23 @@ int libvsmbr_handle_open_read(
 
 		return( -1 );
 	}
-	if( libvsmbr_io_handle_read_mbr(
-	     internal_handle->io_handle,
+	if( libvsmbr_boot_record_initialize(
+	     &boot_record,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create boot record.",
+		 function );
+
+		goto on_error;
+	}
+	if( libvsmbr_boot_record_read_file_io_handle(
+	     boot_record,
 	     internal_handle->file_io_handle,
-	     internal_handle->partitions_array,
-	     internal_handle->sections_array,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -843,7 +860,85 @@ int libvsmbr_handle_open_read(
 
 		return( -1 );
 	}
+#ifdef TODO
+	for( partition_entry_index = 0;
+	     partition_entry_index < 4;
+	     partition_entry_index++ )
+	{
+		/* Ignore empty partition entries
+		 */
+		if( partition_entry->type == 0 )
+		{
+			continue;
+		}
+		if( libvsmbr_partition_values_initialize(
+		     &partition_values,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+			 "%s: unable to create partition values.",
+			 function );
+
+			goto on_error;
+		}
+		partition_values->type = partition_entry->type;
+
+		partition_values->offset = partition_entry->start_address_lba * io_handle->bytes_per_sector;
+		partition_values->size   = partition_entry->number_of_sectors * io_handle->bytes_per_sector;
+
+/* TODO offset and size sanity check */
+
+		if( libcdata_array_append_entry(
+		     partitions_array,
+		     &entry_index,
+		     (intptr_t *) partition_values,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+			 "%s: unable to append partition entry: %" PRIu8 " to array.",
+			 function,
+			 partition_entry_index );
+
+			goto on_error;
+		}
+		partition_values = NULL;
+	}
+#endif
+	if( libvsmbr_boot_record_free(
+	     &boot_record,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+		 "%s: unable to free boot record.",
+		 function );
+
+		goto on_error;
+	}
 /* TODO */
 	return( 1 );
+
+on_error:
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	if( boot_record != NULL )
+	{
+		libvsmbr_boot_record_free(
+		 &boot_record,
+		 NULL );
+	}
+	return( -1 );
 }
 

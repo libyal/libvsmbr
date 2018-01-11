@@ -1,5 +1,5 @@
 /*
- * The IO handle functions
+ * The partition entry functions
  *
  * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,51 +19,60 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBVSMBR_IO_HANDLE_H )
-#define _LIBVSMBR_IO_HANDLE_H
+#if !defined( _LIBVSMBR_PARTITION_ENTRY_H )
+#define _LIBVSMBR_PARTITION_ENTRY_H
 
 #include <common.h>
 #include <types.h>
 
-#include "libvsmbr_libbfio.h"
-#include "libvsmbr_libcdata.h"
 #include "libvsmbr_libcerror.h"
 
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-typedef struct libvsmbr_io_handle libvsmbr_io_handle_t;
+typedef struct libvsmbr_partition_entry libvsmbr_partition_entry_t;
 
-struct libvsmbr_io_handle
+struct libvsmbr_partition_entry
 {
-	/* The number of bytes per sector
+	/* The index
 	 */
-	size_t bytes_per_sector;
+	uint8_t index;
 
-	/* Value to indicate if abort was signalled
+	/* The flags
 	 */
-	int abort;
+	uint8_t flags;
+
+	/* The type
+	 */
+	uint8_t type;
+
+	/* The start address in LBA
+	 */
+	uint32_t start_address_lba;
+
+	/* The number of sectors
+	 */
+	uint32_t number_of_sectors;
 };
 
-int libvsmbr_io_handle_initialize(
-     libvsmbr_io_handle_t **io_handle,
+int libvsmbr_partition_entry_initialize(
+     libvsmbr_partition_entry_t **partition_entry,
      libcerror_error_t **error );
 
-int libvsmbr_io_handle_free(
-     libvsmbr_io_handle_t **io_handle,
+int libvsmbr_partition_entry_free(
+     libvsmbr_partition_entry_t **partition_entry,
      libcerror_error_t **error );
 
-int libvsmbr_io_handle_read_eprs(
-     libvsmbr_io_handle_t *io_handle,
-     libbfio_handle_t *file_io_handle,
-     libcdata_array_t *sections_array,
-     libcdata_array_t *partitions_array,
+int libvsmbr_partition_entry_read_data(
+     libvsmbr_partition_entry_t *partition_entry,
+     const uint8_t *data,
+     size_t data_size,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _LIBVSMBR_IO_HANDLE_H ) */
+#endif /* !defined( _LIBVSMBR_PARTITION_ENTRY_H ) */
 

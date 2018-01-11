@@ -1,5 +1,5 @@
 /*
- * Master Boot Record (MBR) partition table definitions
+ * The boot record functions
  *
  * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,54 +19,59 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _VSMBR_PARTITION_H )
-#define _VSMBR_PARTITION_H
+#if !defined( _LIBVSMBR_BOOT_RECORD_H )
+#define _LIBVSMBR_BOOT_RECORD_H
 
 #include <common.h>
 #include <types.h>
+
+#include "libvsmbr_libbfio.h"
+#include "libvsmbr_libcerror.h"
 
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-typedef struct vsmbr_partition_entry vsmbr_partition_entry_t;
+typedef struct libvsmbr_boot_record libvsmbr_boot_record_t;
 
-struct vsmbr_partition_entry
+struct libvsmbr_boot_record
 {
-	/* Flags
-	 * Consists of 1 byte
-	 */
-	uint8_t flags;
-
-	/* Partition start address in CHS
-	 * Consists of 3 bytes
-	 */
-	uint8_t start_address_chs[ 3 ];
-
-	/* Partition type
-	 * Consists of 1 byte
+	/* The type
 	 */
 	uint8_t type;
 
-	/* Partition end address in CHS
-	 * Consists of 3 bytes
+	/* The offset
 	 */
-	uint8_t end_address_chs[ 3 ];
+	off64_t offset;
 
-	/* Partition start address in LBA
-	 * Consists of 4 bytes
+	/* The size
 	 */
-	uint8_t start_address_lba[ 4 ];
-
-	/* Partition size
-	 * Consists of 4 bytes
-	 */
-	uint8_t size[ 4 ];
+	size64_t size;
 };
+
+int libvsmbr_boot_record_initialize(
+     libvsmbr_boot_record_t **boot_record,
+     libcerror_error_t **error );
+
+int libvsmbr_boot_record_free(
+     libvsmbr_boot_record_t **boot_record,
+     libcerror_error_t **error );
+
+int libvsmbr_boot_record_read_file_io_handle(
+     libvsmbr_boot_record_t *boot_record,
+     libbfio_handle_t *file_io_handle,
+     off64_t file_offset,
+     libcerror_error_t **error );
+
+int libvsmbr_boot_record_read_data(
+     libvsmbr_boot_record_t *boot_record,
+     const uint8_t *data,
+     size_t data_size,
+     libcerror_error_t **error );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _VSMBR_PARTITION_H ) */
+#endif /* !defined( _LIBVSMBR_BOOT_RECORD_H ) */
 

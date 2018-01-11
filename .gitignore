@@ -125,12 +125,14 @@ stamp-h[1-9]
 /tests/*.exe
 /tests/input
 /tests/tmp*
+/tests/vsmbr_test_boot_record
 /tests/vsmbr_test_chs_address
 /tests/vsmbr_test_error
 /tests/vsmbr_test_handle
 /tests/vsmbr_test_io_handle
 /tests/vsmbr_test_notify
 /tests/vsmbr_test_partition
+/tests/vsmbr_test_partition_entry
 /tests/vsmbr_test_partition_values
 /tests/vsmbr_test_section_values
 /tests/vsmbr_test_support

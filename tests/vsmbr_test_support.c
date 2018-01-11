@@ -22,16 +22,30 @@
 #include <common.h>
 #include <file_stream.h>
 #include <narrow_string.h>
+#include <system_string.h>
 #include <types.h>
+#include <wide_string.h>
 
 #if defined( HAVE_STDLIB_H ) || defined( WINAPI )
 #include <stdlib.h>
 #endif
 
+#include "vsmbr_test_functions.h"
+#include "vsmbr_test_getopt.h"
+#include "vsmbr_test_libbfio.h"
 #include "vsmbr_test_libcerror.h"
 #include "vsmbr_test_libvsmbr.h"
 #include "vsmbr_test_macros.h"
 #include "vsmbr_test_unused.h"
+
+#if !defined( LIBVSMBR_HAVE_BFIO )
+
+LIBVSMBR_EXTERN \
+int libvsmbr_check_volume_signature_file_io_handle(
+     libbfio_handle_t *file_io_handle,
+     libcerror_error_t **error );
+
+#endif /* !defined( LIBVSMBR_HAVE_BFIO ) */
 
 /* Tests the libvsmbr_get_version function
  * Returns 1 if successful or 0 if not
@@ -53,6 +67,27 @@ int vsmbr_test_get_version(
 	 "result",
 	 result,
 	 0 );
+
+	return( 1 );
+
+on_error:
+	return( 0 );
+}
+
+/* Tests the libvsmbr_get_access_flags_read function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_get_access_flags_read(
+     void )
+{
+	int access_flags = 0;
+
+	access_flags = libvsmbr_get_access_flags_read();
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "access_flags",
+	 access_flags,
+	 LIBVSMBR_ACCESS_FLAG_READ );
 
 	return( 1 );
 
@@ -163,24 +198,489 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_check_volume_signature function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_check_volume_signature(
+     const system_character_t *source )
+{
+	char narrow_source[ 256 ];
+
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = vsmbr_test_get_narrow_source(
+	          source,
+	          narrow_source,
+	          256,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test check volume signature
+	 */
+	result = libvsmbr_check_volume_signature(
+	          narrow_source,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libvsmbr_check_volume_signature(
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+#if defined( HAVE_WIDE_CHARACTER_TYPE )
+
+/* Tests the libvsmbr_check_volume_signature_wide function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_check_volume_signature_wide(
+     const system_character_t *source )
+{
+	wchar_t wide_source[ 256 ];
+
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Initialize test
+	 */
+	result = vsmbr_test_get_wide_source(
+	          source,
+	          wide_source,
+	          256,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test check volume signature
+	 */
+	result = libvsmbr_check_volume_signature_wide(
+	          wide_source,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libvsmbr_check_volume_signature_wide(
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+#endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
+
+/* Tests the libvsmbr_check_volume_signature_file_io_handle function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_check_volume_signature_file_io_handle(
+     const system_character_t *source )
+{
+	uint8_t empty_block[ 8192 ];
+
+	libbfio_handle_t *file_io_handle = NULL;
+	libcerror_error_t *error         = NULL;
+	void *memset_result              = NULL;
+	size_t source_length             = 0;
+	int result                       = 0;
+
+	/* Initialize test
+	 */
+	result = libbfio_file_initialize(
+	          &file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "file_io_handle",
+	 file_io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	source_length = system_string_length(
+	                 source );
+
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
+	result = libbfio_file_set_name_wide(
+	          file_io_handle,
+	          source,
+	          source_length,
+	          &error );
+#else
+	result = libbfio_file_set_name(
+	          file_io_handle,
+	          source,
+	          source_length,
+	          &error );
+#endif
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libbfio_handle_open(
+	          file_io_handle,
+	          LIBBFIO_OPEN_READ,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test check volume signature
+	 */
+	result = libvsmbr_check_volume_signature_file_io_handle(
+	          file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libvsmbr_check_volume_signature_file_io_handle(
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libbfio_handle_close(
+	          file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libbfio_handle_free(
+	          &file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "file_io_handle",
+	 file_io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Initialize test
+	 */
+	memset_result = memory_set(
+	                 empty_block,
+	                 0,
+	                 sizeof( uint8_t ) * 8192 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "memset_result",
+	 memset_result );
+
+	result = libbfio_memory_range_initialize(
+	          &file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "file_io_handle",
+	 file_io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libbfio_memory_range_set(
+	          file_io_handle,
+	          empty_block,
+	          sizeof( uint8_t ) * 8192,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libbfio_handle_open(
+	          file_io_handle,
+	          LIBBFIO_OPEN_READ,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test check volume signature
+	 */
+	result = libvsmbr_check_volume_signature_file_io_handle(
+	          file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Clean up
+	 */
+	result = libbfio_handle_close(
+	          file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libbfio_handle_free(
+	          &file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "file_io_handle",
+	 file_io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* TODO test volume too small */
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( file_io_handle != NULL )
+	{
+		libbfio_handle_free(
+		 &file_io_handle,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 int wmain(
-     int argc VSMBR_TEST_ATTRIBUTE_UNUSED,
-     wchar_t * const argv[] VSMBR_TEST_ATTRIBUTE_UNUSED )
+     int argc,
+     wchar_t * const argv[] )
 #else
 int main(
-     int argc VSMBR_TEST_ATTRIBUTE_UNUSED,
-     char * const argv[] VSMBR_TEST_ATTRIBUTE_UNUSED )
+     int argc,
+     char * const argv[] )
 #endif
 {
-	VSMBR_TEST_UNREFERENCED_PARAMETER( argc )
-	VSMBR_TEST_UNREFERENCED_PARAMETER( argv )
+	system_character_t *source = NULL;
+	system_integer_t option    = 0;
 
+	while( ( option = vsmbr_test_getopt(
+	                   argc,
+	                   argv,
+	                   _SYSTEM_STRING( "" ) ) ) != (system_integer_t) -1 )
+	{
+		switch( option )
+		{
+			case (system_integer_t) '?':
+			default:
+				fprintf(
+				 stderr,
+				 "Invalid argument: %" PRIs_SYSTEM ".\n",
+				 argv[ optind - 1 ] );
+
+				return( EXIT_FAILURE );
+		}
+	}
+	if( optind < argc )
+	{
+		source = argv[ optind ];
+	}
 	VSMBR_TEST_RUN(
 	 "libvsmbr_get_version",
 	 vsmbr_test_get_version );
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_get_access_flags_read",
+	 vsmbr_test_get_access_flags_read );
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_get_codepage",
+	 vsmbr_test_get_codepage );
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_set_codepage",
+	 vsmbr_test_set_codepage );
+
+#if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
+	if( source != NULL )
+	{
+		VSMBR_TEST_RUN_WITH_ARGS(
+		 "libvsmbr_check_volume_signature",
+		 vsmbr_test_check_volume_signature,
+		 source );
+
+#if defined( HAVE_WIDE_CHARACTER_TYPE )
+
+		VSMBR_TEST_RUN_WITH_ARGS(
+		 "libvsmbr_check_volume_signature_wide",
+		 vsmbr_test_check_volume_signature_wide,
+		 source );
+
+#endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
+
+		VSMBR_TEST_RUN_WITH_ARGS(
+		 "libvsmbr_check_volume_signature_file_io_handle",
+		 vsmbr_test_check_volume_signature_file_io_handle,
+		 source );
+	}
+#endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
 
 	return( EXIT_SUCCESS );
 
