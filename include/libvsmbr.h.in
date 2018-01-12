@@ -272,6 +272,23 @@ int libvsmbr_handle_close(
      libvsmbr_handle_t *handle,
      libvsmbr_error_t **error );
 
+/* Retrieves the number of partitions
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_handle_get_number_of_partitions(
+     libvsmbr_handle_t *handle,
+     int *number_of_partitions,
+     libvsmbr_error_t **error );
+
+/* Retrieves a specific partition
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_handle_get_partition_by_index(
+     libvsmbr_handle_t *handle,
+     int partition_index,
+     libvsmbr_partition_t **partition,
+     libvsmbr_error_t **error );
+
 /* -------------------------------------------------------------------------
  * Partition functions
  * ------------------------------------------------------------------------- */

@@ -28,6 +28,7 @@
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcdata.h"
 #include "libvsmbr_libcerror.h"
+#include "libvsmbr_partition_entry.h"
 
 #if defined( __cplusplus )
 extern "C" {
@@ -64,6 +65,17 @@ int libvsmbr_boot_record_read_data(
      libvsmbr_boot_record_t *boot_record,
      const uint8_t *data,
      size_t data_size,
+     libcerror_error_t **error );
+
+int libvsmbr_boot_record_get_number_of_partition_entries(
+     libvsmbr_boot_record_t *boot_record,
+     int *number_of_partition_entries,
+     libcerror_error_t **error );
+
+int libvsmbr_boot_record_get_partition_entry_by_index(
+     libvsmbr_boot_record_t *boot_record,
+     int partition_entry_index,
+     libvsmbr_partition_entry_t **partition_entry,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

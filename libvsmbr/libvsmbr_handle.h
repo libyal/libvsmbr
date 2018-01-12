@@ -1,5 +1,5 @@
 /*
- * The internal handle functions
+ * The handle functions
  *
  * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,12 +19,13 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBVSMBR_INTERNAL_HANDLE_H )
-#define _LIBVSMBR_INTERNAL_HANDLE_H
+#if !defined( _LIBVSMBR_HANDLE_H )
+#define _LIBVSMBR_HANDLE_H
 
 #include <common.h>
 #include <types.h>
 
+#include "libvsmbr_boot_record.h"
 #include "libvsmbr_extern.h"
 #include "libvsmbr_io_handle.h"
 #include "libvsmbr_libbfio.h"
@@ -42,11 +43,7 @@ struct libvsmbr_internal_handle
 {
 	/* The partitions array
 	 */
-	libcdata_array_t *partitions_array;
-
-	/* The sections array
-	 */
-	libcdata_array_t *sections_array;
+	libcdata_array_t *partitions;
 
 	/* The IO handle
 	 */
@@ -115,9 +112,29 @@ int libvsmbr_handle_open_read(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 
+int libvsmbr_handle_read_partition_entries(
+     libvsmbr_internal_handle_t *internal_handle,
+     libbfio_handle_t *file_io_handle,
+     libvsmbr_boot_record_t *boot_record,
+     uint8_t *first_partition_entry,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_handle_get_number_of_partitions(
+     libvsmbr_handle_t *handle,
+     int *number_of_partitions,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_handle_get_partition_by_index(
+     libvsmbr_handle_t *handle,
+     int partition_index,
+     libvsmbr_partition_t **partition,
+     libcerror_error_t **error );
+
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _LIBVSMBR_INTERNAL_HANDLE_H ) */
+#endif /* !defined( _LIBVSMBR_HANDLE_H ) */
 

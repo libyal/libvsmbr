@@ -58,14 +58,10 @@ void usage_fprint(
 	fprintf( stream, "Use vsmbrinfo to determine information about a Master\n"
 	                 "Record (MBR) volume system.\n\n" );
 
-	fprintf( stream, "Usage: vsmbrinfo [ -c codepage ] [ -hvV ] source\n\n" );
+	fprintf( stream, "Usage: vsmbrinfo [ -hvV ] source\n\n" );
 
 	fprintf( stream, "\tsource: the source file\n\n" );
 
-	fprintf( stream, "\t-c:     codepage of ASCII strings, options: ascii, windows-874,\n"
-	                 "\t        windows-932, windows-936, windows-1250, windows-1251,\n"
-	                 "\t        windows-1252 (default), windows-1253, windows-1254,\n"
-	                 "\t        windows-1255, windows-1256, windows-1257 or windows-1258\n" );
 	fprintf( stream, "\t-h:     shows this help\n" );
 	fprintf( stream, "\t-v:     verbose output to stderr\n" );
 	fprintf( stream, "\t-V:     print version\n" );
@@ -123,13 +119,11 @@ int wmain( int argc, wchar_t * const argv[] )
 int main( int argc, char * const argv[] )
 #endif
 {
-	libcerror_error_t *error                  = NULL;
-	system_character_t *option_ascii_codepage = NULL;
-	system_character_t *source                = NULL;
-	char *program                             = "vsmbrinfo";
-	system_integer_t option                   = 0;
-	int result                                = 0;
-	int verbose                               = 0;
+	libcerror_error_t *error   = NULL;
+	system_character_t *source = NULL;
+	char *program              = "vsmbrinfo";
+	system_integer_t option    = 0;
+	int verbose                = 0;
 
 	libcnotify_stream_set(
 	 stderr,
@@ -164,7 +158,7 @@ int main( int argc, char * const argv[] )
 	while( ( option = vsmbrtools_getopt(
 	                   argc,
 	                   argv,
-	                   _SYSTEM_STRING( "c:hvV" ) ) ) != (system_integer_t) -1 )
+	                   _SYSTEM_STRING( "hvV" ) ) ) != (system_integer_t) -1 )
 	{
 		switch( option )
 		{
@@ -179,11 +173,6 @@ int main( int argc, char * const argv[] )
 				 stdout );
 
 				return( EXIT_FAILURE );
-
-			case (system_integer_t) 'c':
-				option_ascii_codepage = optarg;
-
-				break;
 
 			case (system_integer_t) 'h':
 				usage_fprint(
@@ -234,28 +223,6 @@ int main( int argc, char * const argv[] )
 
 		goto on_error;
 	}
-	if( option_ascii_codepage != NULL )
-	{
-		result = info_handle_set_ascii_codepage(
-		          vsmbrinfo_info_handle,
-		          option_ascii_codepage,
-		          &error );
-
-		if( result == -1 )
-		{
-			fprintf(
-			 stderr,
-			 "Unable to set ASCII codepage in info handle.\n" );
-
-			goto on_error;
-		}
-		else if( result == 0 )
-		{
-			fprintf(
-			 stderr,
-			 "Unsupported ASCII codepage defaulting to: windows-1252.\n" );
-		}
-	}
 	if( info_handle_open_input(
 	     vsmbrinfo_info_handle,
 	     source,
@@ -268,10 +235,6 @@ int main( int argc, char * const argv[] )
 
 		goto on_error;
 	}
-	fprintf(
-	 vsmbrinfo_info_handle->notify_stream,
-	 "Master Boot Record (MBR) information:\n" );
-
 	if( info_handle_partitions_fprint(
 	     vsmbrinfo_info_handle,
 	     &error ) != 1 )

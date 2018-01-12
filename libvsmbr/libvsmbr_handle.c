@@ -1,5 +1,5 @@
 /*
- * The internal handle functions
+ * The handle functions
  *
  * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -116,7 +116,7 @@ int libvsmbr_handle_initialize(
 		goto on_error;
 	}
 	if( libcdata_array_initialize(
-	     &( internal_handle->partitions_array ),
+	     &( internal_handle->partitions ),
 	     0,
 	     error ) != 1 )
 	{
@@ -129,20 +129,6 @@ int libvsmbr_handle_initialize(
 
 		goto on_error;
 	}
-	if( libcdata_array_initialize(
-	     &( internal_handle->sections_array ),
-	     0,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create sections array.",
-		 function );
-
-		goto on_error;
-	}
 	*handle = (libvsmbr_handle_t *) internal_handle;
 
 	return( 1 );
@@ -150,11 +136,10 @@ int libvsmbr_handle_initialize(
 on_error:
 	if( internal_handle != NULL )
 	{
-		if( internal_handle->partitions_array != NULL )
+		if( internal_handle->io_handle != NULL )
 		{
-			libcdata_array_free(
-			 &( internal_handle->partitions_array ),
-			 (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_partition_values_free,
+			libvsmbr_io_handle_free(
+			 &( internal_handle->io_handle ),
 			 NULL );
 		}
 		memory_free(
@@ -208,7 +193,7 @@ int libvsmbr_handle_free(
 		*handle = NULL;
 
 		if( libcdata_array_free(
-		     &( internal_handle->partitions_array ),
+		     &( internal_handle->partitions ),
 		     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_partition_values_free,
 		     error ) != 1 )
 		{
@@ -217,20 +202,6 @@ int libvsmbr_handle_free(
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
 			 "%s: unable to free the partitions array.",
-			 function );
-
-			result = -1;
-		}
-		if( libcdata_array_free(
-		     &( internal_handle->sections_array ),
-		     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_section_values_free,
-		     error ) != 1 )
-		{
-			libcerror_error_set(
-			 error,
-			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-			 "%s: unable to free the sections array.",
 			 function );
 
 			result = -1;
@@ -792,8 +763,21 @@ int libvsmbr_handle_close(
 	internal_handle->file_io_handle                    = NULL;
 	internal_handle->file_io_handle_created_in_library = 0;
 
+	if( libvsmbr_io_handle_clear(
+	     internal_handle->io_handle,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+		 "%s: unable to clear the IO handle.",
+		 function );
+
+		result = -1;
+	}
 	if( libcdata_array_empty(
-	     internal_handle->partitions_array,
+	     internal_handle->partitions,
 	     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_partition_values_free,
 	     error ) != 1 )
 	{
@@ -802,20 +786,6 @@ int libvsmbr_handle_close(
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_RESIZE_FAILED,
 		 "%s: unable to empty the partitions array.",
-		 function );
-
-		result = -1;
-	}
-	if( libcdata_array_empty(
-	     internal_handle->sections_array,
-	     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_section_values_free,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_RESIZE_FAILED,
-		 "%s: unable to empty the sections array.",
 		 function );
 
 		result = -1;
@@ -831,16 +801,9 @@ int libvsmbr_handle_open_read(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error )
 {
-	libvsmbr_boot_record_t *extended_partition_record = NULL;
-	libvsmbr_boot_record_t *master_boot_record        = NULL;
-	libvsmbr_partition_entry_t *partition_entry       = NULL;
-	libvsmbr_partition_values_t *partition_values     = NULL;
-	static char *function                             = "libvsmbr_handle_open_read";
-	off64_t extended_partition_record_offset          = 0;
-	uint8_t first_partition_entry                     = 1;
-	uint8_t partition_entry_index                     = 0;
-	int entry_index                                   = 0;
-	int result                                        = 0;
+	libvsmbr_boot_record_t *master_boot_record = NULL;
+	static char *function                      = "libvsmbr_handle_open_read";
+	uint8_t first_partition_entry              = 1;
 
 	if( internal_handle == NULL )
 	{
@@ -887,32 +850,105 @@ int libvsmbr_handle_open_read(
 		 "%s: unable to read master boot record.",
 		 function );
 
+		goto on_error;
+	}
+	if( libvsmbr_handle_read_partition_entries(
+	     internal_handle,
+	     file_io_handle,
+	     master_boot_record,
+	     &first_partition_entry,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read partition entries.",
+		 function );
+
+		goto on_error;
+	}
+	if( libvsmbr_boot_record_free(
+	     &master_boot_record,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+		 "%s: unable to free master boot record.",
+		 function );
+
+		goto on_error;
+	}
+	return( 1 );
+
+on_error:
+	if( master_boot_record != NULL )
+	{
+		libvsmbr_boot_record_free(
+		 &master_boot_record,
+		 NULL );
+	}
+	return( -1 );
+}
+
+/* Reads partition entries in a master boot record or extended partition record
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_handle_read_partition_entries(
+     libvsmbr_internal_handle_t *internal_handle,
+     libbfio_handle_t *file_io_handle,
+     libvsmbr_boot_record_t *boot_record,
+     uint8_t *first_partition_entry,
+     libcerror_error_t **error )
+{
+	libvsmbr_boot_record_t *extended_partition_record = NULL;
+	libvsmbr_partition_entry_t *partition_entry       = NULL;
+	libvsmbr_partition_values_t *partition_values     = NULL;
+	static char *function                             = "libvsmbr_handle_read_partition_entries";
+	off64_t extended_partition_record_offset          = 0;
+	int entry_index                                   = 0;
+	int partition_entry_index                         = 0;
+	int result                                        = 0;
+
+	if( internal_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid internal handle.",
+		 function );
+
 		return( -1 );
 	}
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( libcnotify_verbose != 0 )
+	if( first_partition_entry == NULL )
 	{
-		libcnotify_printf(
-		 "%s: reading Extended Partition Records (EPRs).\n",
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid first partition entry.",
 		 function );
+
+		return( -1 );
 	}
-#endif
 	for( partition_entry_index = 0;
 	     partition_entry_index < 4;
 	     partition_entry_index++ )
 	{
-/* TODO move get partition entry from array into boot record function */
-		if( libcdata_array_get_entry_by_index(
-		     master_boot_record->partition_entries,
-		     (int) partition_entry_index,
-		     (intptr_t **) &partition_entry,
+		if( libvsmbr_boot_record_get_partition_entry_by_index(
+		     boot_record,
+		     partition_entry_index,
+		     &partition_entry,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve partition entry: %" PRIu8 ".",
+			 "%s: unable to retrieve partition entry: %d.",
 			 function,
 			 partition_entry_index );
 
@@ -938,8 +974,29 @@ int libvsmbr_handle_open_read(
 		}
 		if( partition_entry->type == 0x05 )
 		{
+			if( extended_partition_record != NULL )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
+				 "%s: more than 1 extended partition entry per table is not supported.",
+				 function );
+
+				goto on_error;
+			}
 			extended_partition_record_offset = partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector;
 
+#if defined( HAVE_DEBUG_OUTPUT )
+			if( libcnotify_verbose != 0 )
+			{
+				libcnotify_printf(
+				 "%s: reading Extended Partition Record (EPR) at offset: %" PRIi64 " (0x%08" PRIx64 ").\n",
+				 function,
+				 extended_partition_record_offset,
+				 extended_partition_record_offset );
+			}
+#endif
 			if( libvsmbr_boot_record_initialize(
 			     &extended_partition_record,
 			     error ) != 1 )
@@ -960,10 +1017,12 @@ int libvsmbr_handle_open_read(
 			          error );
 
 			if( ( result != 1 )
-			 && ( first_partition_entry == 1 )
+			 && ( *first_partition_entry == 1 )
 			 && ( internal_handle->io_handle->bytes_per_sector == 512 ) )
 			{
-/* TODO free error */
+				libcerror_error_free(
+				 error );
+
 				internal_handle->io_handle->bytes_per_sector = 4096;
 
 				extended_partition_record_offset = partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector;
@@ -985,24 +1044,10 @@ int libvsmbr_handle_open_read(
 
 				goto on_error;
 			}
-			if( libvsmbr_boot_record_free(
-			     &extended_partition_record,
-			     error ) != 1 )
-			{
-				libcerror_error_set(
-				 error,
-				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free extended partition record.",
-				 function );
-
-				goto on_error;
-			}
 		}
 		else
 		{
 /* TODO do bytes per sector check for known volume types and GPT */
-#ifdef TODO
 			if( libvsmbr_partition_values_initialize(
 			     &partition_values,
 			     error ) != 1 )
@@ -1018,13 +1063,13 @@ int libvsmbr_handle_open_read(
 			}
 			partition_values->type = partition_entry->type;
 
-			partition_values->offset = partition_entry->start_address_lba * io_handle->bytes_per_sector;
-			partition_values->size   = partition_entry->number_of_sectors * io_handle->bytes_per_sector;
+			partition_values->offset = partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector;
+			partition_values->size   = partition_entry->number_of_sectors * internal_handle->io_handle->bytes_per_sector;
 
 /* TODO offset and size sanity check */
 
 			if( libcdata_array_append_entry(
-			     partitions_array,
+			     internal_handle->partitions,
 			     &entry_index,
 			     (intptr_t *) partition_values,
 			     error ) != 1 )
@@ -1033,29 +1078,46 @@ int libvsmbr_handle_open_read(
 				 error,
 				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 				 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
-				 "%s: unable to append partition entry: %" PRIu8 " to array.",
-				 function,
-				 partition_entry_index );
+				 "%s: unable to append partition to array.",
+				 function );
 
 				goto on_error;
 			}
 			partition_values = NULL;
-#endif /* TODO */
 		}
-		first_partition_entry = 0;
+		*first_partition_entry = 0;
 	}
-	if( libvsmbr_boot_record_free(
-	     &master_boot_record,
-	     error ) != 1 )
+	if( extended_partition_record != NULL )
 	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-		 "%s: unable to free master boot record.",
-		 function );
+		if( libvsmbr_handle_read_partition_entries(
+		     internal_handle,
+		     file_io_handle,
+		     extended_partition_record,
+		     first_partition_entry,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_IO,
+			 LIBCERROR_IO_ERROR_READ_FAILED,
+			 "%s: unable to read partition entries.",
+			 function );
 
-		goto on_error;
+			goto on_error;
+		}
+		if( libvsmbr_boot_record_free(
+		     &extended_partition_record,
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free extended partition record.",
+			 function );
+
+			goto on_error;
+		}
 	}
 	return( 1 );
 
@@ -1072,12 +1134,91 @@ on_error:
 		 &extended_partition_record,
 		 NULL );
 	}
-	if( master_boot_record != NULL )
-	{
-		libvsmbr_boot_record_free(
-		 &master_boot_record,
-		 NULL );
-	}
 	return( -1 );
+}
+
+/* Retrieves the number of partitions
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_handle_get_number_of_partitions(
+     libvsmbr_handle_t *handle,
+     int *number_of_partitions,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_handle_t *internal_handle = NULL;
+	static char *function                       = "libvsmbr_handle_get_number_of_partitions";
+
+	if( handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid handle.",
+		 function );
+
+		return( -1 );
+	}
+	internal_handle = (libvsmbr_internal_handle_t *) handle;
+
+	if( libcdata_array_get_number_of_entries(
+	     internal_handle->partitions,
+	     number_of_partitions,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve number of partitions from array.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves a specific partition
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_handle_get_partition_by_index(
+     libvsmbr_handle_t *handle,
+     int partition_index,
+     libvsmbr_partition_t **partition,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_handle_t *internal_handle = NULL;
+	static char *function                       = "libvsmbr_handle_get_partition_by_index";
+
+	if( handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid handle.",
+		 function );
+
+		return( -1 );
+	}
+	internal_handle = (libvsmbr_internal_handle_t *) handle;
+
+	if( libcdata_array_get_entry_by_index(
+	     internal_handle->partitions,
+	     partition_index,
+	     (intptr_t **) partition,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve partition: %d from array.",
+		 function,
+		 partition_index );
+
+		return( -1 );
+	}
+	return( 1 );
 }
 

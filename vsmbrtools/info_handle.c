@@ -107,8 +107,7 @@ int info_handle_initialize(
 
 		goto on_error;
 	}
-	( *info_handle )->ascii_codepage = LIBVSMBR_CODEPAGE_WINDOWS_1252;
-	( *info_handle )->notify_stream  = INFO_HANDLE_NOTIFY_STREAM;
+	( *info_handle )->notify_stream = INFO_HANDLE_NOTIFY_STREAM;
 
 	return( 1 );
 
@@ -209,65 +208,6 @@ int info_handle_signal_abort(
 		}
 	}
 	return( 1 );
-}
-
-/* Sets the ascii codepage
- * Returns 1 if successful or -1 on error
- */
-int info_handle_set_ascii_codepage(
-     info_handle_t *info_handle,
-     const system_character_t *string,
-     libcerror_error_t **error )
-{
-	static char *function  = "info_handle_set_ascii_codepage";
-	size_t string_length   = 0;
-	uint32_t feature_flags = 0;
-	int result             = 0;
-
-	if( info_handle == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid info handle.",
-		 function );
-
-		return( -1 );
-	}
-	feature_flags = LIBCLOCALE_CODEPAGE_FEATURE_FLAG_HAVE_KOI8
-	              | LIBCLOCALE_CODEPAGE_FEATURE_FLAG_HAVE_WINDOWS;
-
-	string_length = system_string_length(
-	                 string );
-
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	result = libclocale_codepage_copy_from_string_wide(
-	          &( info_handle->ascii_codepage ),
-	          string,
-	          string_length,
-	          feature_flags,
-	          error );
-#else
-	result = libclocale_codepage_copy_from_string(
-	          &( info_handle->ascii_codepage ),
-	          string,
-	          string_length,
-	          feature_flags,
-	          error );
-#endif
-	if( result == -1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to determine ASCII codepage.",
-		 function );
-
-		return( -1 );
-	}
-	return( result );
 }
 
 /* Opens the input
@@ -376,8 +316,7 @@ int info_handle_partitions_fprint(
 
 		return( -1 );
 	}
-#ifdef TODO
-	if( libvsmbr_handle_get_number_of_parititions(
+	if( libvsmbr_handle_get_number_of_partitions(
 	     info_handle->input_handle,
 	     &number_of_partitions,
 	     error ) != 1 )
@@ -391,6 +330,10 @@ int info_handle_partitions_fprint(
 
 		goto on_error;
 	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "Master Boot Record (MBR) information:\n" );
+
 	fprintf(
 	 info_handle->notify_stream,
 	 "\tNumber of partitions\t: %d\n",
@@ -411,7 +354,7 @@ int info_handle_partitions_fprint(
 			 "Partition: %d\n",
 			 partition_index );
 
-			if( libvsmbr_handle_get_partition(
+			if( libvsmbr_handle_get_partition_by_index(
 			     info_handle->input_handle,
 			     partition_index,
 			     &partition,
@@ -427,8 +370,6 @@ int info_handle_partitions_fprint(
 
 				goto on_error;
 			}
-/* TODO */
-
 			if( libvsmbr_partition_free(
 			     &partition,
 			     error ) != 1 )
@@ -447,7 +388,10 @@ int info_handle_partitions_fprint(
 			 "\n" );
 		}
 	}
-#endif
+	fprintf(
+	 info_handle->notify_stream,
+	 "\n" );
+
 	return( 1 );
 
 on_error:

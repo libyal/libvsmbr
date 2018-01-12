@@ -207,7 +207,7 @@ int libvsmbr_boot_record_read_file_io_handle(
 #endif
 	if( libbfio_handle_seek_offset(
 	     file_io_handle,
-	     0,
+	     file_offset,
 	     SEEK_SET,
 	     error ) == -1 )
 	{
@@ -339,7 +339,7 @@ int libvsmbr_boot_record_read_data(
 		libcnotify_print_data(
 		 data,
 		 sizeof( vsmbr_boot_record_classical_t ),
-		 0 );
+		 LIBCNOTIFY_PRINT_DATA_FLAG_GROUP_DATA );
 	}
 #endif
 	if( ( ( (vsmbr_boot_record_classical_t *) data )->boot_signature[ 0 ] != 0x55 )
@@ -457,5 +457,84 @@ on_error:
 	 NULL );
 
 	return( -1 );
+}
+
+/* Retrieves the number of partition entries
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_boot_record_get_number_of_partition_entries(
+     libvsmbr_boot_record_t *boot_record,
+     int *number_of_partition_entries,
+     libcerror_error_t **error )
+{
+	static char *function = "libvsmbr_boot_record_get_number_of_partition_entries";
+
+	if( boot_record == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid boot record.",
+		 function );
+
+		return( -1 );
+	}
+	if( libcdata_array_get_number_of_entries(
+	     boot_record->partition_entries,
+	     number_of_partition_entries,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve number of partition entries from array.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves a specific partition entry
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_boot_record_get_partition_entry_by_index(
+     libvsmbr_boot_record_t *boot_record,
+     int partition_entry_index,
+     libvsmbr_partition_entry_t **partition_entry,
+     libcerror_error_t **error )
+{
+	static char *function = "libvsmbr_boot_record_get_partition_entry_by_index";
+
+	if( boot_record == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid boot record.",
+		 function );
+
+		return( -1 );
+	}
+	if( libcdata_array_get_entry_by_index(
+	     boot_record->partition_entries,
+	     partition_entry_index,
+	     (intptr_t **) partition_entry,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve partition entry: %d from array.",
+		 function,
+		 partition_entry_index );
+
+		return( -1 );
+	}
+	return( 1 );
 }
 

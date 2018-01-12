@@ -41,10 +41,6 @@ struct info_handle
 	 */
 	libvsmbr_handle_t *input_handle;
 
-	/* The ascii codepage
-	 */
-	int ascii_codepage;
-
 	/* The notification output stream
 	 */
 	FILE *notify_stream;
@@ -64,11 +60,6 @@ int info_handle_free(
 
 int info_handle_signal_abort(
      info_handle_t *info_handle,
-     libcerror_error_t **error );
-
-int info_handle_set_ascii_codepage(
-     info_handle_t *info_handle,
-     const system_character_t *string,
      libcerror_error_t **error );
 
 int info_handle_open_input(
