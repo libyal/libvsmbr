@@ -33,6 +33,7 @@
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcnotify.h"
+#include "libvsmbr_partition.h"
 #include "libvsmbr_partition_entry.h"
 #include "libvsmbr_partition_values.h"
 #include "libvsmbr_section_values.h"
@@ -855,6 +856,7 @@ int libvsmbr_handle_open_read(
 	if( libvsmbr_handle_read_partition_entries(
 	     internal_handle,
 	     file_io_handle,
+	     0,
 	     master_boot_record,
 	     &first_partition_entry,
 	     error ) != 1 )
@@ -899,6 +901,7 @@ on_error:
 int libvsmbr_handle_read_partition_entries(
      libvsmbr_internal_handle_t *internal_handle,
      libbfio_handle_t *file_io_handle,
+     off64_t file_offset,
      libvsmbr_boot_record_t *boot_record,
      uint8_t *first_partition_entry,
      libcerror_error_t **error )
@@ -985,7 +988,7 @@ int libvsmbr_handle_read_partition_entries(
 
 				goto on_error;
 			}
-			extended_partition_record_offset = partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector;
+			extended_partition_record_offset = file_offset + ( partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 			if( libcnotify_verbose != 0 )
@@ -1063,7 +1066,7 @@ int libvsmbr_handle_read_partition_entries(
 			}
 			partition_values->type = partition_entry->type;
 
-			partition_values->offset = partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector;
+			partition_values->offset = file_offset + ( partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector );
 			partition_values->size   = partition_entry->number_of_sectors * internal_handle->io_handle->bytes_per_sector;
 
 /* TODO offset and size sanity check */
@@ -1092,6 +1095,7 @@ int libvsmbr_handle_read_partition_entries(
 		if( libvsmbr_handle_read_partition_entries(
 		     internal_handle,
 		     file_io_handle,
+		     extended_partition_record_offset,
 		     extended_partition_record,
 		     first_partition_entry,
 		     error ) != 1 )
@@ -1135,6 +1139,57 @@ on_error:
 		 NULL );
 	}
 	return( -1 );
+}
+
+/* Retrieves the number of bytes per sector
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_handle_get_bytes_per_sector(
+     libvsmbr_handle_t *handle,
+     uint32_t *bytes_per_sector,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_handle_t *internal_handle = NULL;
+	static char *function                       = "libvsmbr_handle_get_bytes_per_sector";
+
+	if( handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid handle.",
+		 function );
+
+		return( -1 );
+	}
+	internal_handle = (libvsmbr_internal_handle_t *) handle;
+
+	if( internal_handle->io_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
+		 "%s: invalid handle - missing IO handle.",
+		 function );
+
+		return( -1 );
+	}
+	if( bytes_per_sector == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid bytes per sector.",
+		 function );
+
+		return( -1 );
+	}
+	*bytes_per_sector = internal_handle->io_handle->bytes_per_sector;
+
+	return( 1 );
 }
 
 /* Retrieves the number of partitions
@@ -1187,8 +1242,9 @@ int libvsmbr_handle_get_partition_by_index(
      libvsmbr_partition_t **partition,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_get_partition_by_index";
+	libvsmbr_internal_handle_t *internal_handle   = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	static char *function                         = "libvsmbr_handle_get_partition_by_index";
 
 	if( handle == NULL )
 	{
@@ -1203,17 +1259,55 @@ int libvsmbr_handle_get_partition_by_index(
 	}
 	internal_handle = (libvsmbr_internal_handle_t *) handle;
 
+	if( partition == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition.",
+		 function );
+
+		return( -1 );
+	}
+	if( *partition != NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: invalid partition value already set.",
+		 function );
+
+		return( -1 );
+	}
 	if( libcdata_array_get_entry_by_index(
 	     internal_handle->partitions,
 	     partition_index,
-	     (intptr_t **) partition,
+	     (intptr_t **) &partition_values,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve partition: %d from array.",
+		 "%s: unable to retrieve partition values: %d from array.",
+		 function,
+		 partition_index );
+
+		return( -1 );
+	}
+	if( libvsmbr_partition_initialize(
+	     partition,
+	     internal_handle->file_io_handle,
+	     partition_values,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create partition: %d.",
 		 function,
 		 partition_index );
 

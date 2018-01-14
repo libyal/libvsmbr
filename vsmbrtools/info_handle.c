@@ -293,7 +293,92 @@ int info_handle_close_input(
 	return( 0 );
 }
 
-/* Prints the file information
+/* Prints the partition information
+ * Returns 1 if successful or -1 on error
+ */
+int info_handle_partition_fprint(
+     info_handle_t *info_handle,
+     libvsmbr_partition_t *partition,
+     libcerror_error_t **error )
+{
+	static char *function = "info_handle_partition_fprint";
+	size64_t size         = 0;
+	off64_t offset        = 0;
+	uint8_t type          = 0;
+
+	if( info_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid info handle.",
+		 function );
+
+		return( -1 );
+	}
+	if( libvsmbr_partition_get_type(
+	     partition,
+	     &type,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve type.",
+		 function );
+
+		return( -1 );
+	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "\tType\t\t\t: 0x%02" PRIx8 "\n",
+	 type );
+
+	if( libvsmbr_partition_get_offset(
+	     partition,
+	     &offset,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve offset.",
+		 function );
+
+		return( -1 );
+	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "\tOffset\t\t\t: %" PRIi64 " (0x%08" PRIx64 ")\n",
+	 offset,
+	 offset );
+
+	if( libvsmbr_partition_get_size(
+	     partition,
+	     &size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size.",
+		 function );
+
+		return( -1 );
+	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "\tSize\t\t\t: %" PRIu64 "\n",
+	 size );
+
+	return( 1 );
+}
+
+/* Prints the partitions information
  * Returns 1 if successful or -1 on error
  */
 int info_handle_partitions_fprint(
@@ -302,6 +387,7 @@ int info_handle_partitions_fprint(
 {
 	libvsmbr_partition_t *partition = NULL;
 	static char *function           = "info_handle_partitions_fprint";
+	uint32_t bytes_per_sector       = 0;
 	int number_of_partitions        = 0;
 	int partition_index             = 0;
 
@@ -316,6 +402,29 @@ int info_handle_partitions_fprint(
 
 		return( -1 );
 	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "Master Boot Record (MBR) information:\n" );
+
+	if( libvsmbr_handle_get_bytes_per_sector(
+	     info_handle->input_handle,
+	     &bytes_per_sector,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve number of bytes per sector.",
+		 function );
+
+		goto on_error;
+	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "\tBytes per sector\t: %" PRIu32 "\n",
+	 bytes_per_sector );
+
 	if( libvsmbr_handle_get_number_of_partitions(
 	     info_handle->input_handle,
 	     &number_of_partitions,
@@ -330,10 +439,6 @@ int info_handle_partitions_fprint(
 
 		goto on_error;
 	}
-	fprintf(
-	 info_handle->notify_stream,
-	 "Master Boot Record (MBR) information:\n" );
-
 	fprintf(
 	 info_handle->notify_stream,
 	 "\tNumber of partitions\t: %d\n",
@@ -352,7 +457,7 @@ int info_handle_partitions_fprint(
 			fprintf(
 			 info_handle->notify_stream,
 			 "Partition: %d\n",
-			 partition_index );
+			 partition_index + 1 );
 
 			if( libvsmbr_handle_get_partition_by_index(
 			     info_handle->input_handle,
@@ -370,6 +475,21 @@ int info_handle_partitions_fprint(
 
 				goto on_error;
 			}
+			if( info_handle_partition_fprint(
+			     info_handle,
+			     partition,
+			     error ) != 1 )
+			{
+				libcerror_error_set(
+				 error,
+				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+				 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+				 "%s: unable to print partition: %d information.",
+				 function,
+				 partition_index );
+
+				goto on_error;
+			}
 			if( libvsmbr_partition_free(
 			     &partition,
 			     error ) != 1 )
@@ -378,8 +498,9 @@ int info_handle_partitions_fprint(
 				 error,
 				 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 				 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-				 "%s: unable to free partition.",
-				 function );
+				 "%s: unable to free partition: %d.",
+				 function,
+				 partition_index );
 
 				goto on_error;
 			}

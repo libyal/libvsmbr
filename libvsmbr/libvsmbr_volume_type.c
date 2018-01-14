@@ -140,5 +140,5 @@ const char *libvsmbr_volume_type_get_description(
 	 ( libvsmbr_volume_types[ iterator ] ).description );
 }
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 

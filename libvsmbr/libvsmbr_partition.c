@@ -36,6 +36,8 @@
  */
 int libvsmbr_partition_initialize(
      libvsmbr_partition_t **partition,
+     libbfio_handle_t *file_io_handle,
+     libvsmbr_partition_values_t *partition_values,
      libcerror_error_t **error )
 {
 	libvsmbr_internal_partition_t *internal_partition = NULL;
@@ -59,6 +61,17 @@ int libvsmbr_partition_initialize(
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
 		 "%s: invalid partition value already set.",
+		 function );
+
+		return( -1 );
+	}
+	if( partition_values == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition values.",
 		 function );
 
 		return( -1 );
@@ -91,6 +104,9 @@ int libvsmbr_partition_initialize(
 
 		goto on_error;
 	}
+	internal_partition->file_io_handle   = file_io_handle;
+	internal_partition->partition_values = partition_values;
+
 	*partition = (libvsmbr_partition_t *) internal_partition;
 
 	return( 1 );
@@ -113,7 +129,6 @@ int libvsmbr_partition_free(
 {
 	libvsmbr_internal_partition_t *internal_partition = NULL;
 	static char *function                             = "libvsmbr_partition_free";
-	int result                                        = 1;
 
 	if( partition == NULL )
 	{
@@ -134,6 +149,129 @@ int libvsmbr_partition_free(
 		memory_free(
 		 internal_partition );
 	}
-	return( result );
+	return( 1 );
+}
+
+/* Retrieves the partition type
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_get_type(
+     libvsmbr_partition_t *partition,
+     uint8_t *type,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_partition_t *internal_partition = NULL;
+	static char *function                             = "libvsmbr_partition_get_type";
+
+	if( partition == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition.",
+		 function );
+
+		return( -1 );
+	}
+	internal_partition = (libvsmbr_internal_partition_t *) partition;
+
+	if( libvsmbr_partition_values_get_type(
+	     internal_partition->partition_values,
+	     type,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve type.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the partition offset
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_get_offset(
+     libvsmbr_partition_t *partition,
+     off64_t *offset,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_partition_t *internal_partition = NULL;
+	static char *function                             = "libvsmbr_partition_get_offset";
+
+	if( partition == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition.",
+		 function );
+
+		return( -1 );
+	}
+	internal_partition = (libvsmbr_internal_partition_t *) partition;
+
+	if( libvsmbr_partition_values_get_offset(
+	     internal_partition->partition_values,
+	     offset,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve offset.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
+}
+
+/* Retrieves the partition size
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_get_size(
+     libvsmbr_partition_t *partition,
+     size64_t *size,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_partition_t *internal_partition = NULL;
+	static char *function                             = "libvsmbr_partition_get_size";
+
+	if( partition == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition.",
+		 function );
+
+		return( -1 );
+	}
+	internal_partition = (libvsmbr_internal_partition_t *) partition;
+
+	if( libvsmbr_partition_values_get_size(
+	     internal_partition->partition_values,
+	     size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
 }
 

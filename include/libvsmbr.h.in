@@ -272,6 +272,15 @@ int libvsmbr_handle_close(
      libvsmbr_handle_t *handle,
      libvsmbr_error_t **error );
 
+/* Retrieves the number of bytes per sector
+ * Returns 1 if successful or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_handle_get_bytes_per_sector(
+     libvsmbr_handle_t *handle,
+     uint32_t *bytes_per_sector,
+     libvsmbr_error_t **error );
+
 /* Retrieves the number of partitions
  * Returns 1 if successful or -1 on error
  */
@@ -299,6 +308,33 @@ int libvsmbr_handle_get_partition_by_index(
 LIBVSMBR_EXTERN \
 int libvsmbr_partition_free(
      libvsmbr_partition_t **partition,
+     libvsmbr_error_t **error );
+
+/* Retrieves the partition type
+ * Returns 1 if successful or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_partition_get_type(
+     libvsmbr_partition_t *partition,
+     uint8_t *type,
+     libvsmbr_error_t **error );
+
+/* Retrieves the partition offset
+ * Returns 1 if successful or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_partition_get_offset(
+     libvsmbr_partition_t *partition,
+     off64_t *offset,
+     libvsmbr_error_t **error );
+
+/* Retrieves the partition size
+ * Returns 1 if successful or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_partition_get_size(
+     libvsmbr_partition_t *partition,
+     size64_t *size,
      libvsmbr_error_t **error );
 
 #if defined( __cplusplus )

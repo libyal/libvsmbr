@@ -56,6 +56,21 @@ int libvsmbr_partition_values_free(
      libvsmbr_partition_values_t **partition_values,
      libcerror_error_t **error );
 
+int libvsmbr_partition_values_get_type(
+     libvsmbr_partition_values_t *partition_values,
+     uint8_t *type,
+     libcerror_error_t **error );
+
+int libvsmbr_partition_values_get_offset(
+     libvsmbr_partition_values_t *partition_values,
+     off64_t *offset,
+     libcerror_error_t **error );
+
+int libvsmbr_partition_values_get_size(
+     libvsmbr_partition_values_t *partition_values,
+     size64_t *size,
+     libcerror_error_t **error );
+
 #if defined( __cplusplus )
 }
 #endif

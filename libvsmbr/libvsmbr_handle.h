@@ -115,8 +115,15 @@ int libvsmbr_handle_open_read(
 int libvsmbr_handle_read_partition_entries(
      libvsmbr_internal_handle_t *internal_handle,
      libbfio_handle_t *file_io_handle,
+     off64_t file_offset,
      libvsmbr_boot_record_t *boot_record,
      uint8_t *first_partition_entry,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_handle_get_bytes_per_sector(
+     libvsmbr_handle_t *handle,
+     uint32_t *bytes_per_sector,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \

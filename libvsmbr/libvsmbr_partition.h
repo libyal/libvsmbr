@@ -26,9 +26,9 @@
 #include <types.h>
 
 #include "libvsmbr_extern.h"
-#include "libvsmbr_io_handle.h"
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
+#include "libvsmbr_partition_values.h"
 #include "libvsmbr_types.h"
 
 #if defined( __cplusplus )
@@ -39,22 +39,42 @@ typedef struct libvsmbr_internal_partition libvsmbr_internal_partition_t;
 
 struct libvsmbr_internal_partition
 {
-	/* The IO handle
-	 */
-	libvsmbr_io_handle_t *io_handle;
-
 	/* The file IO handle
 	 */
 	libbfio_handle_t *file_io_handle;
+
+	/* The partition values
+	 */
+	libvsmbr_partition_values_t *partition_values;
 };
 
 int libvsmbr_partition_initialize(
      libvsmbr_partition_t **partition,
+     libbfio_handle_t *file_io_handle,
+     libvsmbr_partition_values_t *partition_values,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
 int libvsmbr_partition_free(
      libvsmbr_partition_t **partition,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_partition_get_type(
+     libvsmbr_partition_t *partition,
+     uint8_t *type,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_partition_get_offset(
+     libvsmbr_partition_t *partition,
+     off64_t *offset,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_partition_get_size(
+     libvsmbr_partition_t *partition,
+     size64_t *size,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

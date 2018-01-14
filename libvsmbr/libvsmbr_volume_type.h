@@ -47,7 +47,7 @@ struct libvsmbr_volume_type
 const char *libvsmbr_volume_type_get_description(
              uint8_t volume_type );
 
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
 #if defined( __cplusplus )
 }

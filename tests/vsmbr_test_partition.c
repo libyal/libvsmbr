@@ -34,6 +34,7 @@
 #include "vsmbr_test_unused.h"
 
 #include "../libvsmbr/libvsmbr_partition.h"
+#include "../libvsmbr/libvsmbr_partition_values.h"
 
 #if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
@@ -43,20 +44,42 @@
 int vsmbr_test_partition_initialize(
      void )
 {
-	libcerror_error_t *error        = NULL;
-	libvsmbr_partition_t *partition = NULL;
-	int result                      = 0;
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	int result                                    = 0;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
-	int number_of_malloc_fail_tests = 1;
-	int number_of_memset_fail_tests = 1;
-	int test_number                 = 0;
+	int number_of_malloc_fail_tests               = 1;
+	int number_of_memset_fail_tests               = 1;
+	int test_number                               = 0;
 #endif
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test regular cases
 	 */
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          NULL,
+	          partition_values,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -93,6 +116,8 @@ int vsmbr_test_partition_initialize(
 	 */
 	result = libvsmbr_partition_initialize(
 	          NULL,
+	          NULL,
+	          partition_values,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -111,6 +136,8 @@ int vsmbr_test_partition_initialize(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          NULL,
+	          partition_values,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -127,6 +154,24 @@ int vsmbr_test_partition_initialize(
 
 	partition = NULL;
 
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          NULL,
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 
 	for( test_number = 0;
@@ -139,6 +184,8 @@ int vsmbr_test_partition_initialize(
 
 		result = libvsmbr_partition_initialize(
 		          &partition,
+		          NULL,
+		          partition_values,
 		          &error );
 
 		if( vsmbr_test_malloc_attempts_before_fail != -1 )
@@ -181,6 +228,8 @@ int vsmbr_test_partition_initialize(
 
 		result = libvsmbr_partition_initialize(
 		          &partition,
+		          NULL,
+		          partition_values,
 		          &error );
 
 		if( vsmbr_test_memset_attempts_before_fail != -1 )
@@ -215,6 +264,25 @@ int vsmbr_test_partition_initialize(
 	}
 #endif /* defined( HAVE_VSMBR_TEST_MEMORY ) */
 
+	/* Clean up
+	 */
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -227,6 +295,12 @@ on_error:
 	{
 		libvsmbr_partition_free(
 		 &partition,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
 		 NULL );
 	}
 	return( 0 );

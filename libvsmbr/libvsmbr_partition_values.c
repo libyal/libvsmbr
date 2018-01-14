@@ -129,3 +129,114 @@ int libvsmbr_partition_values_free(
 	return( 1 );
 }
 
+/* Retrieves the partition type
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_values_get_type(
+     libvsmbr_partition_values_t *partition_values,
+     uint8_t *type,
+     libcerror_error_t **error )
+{
+	static char *function = "libvsmbr_partition_values_get_type";
+
+	if( partition_values == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition values.",
+		 function );
+
+		return( -1 );
+	}
+	if( type == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid type.",
+		 function );
+
+		return( -1 );
+	}
+	*type = partition_values->type;
+
+	return( 1 );
+}
+
+/* Retrieves the partition offset
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_values_get_offset(
+     libvsmbr_partition_values_t *partition_values,
+     off64_t *offset,
+     libcerror_error_t **error )
+{
+	static char *function = "libvsmbr_partition_values_get_offset";
+
+	if( partition_values == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition values.",
+		 function );
+
+		return( -1 );
+	}
+	if( offset == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid offset.",
+		 function );
+
+		return( -1 );
+	}
+	*offset = partition_values->offset;
+
+	return( 1 );
+}
+
+/* Retrieves the partition size
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_values_get_size(
+     libvsmbr_partition_values_t *partition_values,
+     size64_t *size,
+     libcerror_error_t **error )
+{
+	static char *function = "libvsmbr_partition_values_get_size";
+
+	if( partition_values == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition values.",
+		 function );
+
+		return( -1 );
+	}
+	if( size == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid size.",
+		 function );
+
+		return( -1 );
+	}
+	*size = partition_values->size;
+
+	return( 1 );
+}
+
