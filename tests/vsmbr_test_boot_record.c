@@ -460,6 +460,196 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_boot_record_get_number_of_partition_entries function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_boot_record_get_number_of_partition_entries(
+     libvsmbr_boot_record_t *boot_record )
+{
+	libcerror_error_t *error               = NULL;
+	int number_of_partition_entries        = 0;
+	int number_of_partition_entries_is_set = 0;
+	int result                             = 0;
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_boot_record_get_number_of_partition_entries(
+	          boot_record,
+	          &number_of_partition_entries,
+	          &error );
+
+	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	number_of_partition_entries_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_boot_record_get_number_of_partition_entries(
+	          NULL,
+	          &number_of_partition_entries,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( number_of_partition_entries_is_set != 0 )
+	{
+		result = libvsmbr_boot_record_get_number_of_partition_entries(
+		          boot_record,
+		          NULL,
+		          &error );
+
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_boot_record_get_partition_entry_by_index function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_boot_record_get_partition_entry_by_index(
+     libvsmbr_boot_record_t *boot_record )
+{
+	libcerror_error_t *error                             = NULL;
+	libvsmbr_partition_entry_t *partition_entry_by_index = 0;
+	int result                                           = 0;
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_boot_record_get_partition_entry_by_index(
+	          boot_record,
+	          0,
+	          &partition_entry_by_index,
+	          &error );
+
+	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_entry_by_index",
+	 partition_entry_by_index );
+
+	partition_entry_by_index = NULL;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_boot_record_get_partition_entry_by_index(
+	          NULL,
+	          0,
+	          &partition_entry_by_index,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_entry_by_index",
+	 partition_entry_by_index );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_boot_record_get_partition_entry_by_index(
+	          boot_record,
+	          -1,
+	          &partition_entry_by_index,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_entry_by_index",
+	 partition_entry_by_index );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_boot_record_get_partition_entry_by_index(
+	          boot_record,
+	          0,
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_entry_by_index",
+	 partition_entry_by_index );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 /* The main program
@@ -474,6 +664,10 @@ int main(
      char * const argv[] VSMBR_TEST_ATTRIBUTE_UNUSED )
 #endif
 {
+	libcerror_error_t *error            = NULL;
+	libvsmbr_boot_record_t *boot_record = NULL;
+	int result                          = 0;
+
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argc )
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argv )
 
@@ -495,9 +689,91 @@ int main(
 
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
+#if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
+
+	/* Initialize boot_record for tests
+	 */
+	result = libvsmbr_boot_record_initialize(
+	          &boot_record,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "boot_record",
+	 boot_record );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_boot_record_read_data(
+	          boot_record,
+	          vsmbr_test_boot_record_data1,
+	          512,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
+
+	VSMBR_TEST_RUN_WITH_ARGS(
+	 "libvsmbr_boot_record_get_number_of_partition_entries",
+	 vsmbr_test_boot_record_get_number_of_partition_entries,
+	 boot_record );
+
+	VSMBR_TEST_RUN_WITH_ARGS(
+	 "libvsmbr_boot_record_get_partition_entry_by_index",
+	 vsmbr_test_boot_record_get_partition_entry_by_index,
+	 boot_record );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
+
+	/* Clean up
+	 */
+	result = libvsmbr_boot_record_free(
+	          &boot_record,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "boot_record",
+	 boot_record );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+#endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
+
 	return( EXIT_SUCCESS );
 
 on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( boot_record != NULL )
+	{
+		libvsmbr_boot_record_free(
+		 &boot_record,
+		 NULL );
+	}
 	return( EXIT_FAILURE );
 }
 

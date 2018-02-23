@@ -121,13 +121,15 @@ vsmbr_test_io_handle_LDADD = \
 	@LIBCERROR_LIBADD@
 
 vsmbr_test_notify_SOURCES = \
+	vsmbr_test_libcerror.h \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_macros.h \
 	vsmbr_test_notify.c \
 	vsmbr_test_unused.h
 
 vsmbr_test_notify_LDADD = \
-	../libvsmbr/libvsmbr.la
+	../libvsmbr/libvsmbr.la \
+	@LIBCERROR_LIBADD@
 
 vsmbr_test_partition_SOURCES = \
 	vsmbr_test_libcerror.h \
@@ -187,6 +189,7 @@ vsmbr_test_support_SOURCES = \
 	vsmbr_test_libuna.h \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_macros.h \
+	vsmbr_test_memory.c vsmbr_test_memory.h \
 	vsmbr_test_support.c \
 	vsmbr_test_unused.h
 

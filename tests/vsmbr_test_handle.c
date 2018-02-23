@@ -1234,6 +1234,285 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_handle_get_bytes_per_sector function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_handle_get_bytes_per_sector(
+     libvsmbr_handle_t *handle )
+{
+	libcerror_error_t *error    = NULL;
+	uint32_t bytes_per_sector   = 0;
+	int bytes_per_sector_is_set = 0;
+	int result                  = 0;
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_handle_get_bytes_per_sector(
+	          handle,
+	          &bytes_per_sector,
+	          &error );
+
+	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	bytes_per_sector_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_handle_get_bytes_per_sector(
+	          NULL,
+	          &bytes_per_sector,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( bytes_per_sector_is_set != 0 )
+	{
+		result = libvsmbr_handle_get_bytes_per_sector(
+		          handle,
+		          NULL,
+		          &error );
+
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_handle_get_number_of_partitions function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_handle_get_number_of_partitions(
+     libvsmbr_handle_t *handle )
+{
+	libcerror_error_t *error        = NULL;
+	int number_of_partitions        = 0;
+	int number_of_partitions_is_set = 0;
+	int result                      = 0;
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_handle_get_number_of_partitions(
+	          handle,
+	          &number_of_partitions,
+	          &error );
+
+	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	number_of_partitions_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_handle_get_number_of_partitions(
+	          NULL,
+	          &number_of_partitions,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( number_of_partitions_is_set != 0 )
+	{
+		result = libvsmbr_handle_get_number_of_partitions(
+		          handle,
+		          NULL,
+		          &error );
+
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_handle_get_partition_by_index function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_handle_get_partition_by_index(
+     libvsmbr_handle_t *handle )
+{
+	libcerror_error_t *error                 = NULL;
+	libvsmbr_partition_t *partition_by_index = 0;
+	int result                               = 0;
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_handle_get_partition_by_index(
+	          handle,
+	          0,
+	          &partition_by_index,
+	          &error );
+
+	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_by_index",
+	 partition_by_index );
+
+	result = libvsmbr_partition_free(
+	          &partition_by_index,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libvsmbr_handle_get_partition_by_index(
+	          NULL,
+	          0,
+	          &partition_by_index,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_by_index",
+	 partition_by_index );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_handle_get_partition_by_index(
+	          handle,
+	          -1,
+	          &partition_by_index,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_by_index",
+	 partition_by_index );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_handle_get_partition_by_index(
+	          handle,
+	          0,
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_by_index",
+	 partition_by_index );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -1408,7 +1687,24 @@ int main(
 
 		/* TODO: add tests for libvsmbr_handle_open_read */
 
+		/* TODO: add tests for libvsmbr_handle_read_partition_entries */
+
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
+
+		VSMBR_TEST_RUN_WITH_ARGS(
+		 "libvsmbr_handle_get_bytes_per_sector",
+		 vsmbr_test_handle_get_bytes_per_sector,
+		 handle );
+
+		VSMBR_TEST_RUN_WITH_ARGS(
+		 "libvsmbr_handle_get_number_of_partitions",
+		 vsmbr_test_handle_get_number_of_partitions,
+		 handle );
+
+		VSMBR_TEST_RUN_WITH_ARGS(
+		 "libvsmbr_handle_get_partition_by_index",
+		 vsmbr_test_handle_get_partition_by_index,
+		 handle );
 
 		/* Clean up
 		 */

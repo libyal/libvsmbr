@@ -270,6 +270,134 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_io_handle_clear function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_io_handle_clear(
+     void )
+{
+	libcerror_error_t *error        = NULL;
+	libvsmbr_io_handle_t *io_handle = NULL;
+	int result                      = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_io_handle_clear(
+	          io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libvsmbr_io_handle_clear(
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+#if defined( HAVE_VSMBR_TEST_MEMORY )
+
+	/* Test libvsmbr_io_handle_clear with memset failing
+	 */
+	vsmbr_test_memset_attempts_before_fail = 0;
+
+	result = libvsmbr_io_handle_clear(
+	          io_handle,
+	          &error );
+
+	if( vsmbr_test_memset_attempts_before_fail != -1 )
+	{
+		vsmbr_test_memset_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_MEMORY ) */
+
+	/* Clean up
+	 */
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 /* The main program
@@ -297,7 +425,9 @@ int main(
 	 "libvsmbr_io_handle_free",
 	 vsmbr_test_io_handle_free );
 
-	/* TODO: add tests for libvsmbr_io_handle_read_eprs */
+	VSMBR_TEST_RUN(
+	 "libvsmbr_io_handle_clear",
+	 vsmbr_test_io_handle_clear );
 
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 

@@ -270,6 +270,375 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_partition_values_get_type function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_values_get_type(
+     void )
+{
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	uint8_t type                                  = 0;
+	int result                                    = 0;
+	int type_is_set                               = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_partition_values_get_type(
+	          partition_values,
+	          &type,
+	          &error );
+
+	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	type_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_partition_values_get_type(
+	          NULL,
+	          &type,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( type_is_set != 0 )
+	{
+		result = libvsmbr_partition_values_get_type(
+		          partition_values,
+		          NULL,
+		          &error );
+
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_partition_values_get_offset function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_values_get_offset(
+     void )
+{
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	off64_t offset                                = 0;
+	int offset_is_set                             = 0;
+	int result                                    = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_partition_values_get_offset(
+	          partition_values,
+	          &offset,
+	          &error );
+
+	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	offset_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_partition_values_get_offset(
+	          NULL,
+	          &offset,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( offset_is_set != 0 )
+	{
+		result = libvsmbr_partition_values_get_offset(
+		          partition_values,
+		          NULL,
+		          &error );
+
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_partition_values_get_size function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_values_get_size(
+     void )
+{
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	size64_t size                                 = 0;
+	int result                                    = 0;
+	int size_is_set                               = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_partition_values_get_size(
+	          partition_values,
+	          &size,
+	          &error );
+
+	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	size_is_set = result;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_partition_values_get_size(
+	          NULL,
+	          &size,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	if( size_is_set != 0 )
+	{
+		result = libvsmbr_partition_values_get_size(
+		          partition_values,
+		          NULL,
+		          &error );
+
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 /* The main program
@@ -296,6 +665,18 @@ int main(
 	VSMBR_TEST_RUN(
 	 "libvsmbr_partition_values_free",
 	 vsmbr_test_partition_values_free );
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_values_get_type",
+	 vsmbr_test_partition_values_get_type );
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_values_get_offset",
+	 vsmbr_test_partition_values_get_offset );
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_values_get_size",
+	 vsmbr_test_partition_values_get_size );
 
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
