@@ -664,8 +664,10 @@ int main(
      char * const argv[] VSMBR_TEST_ATTRIBUTE_UNUSED )
 #endif
 {
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 	libcerror_error_t *error            = NULL;
 	libvsmbr_boot_record_t *boot_record = NULL;
+#endif
 	int result                          = 0;
 
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argc )
@@ -686,8 +688,6 @@ int main(
 	VSMBR_TEST_RUN(
 	 "libvsmbr_boot_record_read_data",
 	 vsmbr_test_boot_record_read_data );
-
-#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 #if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
 
@@ -725,8 +725,6 @@ int main(
 	 "error",
 	 error );
 
-#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
-
 	VSMBR_TEST_RUN_WITH_ARGS(
 	 "libvsmbr_boot_record_get_number_of_partition_entries",
 	 vsmbr_test_boot_record_get_number_of_partition_entries,
@@ -736,8 +734,6 @@ int main(
 	 "libvsmbr_boot_record_get_partition_entry_by_index",
 	 vsmbr_test_boot_record_get_partition_entry_by_index,
 	 boot_record );
-
-#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 	/* Clean up
 	 */
@@ -760,6 +756,8 @@ int main(
 
 #endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */
 
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
+
 	return( EXIT_SUCCESS );
 
 on_error:
@@ -768,12 +766,15 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 	if( boot_record != NULL )
 	{
 		libvsmbr_boot_record_free(
 		 &boot_record,
 		 NULL );
 	}
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
+
 	return( EXIT_FAILURE );
 }
 
