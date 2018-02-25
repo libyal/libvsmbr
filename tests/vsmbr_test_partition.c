@@ -354,6 +354,123 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_partition_get_type function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_get_type(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_partition_get_type(
+	          NULL,
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_partition_get_offset function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_get_offset(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_partition_get_offset(
+	          NULL,
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_partition_get_size function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_get_size(
+     void )
+{
+	libcerror_error_t *error = NULL;
+	int result               = 0;
+
+	/* Test error cases
+	 */
+	result = libvsmbr_partition_get_size(
+	          NULL,
+	          NULL,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	return( 0 );
+}
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -381,7 +498,23 @@ int main(
 	 "libvsmbr_partition_free",
 	 vsmbr_test_partition_free );
 
-/* TODO test libvsmbr_partition_get_type */
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_get_type",
+	 vsmbr_test_partition_get_type );
+
+	/* TODO: add tests for libvsmbr_partition_read_buffer */
+
+	/* TODO: add tests for libvsmbr_partition_read_buffer_at_offset */
+
+	/* TODO: add tests for libvsmbr_partition_seek_offset */
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_get_offset",
+	 vsmbr_test_partition_get_offset );
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_get_size",
+	 vsmbr_test_partition_get_size );
 
 	return( EXIT_SUCCESS );
 
