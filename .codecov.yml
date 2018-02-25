@@ -16,5 +16,7 @@ coverage:
     - "libcpath/*"
     - "libcsplit/*"
     - "libcthreads/*"
+    - "libfcache/*"
+    - "libfdata/*"
     - "libuna/*"
     - "tests/*"

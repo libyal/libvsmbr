@@ -35,6 +35,9 @@
 
 #include "../libvsmbr/libvsmbr_chs_address.h"
 
+uint8_t vsmbr_test_chs_address_byte_stream[ 3 ] = {
+	0x01, 0x02, 0x03 };
+
 #if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
 /* Tests the libvsmbr_chs_address_initialize function
@@ -270,6 +273,225 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_chs_address_copy_from_byte_stream function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_chs_address_copy_from_byte_stream(
+     void )
+{
+	libcerror_error_t *error          = NULL;
+	libvsmbr_chs_address_t *chs_address = NULL;
+	int result                        = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_chs_address_initialize(
+	          &chs_address,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "chs_address",
+	 chs_address );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test copy from byte stream
+	 */
+	result = libvsmbr_chs_address_copy_from_byte_stream(
+	          chs_address,
+	          vsmbr_test_chs_address_byte_stream,
+	          3,
+	          LIBVSMBR_ENDIAN_BIG,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_chs_address_copy_from_byte_stream(
+	          chs_address,
+	          vsmbr_test_chs_address_byte_stream,
+	          3,
+	          LIBVSMBR_ENDIAN_LITTLE,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	result = libvsmbr_chs_address_copy_from_byte_stream(
+	          NULL,
+	          vsmbr_test_chs_address_byte_stream,
+	          3,
+	          LIBVSMBR_ENDIAN_LITTLE,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_chs_address_copy_from_byte_stream(
+	          chs_address,
+	          NULL,
+	          3,
+	          LIBVSMBR_ENDIAN_LITTLE,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_chs_address_copy_from_byte_stream(
+	          chs_address,
+	          vsmbr_test_chs_address_byte_stream,
+	          (size_t) SSIZE_MAX + 1,
+	          LIBVSMBR_ENDIAN_LITTLE,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_chs_address_copy_from_byte_stream(
+	          chs_address,
+	          vsmbr_test_chs_address_byte_stream,
+	          3,
+	          (uint8_t) 'X',
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Byte stream too small
+	 */
+	result = libvsmbr_chs_address_copy_from_byte_stream(
+	          chs_address,
+	          vsmbr_test_chs_address_byte_stream,
+	          0,
+	          LIBVSMBR_ENDIAN_LITTLE,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Byte stream too small
+	 */
+	result = libvsmbr_chs_address_copy_from_byte_stream(
+	          chs_address,
+	          vsmbr_test_chs_address_byte_stream,
+	          2,
+	          LIBVSMBR_ENDIAN_LITTLE,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libvsmbr_chs_address_free(
+	          &chs_address,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "chs_address",
+	 chs_address );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( chs_address != NULL )
+	{
+		libvsmbr_chs_address_free(
+		 &chs_address,
+		 NULL );
+	}
+	return( 0 );
+}
+
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 /* The main program
@@ -297,7 +519,9 @@ int main(
 	 "libvsmbr_chs_address_free",
 	 vsmbr_test_chs_address_free );
 
-	/* TODO: add tests for libvsmbr_chs_address_copy_from_byte_stream */
+	VSMBR_TEST_RUN(
+	 "libvsmbr_chs_address_copy_from_byte_stream",
+	 vsmbr_test_chs_address_copy_from_byte_stream );
 
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 

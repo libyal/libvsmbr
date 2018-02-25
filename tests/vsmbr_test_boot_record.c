@@ -667,8 +667,8 @@ int main(
 #if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 	libcerror_error_t *error            = NULL;
 	libvsmbr_boot_record_t *boot_record = NULL;
-#endif
 	int result                          = 0;
+#endif
 
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argc )
 	VSMBR_TEST_UNREFERENCED_PARAMETER( argv )
@@ -760,21 +760,20 @@ int main(
 
 	return( EXIT_SUCCESS );
 
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 on_error:
 	if( error != NULL )
 	{
 		libcerror_error_free(
 		 &error );
 	}
-#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 	if( boot_record != NULL )
 	{
 		libvsmbr_boot_record_free(
 		 &boot_record,
 		 NULL );
 	}
-#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
-
 	return( EXIT_FAILURE );
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 }
 
