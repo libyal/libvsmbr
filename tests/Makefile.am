@@ -54,6 +54,8 @@ check_PROGRAMS = \
 
 vsmbr_test_boot_record_SOURCES = \
 	vsmbr_test_boot_record.c \
+	vsmbr_test_functions.c vsmbr_test_functions.h \
+	vsmbr_test_libbfio.h \
 	vsmbr_test_libcerror.h \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_macros.h \
@@ -61,6 +63,14 @@ vsmbr_test_boot_record_SOURCES = \
 	vsmbr_test_unused.h
 
 vsmbr_test_boot_record_LDADD = \
+	@LIBBFIO_LIBADD@ \
+	@LIBCPATH_LIBADD@ \
+	@LIBCFILE_LIBADD@ \
+	@LIBUNA_LIBADD@ \
+	@LIBCSPLIT_LIBADD@ \
+	@LIBCNOTIFY_LIBADD@ \
+	@LIBCLOCALE_LIBADD@ \
+	@LIBCDATA_LIBADD@ \
 	../libvsmbr/libvsmbr.la \
 	@LIBCERROR_LIBADD@
 

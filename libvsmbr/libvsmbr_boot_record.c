@@ -174,117 +174,6 @@ int libvsmbr_boot_record_free(
 /* Reads a boot record
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_boot_record_read_file_io_handle(
-     libvsmbr_boot_record_t *boot_record,
-     libbfio_handle_t *file_io_handle,
-     off64_t file_offset,
-     libcerror_error_t **error )
-{
-	uint8_t *data         = NULL;
-	static char *function = "libvsmbr_boot_record_read_file_io_handle";
-	ssize_t read_count    = 0;
-
-	if( boot_record == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid boot record.",
-		 function );
-
-		return( -1 );
-	}
-#if defined( HAVE_DEBUG_OUTPUT )
-	if( libcnotify_verbose != 0 )
-	{
-		libcnotify_printf(
-		 "%s: reading boot record at offset: %" PRIu64 " (0x%08" PRIx64 ").\n",
-		 function,
-		 file_offset,
-		 file_offset );
-	}
-#endif
-	if( libbfio_handle_seek_offset(
-	     file_io_handle,
-	     file_offset,
-	     SEEK_SET,
-	     error ) == -1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_SEEK_FAILED,
-		 "%s: unable to seek offset: %" PRIu64 " (0x%08" PRIx64 ").",
-		 function,
-		 file_offset,
-		 file_offset );
-
-		goto on_error;
-	}
-	data = (uint8_t *) memory_allocate(
-	                    sizeof( vsmbr_boot_record_classical_t ) );
-
-	if( data == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_MEMORY,
-		 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-		 "%s: unable to create data.",
-		 function );
-
-		goto on_error;
-	}
-	read_count = libbfio_handle_read_buffer(
-	              file_io_handle,
-	              data,
-	              sizeof( vsmbr_boot_record_classical_t ),
-	              error );
-
-	if( read_count != (ssize_t) sizeof( vsmbr_boot_record_classical_t ) )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read boot record data.",
-		 function );
-
-		goto on_error;
-	}
-	if( libvsmbr_boot_record_read_data(
-	     boot_record,
-	     data,
-	     sizeof( vsmbr_boot_record_classical_t ),
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read boot record data.",
-		 function );
-
-		goto on_error;
-	}
-	memory_free(
-	 data );
-
-	return( 1 );
-
-on_error:
-	if( data != NULL )
-	{
-		memory_free(
-		 data );
-	}
-	return( -1 );
-}
-
-/* Reads a boot record
- * Returns 1 if successful or -1 on error
- */
 int libvsmbr_boot_record_read_data(
      libvsmbr_boot_record_t *boot_record,
      const uint8_t *data,
@@ -457,6 +346,93 @@ on_error:
 	 NULL );
 
 	return( -1 );
+}
+
+/* Reads a boot record
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_boot_record_read_file_io_handle(
+     libvsmbr_boot_record_t *boot_record,
+     libbfio_handle_t *file_io_handle,
+     off64_t file_offset,
+     libcerror_error_t **error )
+{
+	uint8_t boot_record_data[ sizeof( vsmbr_boot_record_classical_t ) ];
+
+	static char *function = "libvsmbr_boot_record_read_file_io_handle";
+	ssize_t read_count    = 0;
+
+	if( boot_record == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid boot record.",
+		 function );
+
+		return( -1 );
+	}
+#if defined( HAVE_DEBUG_OUTPUT )
+	if( libcnotify_verbose != 0 )
+	{
+		libcnotify_printf(
+		 "%s: reading boot record at offset: %" PRIu64 " (0x%08" PRIx64 ").\n",
+		 function,
+		 file_offset,
+		 file_offset );
+	}
+#endif
+	if( libbfio_handle_seek_offset(
+	     file_io_handle,
+	     file_offset,
+	     SEEK_SET,
+	     error ) == -1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_SEEK_FAILED,
+		 "%s: unable to seek offset: %" PRIu64 " (0x%08" PRIx64 ").",
+		 function,
+		 file_offset,
+		 file_offset );
+
+		return( -1 );
+	}
+	read_count = libbfio_handle_read_buffer(
+	              file_io_handle,
+	              boot_record_data,
+	              sizeof( vsmbr_boot_record_classical_t ),
+	              error );
+
+	if( read_count != (ssize_t) sizeof( vsmbr_boot_record_classical_t ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read boot record data.",
+		 function );
+
+		return( -1 );
+	}
+	if( libvsmbr_boot_record_read_data(
+	     boot_record,
+	     boot_record_data,
+	     sizeof( vsmbr_boot_record_classical_t ),
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read boot record data.",
+		 function );
+
+		return( -1 );
+	}
+	return( 1 );
 }
 
 /* Retrieves the number of partition entries

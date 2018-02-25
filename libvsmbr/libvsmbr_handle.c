@@ -664,7 +664,7 @@ int libvsmbr_handle_open_file_io_handle(
 		goto on_error;
 	}
 	internal_handle->file_io_handle                   = file_io_handle;
-	internal_handle->file_io_handle_opened_in_library = file_io_handle_opened_in_library;
+	internal_handle->file_io_handle_opened_in_library = (uint8_t) file_io_handle_opened_in_library;
 
 	return( 1 );
 

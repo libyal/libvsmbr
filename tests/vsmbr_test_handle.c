@@ -39,7 +39,9 @@
 #include "vsmbr_test_memory.h"
 #include "vsmbr_test_unused.h"
 
+#if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 #include "../libvsmbr/libvsmbr_handle.h"
+#endif
 
 #if !defined( LIBVSMBR_HAVE_BFIO )
 

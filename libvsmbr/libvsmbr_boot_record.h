@@ -55,16 +55,16 @@ int libvsmbr_boot_record_free(
      libvsmbr_boot_record_t **boot_record,
      libcerror_error_t **error );
 
-int libvsmbr_boot_record_read_file_io_handle(
-     libvsmbr_boot_record_t *boot_record,
-     libbfio_handle_t *file_io_handle,
-     off64_t file_offset,
-     libcerror_error_t **error );
-
 int libvsmbr_boot_record_read_data(
      libvsmbr_boot_record_t *boot_record,
      const uint8_t *data,
      size_t data_size,
+     libcerror_error_t **error );
+
+int libvsmbr_boot_record_read_file_io_handle(
+     libvsmbr_boot_record_t *boot_record,
+     libbfio_handle_t *file_io_handle,
+     off64_t file_offset,
      libcerror_error_t **error );
 
 int libvsmbr_boot_record_get_number_of_partition_entries(
