@@ -135,6 +135,7 @@ stamp-h[1-9]
 /tests/vsmbr_test_partition_entry
 /tests/vsmbr_test_partition_values
 /tests/vsmbr_test_section_values
+/tests/vsmbr_test_sector_data
 /tests/vsmbr_test_support
 /tests/vsmbr_test_volume_type
 
@@ -148,4 +149,6 @@ stamp-h[1-9]
 /libcpath
 /libcsplit
 /libcthreads
+/libfcache
+/libfdata
 /libuna

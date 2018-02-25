@@ -2,6 +2,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
 	@LIBCERROR_CPPFLAGS@ \
+	@LIBCTHREADS_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
 	@LIBCLOCALE_CPPFLAGS@ \
 	@LIBCNOTIFY_CPPFLAGS@ \
@@ -9,7 +10,10 @@ AM_CPPFLAGS = \
 	@LIBUNA_CPPFLAGS@ \
 	@LIBCFILE_CPPFLAGS@ \
 	@LIBCPATH_CPPFLAGS@ \
-	@LIBBFIO_CPPFLAGS@
+	@LIBBFIO_CPPFLAGS@ \
+	@LIBFCACHE_CPPFLAGS@ \
+	@LIBFDATA_CPPFLAGS@ \
+	@PTHREAD_CPPFLAGS@
 
 lib_LTLIBRARIES = libvsmbr.la
 
@@ -28,11 +32,15 @@ libvsmbr_la_SOURCES = \
 	libvsmbr_libcerror.h \
 	libvsmbr_libclocale.h \
 	libvsmbr_libcnotify.h \
+	libvsmbr_libcthreads.h \
+	libvsmbr_libfcache.h \
+	libvsmbr_libfdata.h \
 	libvsmbr_notify.c libvsmbr_notify.h \
 	libvsmbr_partition.c libvsmbr_partition.h \
 	libvsmbr_partition_entry.c libvsmbr_partition_entry.h \
 	libvsmbr_partition_values.c libvsmbr_partition_values.h \
 	libvsmbr_section_values.c libvsmbr_section_values.h \
+	libvsmbr_sector_data.c libvsmbr_sector_data.h \
 	libvsmbr_support.c libvsmbr_support.h \
 	libvsmbr_types.h \
 	libvsmbr_unused.h \
@@ -42,6 +50,7 @@ libvsmbr_la_SOURCES = \
 
 libvsmbr_la_LIBADD = \
 	@LIBCERROR_LIBADD@ \
+	@LIBCTHREADS_LIBADD@ \
 	@LIBCDATA_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCNOTIFY_LIBADD@ \
@@ -49,7 +58,10 @@ libvsmbr_la_LIBADD = \
 	@LIBUNA_LIBADD@ \
 	@LIBCFILE_LIBADD@ \
 	@LIBCPATH_LIBADD@ \
-	@LIBBFIO_LIBADD@
+	@LIBBFIO_LIBADD@ \
+	@LIBFCACHE_LIBADD@ \
+	@LIBFDATA_LIBADD@ \
+	@PTHREAD_LIBADD@
 
 libvsmbr_la_LDFLAGS = -no-undefined -version-info 1:0:0
 

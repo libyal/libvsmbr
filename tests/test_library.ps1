@@ -6,7 +6,7 @@ $ExitSuccess = 0
 $ExitFailure = 1
 $ExitIgnore = 77
 
-$LibraryTests = "boot_record chs_address error io_handle notify partition partition_entry partition_values section_values volume_type"
+$LibraryTests = "boot_record chs_address error io_handle notify partition partition_entry partition_values section_values sector_data volume_type"
 $LibraryTestsWithInput = "handle support"
 
 Function GetTestToolDirectory

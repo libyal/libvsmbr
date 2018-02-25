@@ -8,6 +8,8 @@ MSVSCPP_FILES = \
 	libcpath/libcpath.vcproj \
 	libcsplit/libcsplit.vcproj \
 	libcthreads/libcthreads.vcproj \
+	libfcache/libfcache.vcproj \
+	libfdata/libfdata.vcproj \
 	libuna/libuna.vcproj \
 	libvsmbr/libvsmbr.vcproj \
 	pyvsmbr/pyvsmbr.vcproj \
@@ -21,6 +23,7 @@ MSVSCPP_FILES = \
 	vsmbr_test_partition_entry/vsmbr_test_partition_entry.vcproj \
 	vsmbr_test_partition_values/vsmbr_test_partition_values.vcproj \
 	vsmbr_test_section_values/vsmbr_test_section_values.vcproj \
+	vsmbr_test_sector_data/vsmbr_test_sector_data.vcproj \
 	vsmbr_test_support/vsmbr_test_support.vcproj \
 	vsmbr_test_volume_type/vsmbr_test_volume_type.vcproj \
 	vsmbrinfo/vsmbrinfo.vcproj \

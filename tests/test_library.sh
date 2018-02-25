@@ -7,7 +7,7 @@ EXIT_SUCCESS=0;
 EXIT_FAILURE=1;
 EXIT_IGNORE=77;
 
-LIBRARY_TESTS="boot_record chs_address error io_handle notify partition partition_entry partition_values section_values volume_type";
+LIBRARY_TESTS="boot_record chs_address error io_handle notify partition partition_entry partition_values section_values sector_data volume_type";
 LIBRARY_TESTS_WITH_INPUT="handle support";
 OPTION_SETS="";
 

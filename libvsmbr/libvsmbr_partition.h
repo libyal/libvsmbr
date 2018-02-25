@@ -28,6 +28,8 @@
 #include "libvsmbr_extern.h"
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
+#include "libvsmbr_libcthreads.h"
+#include "libvsmbr_libfdata.h"
 #include "libvsmbr_partition_values.h"
 #include "libvsmbr_types.h"
 
@@ -46,6 +48,28 @@ struct libvsmbr_internal_partition
 	/* The partition values
 	 */
 	libvsmbr_partition_values_t *partition_values;
+
+	/* The sectors vector
+	 */
+	libfdata_vector_t *sectors_vector;
+
+	/* The sectors cache
+	 */
+	libfcache_cache_t *sectors_cache;
+
+	/* The current offset
+	 */
+	off64_t current_offset;
+
+	/* The size
+	 */
+	size64_t size;
+
+#if defined( HAVE_MULTI_THREAD_SUPPORT )
+	/* The read/write lock
+	 */
+	libcthreads_read_write_lock_t *read_write_lock;
+#endif
 };
 
 int libvsmbr_partition_initialize(
@@ -64,6 +88,41 @@ int libvsmbr_partition_get_type(
      libvsmbr_partition_t *partition,
      uint8_t *type,
      libcerror_error_t **error );
+
+ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
+         libvsmbr_internal_partition_t *internal_partition,
+         libbfio_handle_t *file_io_handle,
+         void *buffer,
+         size_t buffer_size,
+         libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+ssize_t libvsmbr_partition_read_buffer(
+         libvsmbr_partition_t *partition,
+         void *buffer,
+         size_t buffer_size,
+         libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+ssize_t libvsmbr_partition_read_buffer_at_offset(
+         libvsmbr_partition_t *partition,
+         void *buffer,
+         size_t buffer_size,
+         off64_t offset,
+         libcerror_error_t **error );
+
+off64_t libvsmbr_internal_partition_seek_offset(
+         libvsmbr_internal_partition_t *internal_partition,
+         off64_t offset,
+         int whence,
+         libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+off64_t libvsmbr_partition_seek_offset(
+         libvsmbr_partition_t *partition,
+         off64_t offset,
+         int whence,
+         libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
 int libvsmbr_partition_get_offset(

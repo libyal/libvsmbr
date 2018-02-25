@@ -13,6 +13,8 @@ SUBDIRS = \
 	libcfile \
 	libcpath \
 	libbfio \
+	libfcache \
+	libfdata \
 	libvsmbr \
 	vsmbrtools \
 	pyvsmbr \
@@ -74,6 +76,8 @@ library:
 	(cd $(srcdir)/libcfile && $(MAKE) $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libcpath && $(MAKE) $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libbfio && $(MAKE) $(AM_MAKEFLAGS))
+	(cd $(srcdir)/libfcache && $(MAKE) $(AM_MAKEFLAGS))
+	(cd $(srcdir)/libfdata && $(MAKE) $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libvsmbr && $(MAKE) $(AM_MAKEFLAGS))
 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
 
@@ -100,6 +104,8 @@ splint:
 	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libbfio && $(MAKE) splint $(AM_MAKEFLAGS))
+	(cd $(srcdir)/libfcache && $(MAKE) splint $(AM_MAKEFLAGS))
+	(cd $(srcdir)/libfdata && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/libvsmbr && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/vsmbrtools && $(MAKE) splint $(AM_MAKEFLAGS))
 	(cd $(srcdir)/pyvsmbr && $(MAKE) splint $(AM_MAKEFLAGS))

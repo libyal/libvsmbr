@@ -90,6 +90,12 @@ AX_LIBCPATH_CHECK_ENABLE
 dnl Check if libbfio or required headers and functions are available
 AX_LIBBFIO_CHECK_ENABLE
 
+dnl Check if libfcache or required headers and functions are available
+AX_LIBFCACHE_CHECK_ENABLE
+
+dnl Check if libfdata or required headers and functions are available
+AX_LIBFDATA_CHECK_ENABLE
+
 dnl Check if libvsmbr required headers and functions are available
 AX_LIBVSMBR_CHECK_LOCAL
 
@@ -148,7 +154,7 @@ CFLAGS="$CFLAGS -Wall";
 
 dnl Check if requires and build requires should be set in spec file
 AS_IF(
- [test "x$ac_cv_libcerror" = xyes || test "x$ac_cv_libcthreads" = xyes || test "x$ac_cv_libcdata" = xyes || test "x$ac_cv_libclocale" = xyes || test "x$ac_cv_libcnotify" = xyes || test "x$ac_cv_libcsplit" = xyes || test "x$ac_cv_libuna" = xyes || test "x$ac_cv_libcfile" = xyes || test "x$ac_cv_libcpath" = xyes || test "x$ac_cv_libbfio" = xyes],
+ [test "x$ac_cv_libcerror" = xyes || test "x$ac_cv_libcthreads" = xyes || test "x$ac_cv_libcdata" = xyes || test "x$ac_cv_libclocale" = xyes || test "x$ac_cv_libcnotify" = xyes || test "x$ac_cv_libcsplit" = xyes || test "x$ac_cv_libuna" = xyes || test "x$ac_cv_libcfile" = xyes || test "x$ac_cv_libcpath" = xyes || test "x$ac_cv_libbfio" = xyes || test "x$ac_cv_libfcache" = xyes || test "x$ac_cv_libfdata" = xyes],
  [AC_SUBST(
   [libvsmbr_spec_requires],
   [Requires:])
@@ -181,6 +187,8 @@ AC_CONFIG_FILES([libuna/Makefile])
 AC_CONFIG_FILES([libcfile/Makefile])
 AC_CONFIG_FILES([libcpath/Makefile])
 AC_CONFIG_FILES([libbfio/Makefile])
+AC_CONFIG_FILES([libfcache/Makefile])
+AC_CONFIG_FILES([libfdata/Makefile])
 AC_CONFIG_FILES([libvsmbr/Makefile])
 AC_CONFIG_FILES([pyvsmbr/Makefile])
 AC_CONFIG_FILES([pyvsmbr-python2/Makefile])
@@ -221,6 +229,8 @@ Building:
    libcfile support:                           $ac_cv_libcfile
    libcpath support:                           $ac_cv_libcpath
    libbfio support:                            $ac_cv_libbfio
+   libfcache support:                          $ac_cv_libfcache
+   libfdata support:                           $ac_cv_libfdata
 
 Features:
    Multi-threading support:                    $ac_cv_libcthreads_multi_threading

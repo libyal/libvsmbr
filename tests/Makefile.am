@@ -2,6 +2,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
 	@LIBCERROR_CPPFLAGS@ \
+	@LIBCTHREADS_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
 	@LIBCLOCALE_CPPFLAGS@ \
 	@LIBCNOTIFY_CPPFLAGS@ \
@@ -10,6 +11,9 @@ AM_CPPFLAGS = \
 	@LIBCFILE_CPPFLAGS@ \
 	@LIBCPATH_CPPFLAGS@ \
 	@LIBBFIO_CPPFLAGS@ \
+	@LIBFCACHE_CPPFLAGS@ \
+	@LIBFDATA_CPPFLAGS@ \
+	@PTHREAD_CPPFLAGS@ \
 	@LIBVSMBR_DLL_IMPORT@
 
 if HAVE_PYTHON_TESTS
@@ -44,6 +48,7 @@ check_PROGRAMS = \
 	vsmbr_test_partition_entry \
 	vsmbr_test_partition_values \
 	vsmbr_test_section_values \
+	vsmbr_test_sector_data \
 	vsmbr_test_support \
 	vsmbr_test_volume_type
 
@@ -141,7 +146,9 @@ vsmbr_test_partition_SOURCES = \
 
 vsmbr_test_partition_LDADD = \
 	../libvsmbr/libvsmbr.la \
-	@LIBCERROR_LIBADD@
+	@LIBCTHREADS_LIBADD@ \
+	@LIBCERROR_LIBADD@ \
+	@PTHREAD_LIBADD@
 
 vsmbr_test_partition_entry_SOURCES = \
 	vsmbr_test_libcerror.h \
@@ -176,6 +183,28 @@ vsmbr_test_section_values_SOURCES = \
 	vsmbr_test_unused.h
 
 vsmbr_test_section_values_LDADD = \
+	../libvsmbr/libvsmbr.la \
+	@LIBCERROR_LIBADD@
+
+vsmbr_test_sector_data_SOURCES = \
+	vsmbr_test_functions.c vsmbr_test_functions.h \
+	vsmbr_test_libbfio.h \
+	vsmbr_test_libcerror.h \
+	vsmbr_test_libvsmbr.h \
+	vsmbr_test_macros.h \
+	vsmbr_test_memory.c vsmbr_test_memory.h \
+	vsmbr_test_sector_data.c \
+	vsmbr_test_unused.h
+
+vsmbr_test_sector_data_LDADD = \
+	@LIBBFIO_LIBADD@ \
+	@LIBCPATH_LIBADD@ \
+	@LIBCFILE_LIBADD@ \
+	@LIBUNA_LIBADD@ \
+	@LIBCSPLIT_LIBADD@ \
+	@LIBCNOTIFY_LIBADD@ \
+	@LIBCLOCALE_LIBADD@ \
+	@LIBCDATA_LIBADD@ \
 	../libvsmbr/libvsmbr.la \
 	@LIBCERROR_LIBADD@
 
