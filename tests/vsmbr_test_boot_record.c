@@ -458,6 +458,60 @@ int vsmbr_test_boot_record_read_data(
 	libcerror_error_free(
 	 &error );
 
+	result = libvsmbr_boot_record_read_data(
+	          boot_record,
+	          vsmbr_test_boot_record_error_data1,
+	          512,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+#if defined( HAVE_VSMBR_TEST_MEMORY )
+
+	/* Test libvsmbr_boot_record_read_data with malloc failing in libvsmbr_partition_entry_initialize
+	 */
+	vsmbr_test_malloc_attempts_before_fail = 0;
+
+	result = libvsmbr_boot_record_read_data(
+	          boot_record,
+	          vsmbr_test_boot_record_data1,
+	          512,
+	          &error );
+
+	if( vsmbr_test_malloc_attempts_before_fail != -1 )
+	{
+		vsmbr_test_malloc_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_MEMORY ) */
+
+/* TODO test with libvsmbr_partition_entry_read_data failing */
+
+/* TODO test with libcdata_array_append_entry failing */
+
 	/* Clean up
 	 */
 	result = libvsmbr_boot_record_free(

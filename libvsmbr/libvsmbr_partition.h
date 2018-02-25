@@ -29,6 +29,7 @@
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcthreads.h"
+#include "libvsmbr_libfcache.h"
 #include "libvsmbr_libfdata.h"
 #include "libvsmbr_partition_values.h"
 #include "libvsmbr_types.h"

@@ -28,6 +28,8 @@
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcthreads.h"
+#include "libvsmbr_libfcache.h"
+#include "libvsmbr_libfdata.h"
 #include "libvsmbr_partition.h"
 #include "libvsmbr_sector_data.h"
 #include "libvsmbr_types.h"
@@ -362,8 +364,8 @@ ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
 			return( -1 );
 		}
 		internal_partition->current_offset += read_size;
-		buffer_offset                           += read_size;
-		buffer_size                             -= read_size;
+		buffer_offset                      += read_size;
+		buffer_size                        -= read_size;
 	}
 	return( (ssize_t) buffer_offset );
 }
@@ -378,8 +380,8 @@ ssize_t libvsmbr_partition_read_buffer(
          libcerror_error_t **error )
 {
 	libvsmbr_internal_partition_t *internal_partition = NULL;
-	static char *function                                       = "libvsmbr_partition_read_buffer";
-	ssize_t read_count                                          = 0;
+	static char *function                             = "libvsmbr_partition_read_buffer";
+	ssize_t read_count                                = 0;
 
 	if( partition == NULL )
 	{
@@ -456,8 +458,8 @@ ssize_t libvsmbr_partition_read_buffer_at_offset(
          libcerror_error_t **error )
 {
 	libvsmbr_internal_partition_t *internal_partition = NULL;
-	static char *function                                       = "libvsmbr_partition_read_buffer_at_offset";
-	ssize_t read_count                                          = 0;
+	static char *function                             = "libvsmbr_partition_read_buffer_at_offset";
+	ssize_t read_count                                = 0;
 
 	if( partition == NULL )
 	{
@@ -616,7 +618,7 @@ off64_t libvsmbr_partition_seek_offset(
          libcerror_error_t **error )
 {
 	libvsmbr_internal_partition_t *internal_partition = NULL;
-	static char *function                                       = "libvsmbr_partition_seek_offset";
+	static char *function                             = "libvsmbr_partition_seek_offset";
 
 	if( partition == NULL )
 	{

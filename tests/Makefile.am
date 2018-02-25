@@ -107,6 +107,7 @@ vsmbr_test_handle_SOURCES = \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_macros.h \
 	vsmbr_test_memory.c vsmbr_test_memory.h \
+	vsmbr_test_rwlock.c vsmbr_test_rwlock.h \
 	vsmbr_test_unused.h
 
 vsmbr_test_handle_LDADD = \
@@ -152,6 +153,7 @@ vsmbr_test_partition_SOURCES = \
 	vsmbr_test_macros.h \
 	vsmbr_test_memory.c vsmbr_test_memory.h \
 	vsmbr_test_partition.c \
+	vsmbr_test_rwlock.c vsmbr_test_rwlock.h \
 	vsmbr_test_unused.h
 
 vsmbr_test_partition_LDADD = \

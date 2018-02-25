@@ -203,7 +203,7 @@ int vsmbr_test_handle_initialize(
 	int result                      = 0;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
-	int number_of_malloc_fail_tests = 1;
+	int number_of_malloc_fail_tests = 3;
 	int number_of_memset_fail_tests = 1;
 	int test_number                 = 0;
 #endif

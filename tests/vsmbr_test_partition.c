@@ -31,6 +31,7 @@
 #include "vsmbr_test_libvsmbr.h"
 #include "vsmbr_test_macros.h"
 #include "vsmbr_test_memory.h"
+#include "vsmbr_test_rwlock.h"
 #include "vsmbr_test_unused.h"
 
 #include "../libvsmbr/libvsmbr_partition.h"
@@ -50,7 +51,7 @@ int vsmbr_test_partition_initialize(
 	int result                                    = 0;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
-	int number_of_malloc_fail_tests               = 1;
+	int number_of_malloc_fail_tests               = 2;
 	int number_of_memset_fail_tests               = 1;
 	int test_number                               = 0;
 #endif
@@ -174,6 +175,9 @@ int vsmbr_test_partition_initialize(
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 
+	/* 1 fail in memory_allocate_structure
+	 * 2 fail in libcthreads_read_write_lock_initialize
+	 */
 	for( test_number = 0;
 	     test_number < number_of_malloc_fail_tests;
 	     test_number++ )
@@ -218,6 +222,8 @@ int vsmbr_test_partition_initialize(
 			 &error );
 		}
 	}
+	/* 1 fail in memset after memory_allocate_structure
+	 */
 	for( test_number = 0;
 	     test_number < number_of_memset_fail_tests;
 	     test_number++ )
@@ -335,6 +341,8 @@ int vsmbr_test_partition_free(
 	libcerror_error_free(
 	 &error );
 
+/* TODO test libcthreads_read_write_lock_free failing */
+
 	return( 1 );
 
 on_error:
@@ -372,6 +380,8 @@ int main(
 	VSMBR_TEST_RUN(
 	 "libvsmbr_partition_free",
 	 vsmbr_test_partition_free );
+
+/* TODO test libvsmbr_partition_get_type */
 
 	return( EXIT_SUCCESS );
 
