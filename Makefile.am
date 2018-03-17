@@ -18,6 +18,8 @@ SUBDIRS = \
 	libvsmbr \
 	vsmbrtools \
 	pyvsmbr \
+	pyvsmbr-python2 \
+	pyvsmbr-python3 \
 	po \
 	manuals \
 	tests \
