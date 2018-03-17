@@ -33,6 +33,7 @@
 #include "libvsmbr_partition.h"
 #include "libvsmbr_sector_data.h"
 #include "libvsmbr_types.h"
+#include "libvsmbr_unused.h"
 
 /* Creates a partition
  * Make sure the value partition is referencing, is set to NULL
@@ -46,6 +47,7 @@ int libvsmbr_partition_initialize(
 {
 	libvsmbr_internal_partition_t *internal_partition = NULL;
 	static char *function                             = "libvsmbr_partition_initialize";
+	int element_index                                 = 0;
 
 	if( partition == NULL )
 	{
@@ -122,6 +124,58 @@ int libvsmbr_partition_initialize(
 
 		goto on_error;
 	}
+	if( libfdata_vector_initialize(
+	     &( internal_partition->sectors_vector ),
+	     512,
+	     NULL,
+	     NULL,
+	     NULL,
+	     (int (*)(intptr_t *, intptr_t *, libfdata_vector_t *, libfcache_cache_t *, int, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libvsmbr_partition_read_sector_data,
+	     NULL,
+	     LIBFDATA_DATA_HANDLE_FLAG_NON_MANAGED,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create sectors vector.",
+		 function );
+
+		goto on_error;
+	}
+	if( libfdata_vector_append_segment(
+	     internal_partition->sectors_vector,
+	     &element_index,
+	     0,
+	     partition_values->offset,
+	     partition_values->size,
+	     0,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_APPEND_FAILED,
+		 "%s: unable to append segment to sectors vector.",
+		 function );
+
+		goto on_error;
+	}
+	if( libfcache_cache_initialize(
+	     &( internal_partition->sectors_cache ),
+	     LIBVSMBR_MAXIMUM_CACHE_ENTRIES_SECTORS,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create sectors cache.",
+		 function );
+
+		goto on_error;
+	}
 #if defined( HAVE_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_initialize(
 	     &( internal_partition->read_write_lock ),
@@ -180,6 +234,34 @@ int libvsmbr_partition_free(
 		internal_partition = (libvsmbr_internal_partition_t *) *partition;
 		*partition         = NULL;
 
+		/* The file_io_handle and partition_values references are freed elsewhere
+		 */
+		if( libfdata_vector_free(
+		     &( internal_partition->sectors_vector ),
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free sectors vector.",
+			 function );
+
+			result = -1;
+		}
+		if( libfcache_cache_free(
+		     &( internal_partition->sectors_cache ),
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free sectors cache.",
+			 function );
+
+			result = -1;
+		}
 #if defined( HAVE_MULTI_THREAD_SUPPORT )
 		if( libcthreads_read_write_lock_free(
 		     &( internal_partition->read_write_lock ),
@@ -286,6 +368,7 @@ ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
 {
 	libvsmbr_sector_data_t *sector_data = NULL;
 	static char *function               = "libvsmbr_internal_partition_read_buffer_from_file_io_handle";
+	off64_t current_offset              = 0;
 	off64_t element_data_offset         = 0;
 	size_t buffer_offset                = 0;
 	size_t read_size                    = 0;
@@ -312,6 +395,28 @@ ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
 
 		return( -1 );
 	}
+	if( buffer == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid buffer.",
+		 function );
+
+		return( -1 );
+	}
+	if( buffer_size > (size_t) SSIZE_MAX )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid buffer size value exceeds maximum.",
+		 function );
+
+		return( -1 );
+	}
 	if( buffer_size == 0 )
 	{
 		return( 0 );
@@ -324,13 +429,15 @@ ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
 	{
 		buffer_size = (size_t) ( internal_partition->size - internal_partition->current_offset );
 	}
+	current_offset = internal_partition->current_offset;
+
 	while( buffer_size > 0 )
 	{
 		if( libfdata_vector_get_element_value_at_offset(
 		     internal_partition->sectors_vector,
 		     (intptr_t *) file_io_handle,
 		     internal_partition->sectors_cache,
-		     internal_partition->current_offset,
+		     current_offset,
 		     &element_data_offset,
 		     (intptr_t **) &sector_data,
 		     0,
@@ -340,9 +447,10 @@ ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
 			 error,
 			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 			 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-			 "%s: unable to retrieve sector data at offset: 0x%08" PRIx64 ".",
+			 "%s: unable to retrieve sector data at offset: %" PRIi64 " (0x%08" PRIx64 ").",
 			 function,
-			 internal_partition->current_offset );
+			 current_offset,
+			 current_offset );
 
 			return( -1 );
 		}
@@ -377,10 +485,12 @@ ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
 
 			return( -1 );
 		}
-		internal_partition->current_offset += read_size;
-		buffer_offset                      += read_size;
-		buffer_size                        -= read_size;
+		current_offset += read_size;
+		buffer_offset  += read_size;
+		buffer_size    -= read_size;
 	}
+	internal_partition->current_offset = current_offset;
+
 	return( (ssize_t) buffer_offset );
 }
 
@@ -835,5 +945,101 @@ int libvsmbr_partition_get_size(
 	}
 #endif
 	return( 1 );
+}
+
+/* Reads sector data
+ * Callback function for the sector data vector
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_read_sector_data(
+     intptr_t *data_handle LIBVSMBR_ATTRIBUTE_UNUSED,
+     libbfio_handle_t *file_io_handle,
+     libfdata_vector_t *vector,
+     libfcache_cache_t *cache,
+     int element_index,
+     int element_data_file_index LIBVSMBR_ATTRIBUTE_UNUSED,
+     off64_t element_data_offset,
+     size64_t element_data_size,
+     uint32_t element_data_flags LIBVSMBR_ATTRIBUTE_UNUSED,
+     uint8_t read_flags LIBVSMBR_ATTRIBUTE_UNUSED,
+     libcerror_error_t **error )
+{
+	libvsmbr_sector_data_t *sector_data = NULL;
+	static char *function               = "libvsmbr_logical_volume_read_sector_data";
+
+	LIBVSMBR_UNREFERENCED_PARAMETER( data_handle );
+	LIBVSMBR_UNREFERENCED_PARAMETER( element_data_file_index );
+	LIBVSMBR_UNREFERENCED_PARAMETER( element_data_flags );
+	LIBVSMBR_UNREFERENCED_PARAMETER( read_flags );
+
+	if( element_data_size > (size64_t) SSIZE_MAX )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid element data size value exceeds maximum.",
+		 function );
+
+		goto on_error;
+	}
+	if( libvsmbr_sector_data_initialize(
+	     &sector_data,
+	     (size_t) element_data_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create sector data.",
+		 function );
+
+		goto on_error;
+	}
+	if( libvsmbr_sector_data_read_file_io_handle(
+	     sector_data,
+	     file_io_handle,
+             element_data_offset,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read sector data.",
+		 function );
+
+		goto on_error;
+	}
+	if( libfdata_vector_set_element_value_by_index(
+	     vector,
+	     (intptr_t *) file_io_handle,
+	     cache,
+	     element_index,
+	     (intptr_t *) sector_data,
+	     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_sector_data_free,
+	     LIBFDATA_LIST_ELEMENT_VALUE_FLAG_MANAGED,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set sector data as element value.",
+		 function );
+
+		goto on_error;
+	}
+	return( 1 );
+
+on_error:
+	if( sector_data != NULL )
+	{
+		libvsmbr_sector_data_free(
+		 &sector_data,
+		 NULL );
+	}
+	return( -1 );
 }
 

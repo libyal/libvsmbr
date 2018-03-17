@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #endif
 
+#include "vsmbr_test_functions.h"
+#include "vsmbr_test_libbfio.h"
 #include "vsmbr_test_libcerror.h"
 #include "vsmbr_test_libvsmbr.h"
 #include "vsmbr_test_macros.h"
@@ -172,6 +174,8 @@ int vsmbr_test_partition_initialize(
 
 	libcerror_error_free(
 	 &error );
+
+/* TODO test libvsmbr_partition_values_get_size failing */
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 
@@ -696,6 +700,857 @@ on_error:
 	return( 0 );
 }
 
+/* Tests the libvsmbr_internal_partition_read_buffer_from_file_io_handle function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_internal_partition_read_buffer_from_file_io_handle(
+     void )
+{
+	uint8_t buffer[ 2048 ];
+	uint8_t test_data[ 2048 ];
+
+	libbfio_handle_t *file_io_handle              = NULL;
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	ssize_t read_count                            = 0;
+	int result                                    = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	partition_values->size = 2048;
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          NULL,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Initialize file IO handle
+	 */
+	result = vsmbr_test_open_file_io_handle(
+	          &file_io_handle,
+	          test_data,
+	          2048,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "file_io_handle",
+	 file_io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	read_count = libvsmbr_internal_partition_read_buffer_from_file_io_handle(
+	              (libvsmbr_internal_partition_t *) partition,
+	              file_io_handle,
+	              buffer,
+	              512,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) 512 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	read_count = libvsmbr_internal_partition_read_buffer_from_file_io_handle(
+	              (libvsmbr_internal_partition_t *) partition,
+	              file_io_handle,
+	              buffer,
+	              2048,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) 1536 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	read_count = libvsmbr_internal_partition_read_buffer_from_file_io_handle(
+	              NULL,
+	              file_io_handle,
+	              buffer,
+	              512,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	read_count = libvsmbr_internal_partition_read_buffer_from_file_io_handle(
+	              (libvsmbr_internal_partition_t *) partition,
+	              file_io_handle,
+	              NULL,
+	              512,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	read_count = libvsmbr_internal_partition_read_buffer_from_file_io_handle(
+	              (libvsmbr_internal_partition_t *) partition,
+	              file_io_handle,
+	              buffer,
+	              (size_t) SSIZE_MAX + 1,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up file IO handle
+	 */
+	result = vsmbr_test_close_file_io_handle(
+	          &file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Clean up
+	 */
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( file_io_handle != NULL )
+	{
+		libbfio_handle_free(
+		 &file_io_handle,
+		 NULL );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_partition_read_buffer function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_read_buffer(
+     void )
+{
+	uint8_t buffer[ 2048 ];
+	uint8_t test_data[ 2048 ];
+
+	libbfio_handle_t *file_io_handle              = NULL;
+
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	ssize_t read_count                            = 0;
+	int result                                    = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	partition_values->size = 2048;
+
+	result = vsmbr_test_open_file_io_handle(
+	          &file_io_handle,
+	          test_data,
+	          2048,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "file_io_handle",
+	 file_io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          file_io_handle,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	read_count = libvsmbr_partition_read_buffer(
+	              partition,
+	              buffer,
+	              512,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) 512 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	read_count = libvsmbr_partition_read_buffer(
+	              partition,
+	              buffer,
+	              2048,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) 1536 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	read_count = libvsmbr_partition_read_buffer(
+	              NULL,
+	              buffer,
+	              512,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test libvsmbr_partition_read_buffer with libvsmbr_internal_partition_read_buffer_from_file_io_handle failing
+	 */
+	read_count = libvsmbr_partition_read_buffer(
+	              partition,
+	              NULL,
+	              512,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
+
+	/* Test libvsmbr_partition_read_buffer with pthread_rwlock_wrlock failing in libcthreads_read_write_lock_grab_for_write
+	 */
+	vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail = 0;
+
+	read_count = libvsmbr_partition_read_buffer(
+	              partition,
+	              buffer,
+	              512,
+	              &error );
+
+	if( vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+		 "read_count",
+		 read_count,
+		 (ssize_t) -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Test libvsmbr_partition_read_buffer with pthread_rwlock_unlock failing in libcthreads_read_write_lock_release_for_write
+	 * WARNING: after this test the lock is still active
+	 */
+	vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = 0;
+
+	read_count = libvsmbr_partition_read_buffer(
+	              partition,
+	              buffer,
+	              512,
+	              &error );
+
+	if( vsmbr_test_pthread_rwlock_unlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+		 "read_count",
+		 read_count,
+		 (ssize_t) -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
+
+	/* Clean up
+	 */
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = vsmbr_test_close_file_io_handle(
+	          &file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( file_io_handle != NULL )
+	{
+		libbfio_handle_free(
+		 &file_io_handle,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_partition_read_buffer_at_offset function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_read_buffer_at_offset(
+     void )
+{
+	uint8_t buffer[ 2048 ];
+	uint8_t test_data[ 2048 ];
+
+	libbfio_handle_t *file_io_handle              = NULL;
+
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	ssize_t read_count                            = 0;
+	int result                                    = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	partition_values->size = 2048;
+
+	result = vsmbr_test_open_file_io_handle(
+	          &file_io_handle,
+	          test_data,
+	          2048,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "file_io_handle",
+	 file_io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          file_io_handle,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	read_count = libvsmbr_partition_read_buffer_at_offset(
+	              partition,
+	              buffer,
+	              512,
+	              0,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) 512 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	read_count = libvsmbr_partition_read_buffer_at_offset(
+	              partition,
+	              buffer,
+	              2048,
+	              512,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) 1536 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	read_count = libvsmbr_partition_read_buffer_at_offset(
+	              NULL,
+	              buffer,
+	              512,
+	              0,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test libvsmbr_partition_read_buffer_at_offset with libvsmbr_internal_partition_seek_offset failing
+	 */
+	read_count = libvsmbr_partition_read_buffer_at_offset(
+	              partition,
+	              buffer,
+	              512,
+	              -1,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test libvsmbr_partition_read_buffer_at_offset with libvsmbr_internal_partition_read_buffer_from_file_io_handle failing
+	 */
+	read_count = libvsmbr_partition_read_buffer_at_offset(
+	              partition,
+	              NULL,
+	              512,
+	              0,
+	              &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+	 "read_count",
+	 read_count,
+	 (ssize_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
+
+	/* Test libvsmbr_partition_read_buffer_at_offset with pthread_rwlock_wrlock failing in libcthreads_read_write_lock_grab_for_write
+	 */
+	vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail = 0;
+
+	read_count = libvsmbr_partition_read_buffer_at_offset(
+	              partition,
+	              buffer,
+	              512,
+	              0,
+	              &error );
+
+	if( vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+		 "read_count",
+		 read_count,
+		 (ssize_t) -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Test libvsmbr_partition_read_buffer_at_offset with pthread_rwlock_unlock failing in libcthreads_read_write_lock_release_for_write
+	 * WARNING: after this test the lock is still active
+	 */
+	vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = 0;
+
+	read_count = libvsmbr_partition_read_buffer_at_offset(
+	              partition,
+	              buffer,
+	              512,
+	              0,
+	              &error );
+
+	if( vsmbr_test_pthread_rwlock_unlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_SSIZE(
+		 "read_count",
+		 read_count,
+		 (ssize_t) -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
+
+	/* Clean up
+	 */
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = vsmbr_test_close_file_io_handle(
+	          &file_io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 0 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( file_io_handle != NULL )
+	{
+		libbfio_handle_free(
+		 &file_io_handle,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	return( 0 );
+}
+
 /* Tests the libvsmbr_internal_partition_seek_offset function
  * Returns 1 if successful or 0 if not
  */
@@ -727,7 +1582,7 @@ int vsmbr_test_internal_partition_seek_offset(
 	 "error",
 	 error );
 
-	partition_values->size = 4096;
+	partition_values->size = 2048;
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
@@ -752,7 +1607,22 @@ int vsmbr_test_internal_partition_seek_offset(
 	 */
 	offset = libvsmbr_internal_partition_seek_offset(
 	          (libvsmbr_internal_partition_t *) partition,
-	          1024,
+	          512,
+	          SEEK_CUR,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) 512 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	offset = libvsmbr_internal_partition_seek_offset(
+	          (libvsmbr_internal_partition_t *) partition,
+	          512,
 	          SEEK_CUR,
 	          &error );
 
@@ -767,21 +1637,6 @@ int vsmbr_test_internal_partition_seek_offset(
 
 	offset = libvsmbr_internal_partition_seek_offset(
 	          (libvsmbr_internal_partition_t *) partition,
-	          1024,
-	          SEEK_CUR,
-	          &error );
-
-	VSMBR_TEST_ASSERT_EQUAL_INT64(
-	 "offset",
-	 (int64_t) offset,
-	 (int64_t) 2048 );
-
-	VSMBR_TEST_ASSERT_IS_NULL(
-	 "error",
-	 error );
-
-	offset = libvsmbr_internal_partition_seek_offset(
-	          (libvsmbr_internal_partition_t *) partition,
 	          0,
 	          SEEK_END,
 	          &error );
@@ -789,7 +1644,7 @@ int vsmbr_test_internal_partition_seek_offset(
 	VSMBR_TEST_ASSERT_EQUAL_INT64(
 	 "offset",
 	 (int64_t) offset,
-	 (int64_t) 4096 );
+	 (int64_t) 2048 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -1034,9 +1889,9 @@ int vsmbr_test_partition_seek_offset(
 
 #if defined( HAVE_VSMBR_TEST_RWLOCK )
 
-	/* Test libvsmbr_partition_seek_offset with pthread_rwlock_rdlock failing in libcthreads_read_write_lock_grab_for_read
+	/* Test libvsmbr_partition_seek_offset with pthread_rwlock_wrlock failing in libcthreads_read_write_lock_grab_for_write
 	 */
-	vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = 0;
+	vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail = 0;
 
 	offset = libvsmbr_partition_seek_offset(
 	          partition,
@@ -1044,9 +1899,9 @@ int vsmbr_test_partition_seek_offset(
 	          SEEK_SET,
 	          &error );
 
-	if( vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail != -1 )
+	if( vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail != -1 )
 	{
-		vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = -1;
+		vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail = -1;
 	}
 	else
 	{
@@ -1062,7 +1917,7 @@ int vsmbr_test_partition_seek_offset(
 		libcerror_error_free(
 		 &error );
 	}
-	/* Test libvsmbr_partition_seek_offset with pthread_rwlock_unlock failing in libcthreads_read_write_lock_release_for_read
+	/* Test libvsmbr_partition_seek_offset with pthread_rwlock_unlock failing in libcthreads_read_write_lock_release_for_write
 	 * WARNING: after this test the lock is still active
 	 */
 	vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = 0;
@@ -1623,11 +2478,17 @@ int main(
 	 "libvsmbr_partition_get_type",
 	 vsmbr_test_partition_get_type );
 
-	/* TODO: add tests for libvsmbr_internal_partition_read_buffer_from_file_io_handle */
+	VSMBR_TEST_RUN(
+	 "libvsmbr_internal_partition_read_buffer_from_file_io_handle",
+	 vsmbr_test_internal_partition_read_buffer_from_file_io_handle );
 
-	/* TODO: add tests for libvsmbr_partition_read_buffer */
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_read_buffer",
+	 vsmbr_test_partition_read_buffer );
 
-	/* TODO: add tests for libvsmbr_partition_read_buffer_at_offset */
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_read_buffer_at_offset",
+	 vsmbr_test_partition_read_buffer_at_offset );
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_internal_partition_seek_offset",
