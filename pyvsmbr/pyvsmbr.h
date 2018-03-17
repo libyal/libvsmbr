@@ -1,5 +1,5 @@
 /*
- * Python bindings for libvsmbr (pyvsmbr)
+ * Python bindings module for libvsmbr (pyvsmbr)
  *
  * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -35,12 +35,12 @@ PyObject *pyvsmbr_get_version(
            PyObject *self,
            PyObject *arguments );
 
-PyObject *pyvsmbr_check_volume_signature(
+PyObject *pyvsmbr_check_file_signature(
            PyObject *self,
            PyObject *arguments,
            PyObject *keywords );
 
-PyObject *pyvsmbr_check_volume_signature_file_object(
+PyObject *pyvsmbr_check_file_signature_file_object(
            PyObject *self,
            PyObject *arguments,
            PyObject *keywords );

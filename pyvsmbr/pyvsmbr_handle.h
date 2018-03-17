@@ -53,9 +53,6 @@ struct pyvsmbr_handle
 extern PyMethodDef pyvsmbr_handle_object_methods[];
 extern PyTypeObject pyvsmbr_handle_type_object;
 
-PyObject *pyvsmbr_handle_new(
-           void );
-
 PyObject *pyvsmbr_handle_new_open(
            PyObject *self,
            PyObject *arguments,
@@ -87,6 +84,27 @@ PyObject *pyvsmbr_handle_open_file_object(
            PyObject *keywords );
 
 PyObject *pyvsmbr_handle_close(
+           pyvsmbr_handle_t *pyvsmbr_handle,
+           PyObject *arguments );
+
+PyObject *pyvsmbr_handle_get_bytes_per_sector(
+           pyvsmbr_handle_t *pyvsmbr_handle,
+           PyObject *arguments );
+
+PyObject *pyvsmbr_handle_get_number_of_partitions(
+           pyvsmbr_handle_t *pyvsmbr_handle,
+           PyObject *arguments );
+
+PyObject *pyvsmbr_handle_get_partition_by_index(
+           PyObject *pyvsmbr_handle,
+           int partition_index );
+
+PyObject *pyvsmbr_handle_get_partition(
+           pyvsmbr_handle_t *pyvsmbr_handle,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyvsmbr_handle_get_partitions(
            pyvsmbr_handle_t *pyvsmbr_handle,
            PyObject *arguments );
 

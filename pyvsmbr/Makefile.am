@@ -23,6 +23,8 @@ pyvsmbr_la_SOURCES = \
 	pyvsmbr_libcerror.h \
 	pyvsmbr_libclocale.h \
 	pyvsmbr_libvsmbr.h \
+	pyvsmbr_partition.c pyvsmbr_partition.h \
+	pyvsmbr_partitions.c pyvsmbr_partitions.h \
 	pyvsmbr_python.h \
 	pyvsmbr_unused.h
 

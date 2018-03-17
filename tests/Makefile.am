@@ -28,6 +28,7 @@ TESTS = \
 
 check_SCRIPTS = \
 	pyvsmbr_test_handle.py \
+	pyvsmbr_test_partition.py \
 	pyvsmbr_test_support.py \
 	test_library.sh \
 	test_python_module.sh \

@@ -189,6 +189,14 @@
 				RelativePath="..\..\pyvsmbr\pyvsmbr_integer.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\pyvsmbr\pyvsmbr_partition.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyvsmbr\pyvsmbr_partitions.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -229,6 +237,14 @@
 			</File>
 			<File
 				RelativePath="..\..\pyvsmbr\pyvsmbr_libvsmbr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyvsmbr\pyvsmbr_partition.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyvsmbr\pyvsmbr_partitions.h"
 				>
 			</File>
 			<File

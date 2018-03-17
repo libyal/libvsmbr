@@ -42,7 +42,7 @@
 #if !defined( LIBVSMBR_HAVE_BFIO )
 
 LIBVSMBR_EXTERN \
-int libvsmbr_check_volume_signature_file_io_handle(
+int libvsmbr_check_file_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 
@@ -199,10 +199,10 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libvsmbr_check_volume_signature function
+/* Tests the libvsmbr_check_file_signature function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_check_volume_signature(
+int vsmbr_test_check_file_signature(
      const system_character_t *source )
 {
 	char narrow_source[ 256 ];
@@ -229,9 +229,9 @@ int vsmbr_test_check_volume_signature(
 		 "error",
 		 error );
 
-		/* Test check volume signature
+		/* Test check file signature
 		 */
-		result = libvsmbr_check_volume_signature(
+		result = libvsmbr_check_file_signature(
 		          narrow_source,
 		          &error );
 
@@ -246,7 +246,7 @@ int vsmbr_test_check_volume_signature(
 	}
 	/* Test error cases
 	 */
-	result = libvsmbr_check_volume_signature(
+	result = libvsmbr_check_file_signature(
 	          NULL,
 	          &error );
 
@@ -262,7 +262,7 @@ int vsmbr_test_check_volume_signature(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_check_volume_signature(
+	result = libvsmbr_check_file_signature(
 	          "",
 	          &error );
 
@@ -282,11 +282,11 @@ int vsmbr_test_check_volume_signature(
 	{
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 
-		/* Test libvsmbr_check_volume_signature with malloc failing in libbfio_file_initialize
+		/* Test libvsmbr_check_file_signature with malloc failing in libbfio_file_initialize
 		 */
 		vsmbr_test_malloc_attempts_before_fail = 0;
 
-		result = libvsmbr_check_volume_signature(
+		result = libvsmbr_check_file_signature(
 		          narrow_source,
 		          &error );
 
@@ -323,10 +323,10 @@ on_error:
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
-/* Tests the libvsmbr_check_volume_signature_wide function
+/* Tests the libvsmbr_check_file_signature_wide function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_check_volume_signature_wide(
+int vsmbr_test_check_file_signature_wide(
      const system_character_t *source )
 {
 	wchar_t wide_source[ 256 ];
@@ -353,9 +353,9 @@ int vsmbr_test_check_volume_signature_wide(
 		 "error",
 		 error );
 
-		/* Test check volume signature
+		/* Test check file signature
 		 */
-		result = libvsmbr_check_volume_signature_wide(
+		result = libvsmbr_check_file_signature_wide(
 		          wide_source,
 		          &error );
 
@@ -370,7 +370,7 @@ int vsmbr_test_check_volume_signature_wide(
 	}
 	/* Test error cases
 	 */
-	result = libvsmbr_check_volume_signature_wide(
+	result = libvsmbr_check_file_signature_wide(
 	          NULL,
 	          &error );
 
@@ -386,7 +386,7 @@ int vsmbr_test_check_volume_signature_wide(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_check_volume_signature_wide(
+	result = libvsmbr_check_file_signature_wide(
 	          L"",
 	          &error );
 
@@ -406,11 +406,11 @@ int vsmbr_test_check_volume_signature_wide(
 	{
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 
-		/* Test libvsmbr_check_volume_signature_wide with malloc failing in libbfio_file_initialize
+		/* Test libvsmbr_check_file_signature_wide with malloc failing in libbfio_file_initialize
 		 */
 		vsmbr_test_malloc_attempts_before_fail = 0;
 
-		result = libvsmbr_check_volume_signature_wide(
+		result = libvsmbr_check_file_signature_wide(
 		          wide_source,
 		          &error );
 
@@ -447,10 +447,10 @@ on_error:
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
-/* Tests the libvsmbr_check_volume_signature_file_io_handle function
+/* Tests the libvsmbr_check_file_signature_file_io_handle function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_check_volume_signature_file_io_handle(
+int vsmbr_test_check_file_signature_file_io_handle(
      const system_character_t *source )
 {
 	uint8_t empty_block[ 8192 ];
@@ -532,9 +532,9 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 		 "error",
 		 error );
 
-		/* Test check volume signature
+		/* Test check file signature
 		 */
-		result = libvsmbr_check_volume_signature_file_io_handle(
+		result = libvsmbr_check_file_signature_file_io_handle(
 		          file_io_handle,
 		          &error );
 
@@ -549,7 +549,7 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 	}
 	/* Test error cases
 	 */
-	result = libvsmbr_check_volume_signature_file_io_handle(
+	result = libvsmbr_check_file_signature_file_io_handle(
 	          NULL,
 	          &error );
 
@@ -599,7 +599,7 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 		 "error",
 		 error );
 	}
-	/* Test check volume signature with data too small
+	/* Test check file signature with data too small
 	 */
 	result = vsmbr_test_open_file_io_handle(
 	          &file_io_handle,
@@ -620,7 +620,7 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 	 "error",
 	 error );
 
-	result = libvsmbr_check_volume_signature_file_io_handle(
+	result = libvsmbr_check_file_signature_file_io_handle(
 	          file_io_handle,
 	          &error );
 
@@ -649,7 +649,7 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 	 "error",
 	 error );
 
-	/* Test check volume signature with empty block
+	/* Test check file signature with empty block
 	 */
 	result = vsmbr_test_open_file_io_handle(
 	          &file_io_handle,
@@ -670,7 +670,7 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 	 "error",
 	 error );
 
-	result = libvsmbr_check_volume_signature_file_io_handle(
+	result = libvsmbr_check_file_signature_file_io_handle(
 	          file_io_handle,
 	          &error );
 
@@ -768,22 +768,22 @@ int main(
 #if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
 
 	VSMBR_TEST_RUN_WITH_ARGS(
-	 "libvsmbr_check_volume_signature",
-	 vsmbr_test_check_volume_signature,
+	 "libvsmbr_check_file_signature",
+	 vsmbr_test_check_file_signature,
 	 source );
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
 	VSMBR_TEST_RUN_WITH_ARGS(
-	 "libvsmbr_check_volume_signature_wide",
-	 vsmbr_test_check_volume_signature_wide,
+	 "libvsmbr_check_file_signature_wide",
+	 vsmbr_test_check_file_signature_wide,
 	 source );
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
 	VSMBR_TEST_RUN_WITH_ARGS(
-	 "libvsmbr_check_volume_signature_file_io_handle",
-	 vsmbr_test_check_volume_signature_file_io_handle,
+	 "libvsmbr_check_file_signature_file_io_handle",
+	 vsmbr_test_check_file_signature_file_io_handle,
 	 source );
 
 #endif /* !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 ) */

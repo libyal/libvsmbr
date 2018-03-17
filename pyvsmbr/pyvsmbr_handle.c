@@ -32,6 +32,8 @@
 #include "pyvsmbr_libbfio.h"
 #include "pyvsmbr_libcerror.h"
 #include "pyvsmbr_libvsmbr.h"
+#include "pyvsmbr_partition.h"
+#include "pyvsmbr_partitions.h"
 #include "pyvsmbr_python.h"
 #include "pyvsmbr_unused.h"
 
@@ -76,11 +78,50 @@ PyMethodDef pyvsmbr_handle_object_methods[] = {
 	  "\n"
 	  "Closes a handle." },
 
+	{ "get_bytes_per_sector",
+	  (PyCFunction) pyvsmbr_handle_get_bytes_per_sector,
+	  METH_NOARGS,
+	  "get_bytes_per_sector() -> Integer or None\n"
+	  "\n"
+	  "Retrieves the bytes per sector." },
+
+	{ "get_number_of_partitions",
+	  (PyCFunction) pyvsmbr_handle_get_number_of_partitions,
+	  METH_NOARGS,
+	  "get_number_of_partitions() -> Integer or None\n"
+	  "\n"
+	  "Retrieves the number of partitions." },
+
+	{ "get_partition",
+	  (PyCFunction) pyvsmbr_handle_get_partition,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "get_partition(partition_index) -> Object or None\n"
+	  "\n"
+	  "Retrieves the partition specified by the index." },
+
 	/* Sentinel */
 	{ NULL, NULL, 0, NULL }
 };
 
 PyGetSetDef pyvsmbr_handle_object_get_set_definitions[] = {
+
+	{ "bytes_per_sector",
+	  (getter) pyvsmbr_handle_get_bytes_per_sector,
+	  (setter) 0,
+	  "The bytes per sector.",
+	  NULL },
+
+	{ "number_of_partitions",
+	  (getter) pyvsmbr_handle_get_number_of_partitions,
+	  (setter) 0,
+	  "The number of partitions.",
+	  NULL },
+
+	{ "partitions",
+	  (getter) pyvsmbr_handle_get_partitions,
+	  (setter) 0,
+	  "The partitions.",
+	  NULL },
 
 	/* Sentinel */
 	{ NULL, NULL, NULL, NULL, NULL }
@@ -181,49 +222,6 @@ PyTypeObject pyvsmbr_handle_type_object = {
 	0
 };
 
-/* Creates a new handle object
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pyvsmbr_handle_new(
-           void )
-{
-	pyvsmbr_handle_t *pyvsmbr_handle = NULL;
-	static char *function            = "pyvsmbr_handle_new";
-
-	pyvsmbr_handle = PyObject_New(
-	                  struct pyvsmbr_handle,
-	                  &pyvsmbr_handle_type_object );
-
-	if( pyvsmbr_handle == NULL )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to initialize handle.",
-		 function );
-
-		goto on_error;
-	}
-	if( pyvsmbr_handle_init(
-	     pyvsmbr_handle ) != 0 )
-	{
-		PyErr_Format(
-		 PyExc_MemoryError,
-		 "%s: unable to initialize handle.",
-		 function );
-
-		goto on_error;
-	}
-	return( (PyObject *) pyvsmbr_handle );
-
-on_error:
-	if( pyvsmbr_handle != NULL )
-	{
-		Py_DecRef(
-		 (PyObject *) pyvsmbr_handle );
-	}
-	return( NULL );
-}
-
 /* Creates a new handle object and opens it
  * Returns a Python object if successful or NULL on error
  */
@@ -236,7 +234,8 @@ PyObject *pyvsmbr_handle_new_open(
 
 	PYVSMBR_UNREFERENCED_PARAMETER( self )
 
-	pyvsmbr_handle = pyvsmbr_handle_new();
+	pyvsmbr_handle_init(
+	 (pyvsmbr_handle_t *) pyvsmbr_handle );
 
 	pyvsmbr_handle_open(
 	 (pyvsmbr_handle_t *) pyvsmbr_handle,
@@ -258,7 +257,8 @@ PyObject *pyvsmbr_handle_new_open_file_object(
 
 	PYVSMBR_UNREFERENCED_PARAMETER( self )
 
-	pyvsmbr_handle = pyvsmbr_handle_new();
+	pyvsmbr_handle_init(
+	 (pyvsmbr_handle_t *) pyvsmbr_handle );
 
 	pyvsmbr_handle_open_file_object(
 	 (pyvsmbr_handle_t *) pyvsmbr_handle,
@@ -326,15 +326,6 @@ void pyvsmbr_handle_free(
 
 		return;
 	}
-	if( pyvsmbr_handle->handle == NULL )
-	{
-		PyErr_Format(
-		 PyExc_ValueError,
-		 "%s: invalid handle - missing libvsmbr handle.",
-		 function );
-
-		return;
-	}
 	ob_type = Py_TYPE(
 	           pyvsmbr_handle );
 
@@ -356,24 +347,27 @@ void pyvsmbr_handle_free(
 
 		return;
 	}
-	Py_BEGIN_ALLOW_THREADS
-
-	result = libvsmbr_handle_free(
-	          &( pyvsmbr_handle->handle ),
-	          &error );
-
-	Py_END_ALLOW_THREADS
-
-	if( result != 1 )
+	if( pyvsmbr_handle->handle != NULL )
 	{
-		pyvsmbr_error_raise(
-		 error,
-		 PyExc_MemoryError,
-		 "%s: unable to free libvsmbr handle.",
-		 function );
+		Py_BEGIN_ALLOW_THREADS
 
-		libcerror_error_free(
-		 &error );
+		result = libvsmbr_handle_free(
+		          &( pyvsmbr_handle->handle ),
+		          &error );
+
+		Py_END_ALLOW_THREADS
+
+		if( result != 1 )
+		{
+			pyvsmbr_error_raise(
+			 error,
+			 PyExc_MemoryError,
+			 "%s: unable to free libvsmbr handle.",
+			 function );
+
+			libcerror_error_free(
+			 &error );
+		}
 	}
 	ob_type->tp_free(
 	 (PyObject*) pyvsmbr_handle );
@@ -814,5 +808,283 @@ PyObject *pyvsmbr_handle_close(
 	 Py_None );
 
 	return( Py_None );
+}
+
+/* Retrieves the bytes per sector
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_handle_get_bytes_per_sector(
+           pyvsmbr_handle_t *pyvsmbr_handle,
+           PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyvsmbr_handle_get_bytes_per_sector";
+	uint32_t value_32bit     = 0;
+	int result               = 0;
+
+	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyvsmbr_handle == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid handle.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libvsmbr_handle_get_bytes_per_sector(
+	          pyvsmbr_handle->handle,
+	          &value_32bit,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result == -1 )
+	{
+		pyvsmbr_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve bytes per sector.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	else if( result == 0 )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_32bit );
+
+	return( integer_object );
+}
+
+/* Retrieves the number of partitions
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_handle_get_number_of_partitions(
+           pyvsmbr_handle_t *pyvsmbr_handle,
+           PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyvsmbr_handle_get_number_of_partitions";
+	int number_of_partitions = 0;
+	int result               = 0;
+
+	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyvsmbr_handle == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid handle.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libvsmbr_handle_get_number_of_partitions(
+	          pyvsmbr_handle->handle,
+	          &number_of_partitions,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyvsmbr_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of partitions.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+#if PY_MAJOR_VERSION >= 3
+	integer_object = PyLong_FromLong(
+	                  (long) number_of_partitions );
+#else
+	integer_object = PyInt_FromLong(
+	                  (long) number_of_partitions );
+#endif
+	return( integer_object );
+}
+
+/* Retrieves a specific partition by index
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_handle_get_partition_by_index(
+           PyObject *pyvsmbr_handle,
+           int partition_index )
+{
+	PyObject *partition_object      = NULL;
+	libcerror_error_t *error        = NULL;
+	libvsmbr_partition_t *partition = NULL;
+	static char *function           = "pyvsmbr_handle_get_partition_by_index";
+	int result                      = 0;
+
+	if( pyvsmbr_handle == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid handle.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libvsmbr_handle_get_partition_by_index(
+	          ( (pyvsmbr_handle_t *) pyvsmbr_handle )->handle,
+	          partition_index,
+	          &partition,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyvsmbr_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve partition: %d.",
+		 function,
+		 partition_index );
+
+		libcerror_error_free(
+		 &error );
+
+		goto on_error;
+	}
+	partition_object = pyvsmbr_partition_new(
+	                    partition,
+	                    (PyObject *) pyvsmbr_handle );
+
+	if( partition_object == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create partition object.",
+		 function );
+
+		goto on_error;
+	}
+	return( partition_object );
+
+on_error:
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	return( NULL );
+}
+
+/* Retrieves a specific partition
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_handle_get_partition(
+           pyvsmbr_handle_t *pyvsmbr_handle,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *partition_object  = NULL;
+	static char *keyword_list[] = { "partition_index", NULL };
+	int partition_index         = 0;
+
+	if( PyArg_ParseTupleAndKeywords(
+	     arguments,
+	     keywords,
+	     "i",
+	     keyword_list,
+	     &partition_index ) == 0 )
+	{
+		return( NULL );
+	}
+	partition_object = pyvsmbr_handle_get_partition_by_index(
+	                    (PyObject *) pyvsmbr_handle,
+	                    partition_index );
+
+	return( partition_object );
+}
+
+/* Retrieves a sequence and iterator object for the partitions
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_handle_get_partitions(
+           pyvsmbr_handle_t *pyvsmbr_handle,
+           PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
+{
+	PyObject *sequence_object = NULL;
+	libcerror_error_t *error  = NULL;
+	static char *function     = "pyvsmbr_handle_get_partitions";
+	int number_of_partitions  = 0;
+	int result                = 0;
+
+	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyvsmbr_handle == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid handle.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libvsmbr_handle_get_number_of_partitions(
+	          pyvsmbr_handle->handle,
+	          &number_of_partitions,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyvsmbr_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve number of partitions.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	sequence_object = pyvsmbr_partitions_new(
+	                   (PyObject *) pyvsmbr_handle,
+	                   &pyvsmbr_handle_get_partition_by_index,
+	                   number_of_partitions );
+
+	if( sequence_object == NULL )
+	{
+		pyvsmbr_error_raise(
+		 error,
+		 PyExc_MemoryError,
+		 "%s: unable to create sequence object.",
+		 function );
+
+		return( NULL );
+	}
+	return( sequence_object );
 }
 

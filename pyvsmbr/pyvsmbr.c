@@ -23,7 +23,7 @@
 #include <narrow_string.h>
 #include <types.h>
 
-#if defined( HAVE_STDLIB_H )
+#if defined( HAVE_STDLIB_H ) || defined( HAVE_WINAPI )
 #include <stdlib.h>
 #endif
 
@@ -33,13 +33,15 @@
 #include "pyvsmbr_handle.h"
 #include "pyvsmbr_libcerror.h"
 #include "pyvsmbr_libvsmbr.h"
+#include "pyvsmbr_partition.h"
+#include "pyvsmbr_partitions.h"
 #include "pyvsmbr_python.h"
 #include "pyvsmbr_unused.h"
 
 #if !defined( LIBVSMBR_HAVE_BFIO )
 
 LIBVSMBR_EXTERN \
-int libvsmbr_check_volume_signature_file_io_handle(
+int libvsmbr_check_file_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libvsmbr_error_t **error );
 
@@ -55,21 +57,19 @@ PyMethodDef pyvsmbr_module_methods[] = {
 	  "\n"
 	  "Retrieves the version." },
 
-	{ "check_volume_signature",
-	  (PyCFunction) pyvsmbr_check_volume_signature,
+	{ "check_file_signature",
+	  (PyCFunction) pyvsmbr_check_file_signature,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "check_volume_signature(filename) -> Boolean\n"
+	  "check_file_signature(filename) -> Boolean\n"
 	  "\n"
-	  "Checks if a file has a MBR volume signature." },
+	  "Checks if a file has a Master Boot Record (MBR) signature signature." },
 
-	{ "check_volume_signature_file_object",
-	  (PyCFunction) pyvsmbr_check_volume_signature_file_object,
+	{ "check_file_signature_file_object",
+	  (PyCFunction) pyvsmbr_check_file_signature_file_object,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "check_volume_signature_file_object(filename) -> Boolean\n"
+	  "check_file_signature_file_object(filename) -> Boolean\n"
 	  "\n"
-	  "Checks if a file has a MBR volume signature using a file-like object." },
-
-/* TODO: add open functions */
+	  "Checks if a file has a Master Boot Record (MBR) signature using a file-like object." },
 
 	/* Sentinel */
 	{ NULL,
@@ -111,17 +111,17 @@ PyObject *pyvsmbr_get_version(
 	         errors ) );
 }
 
-/* Checks if the file has a MBR volume signature
+/* Checks if the file has a Master Boot Record (MBR) signature
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_check_volume_signature(
+PyObject *pyvsmbr_check_file_signature(
            PyObject *self PYVSMBR_ATTRIBUTE_UNUSED,
            PyObject *arguments,
            PyObject *keywords )
 {
 	PyObject *string_object      = NULL;
 	libcerror_error_t *error     = NULL;
-	static char *function        = "pyvsmbr_check_volume_signature";
+	static char *function        = "pyvsmbr_check_file_signature";
 	static char *keyword_list[]  = { "filename", NULL };
 	const char *filename_narrow  = NULL;
 	int result                   = 0;
@@ -172,7 +172,7 @@ PyObject *pyvsmbr_check_volume_signature(
 		                             string_object );
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_check_volume_signature_wide(
+		result = libvsmbr_check_file_signature_wide(
 		          filename_wide,
 		          &error );
 
@@ -199,7 +199,7 @@ PyObject *pyvsmbr_check_volume_signature(
 #endif
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_check_volume_signature(
+		result = libvsmbr_check_file_signature(
 		          filename_narrow,
 		          &error );
 
@@ -207,13 +207,15 @@ PyObject *pyvsmbr_check_volume_signature(
 
 		Py_DecRef(
 		 utf8_string_object );
-#endif
+
+#endif /* #if defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
+
 		if( result == -1 )
 		{
 			pyvsmbr_error_raise(
 			 error,
 			 PyExc_IOError,
-			 "%s: unable to check volume signature.",
+			 "%s: unable to check file signature.",
 			 function );
 
 			libcerror_error_free(
@@ -266,7 +268,7 @@ PyObject *pyvsmbr_check_volume_signature(
 #endif
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_check_volume_signature(
+		result = libvsmbr_check_file_signature(
 		          filename_narrow,
 		          &error );
 
@@ -277,7 +279,7 @@ PyObject *pyvsmbr_check_volume_signature(
 			pyvsmbr_error_raise(
 			 error,
 			 PyExc_IOError,
-			 "%s: unable to check volume signature.",
+			 "%s: unable to check file signature.",
 			 function );
 
 			libcerror_error_free(
@@ -305,10 +307,10 @@ PyObject *pyvsmbr_check_volume_signature(
 	return( NULL );
 }
 
-/* Checks if the file has a MBR volume signature using a file-like object
+/* Checks if the file has a Master Boot Record (MBR) signature using a file-like object
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_check_volume_signature_file_object(
+PyObject *pyvsmbr_check_file_signature_file_object(
            PyObject *self PYVSMBR_ATTRIBUTE_UNUSED,
            PyObject *arguments,
            PyObject *keywords )
@@ -316,7 +318,7 @@ PyObject *pyvsmbr_check_volume_signature_file_object(
 	libcerror_error_t *error         = NULL;
 	libbfio_handle_t *file_io_handle = NULL;
 	PyObject *file_object            = NULL;
-	static char *function            = "pyvsmbr_check_volume_signature_file_object";
+	static char *function            = "pyvsmbr_check_file_signature_file_object";
 	static char *keyword_list[]      = { "file_object", NULL };
 	int result                       = 0;
 
@@ -349,7 +351,7 @@ PyObject *pyvsmbr_check_volume_signature_file_object(
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_check_volume_signature_file_io_handle(
+	result = libvsmbr_check_file_signature_file_io_handle(
 	          file_io_handle,
 	          &error );
 
@@ -360,7 +362,7 @@ PyObject *pyvsmbr_check_volume_signature_file_object(
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to check volume signature.",
+		 "%s: unable to check file signature.",
 		 function );
 
 		libcerror_error_free(
@@ -442,9 +444,8 @@ PyMODINIT_FUNC initpyvsmbr(
                 void )
 #endif
 {
-	PyObject *module                 = NULL;
-	PyTypeObject *handle_type_object = NULL;
-	PyGILState_STATE gil_state       = 0;
+	PyObject *module           = NULL;
+	PyGILState_STATE gil_state = 0;
 
 #if defined( HAVE_DEBUG_OUTPUT )
 	libvsmbr_notify_set_stream(
@@ -491,12 +492,44 @@ PyMODINIT_FUNC initpyvsmbr(
 	Py_IncRef(
 	 (PyObject * ) &pyvsmbr_handle_type_object );
 
-	handle_type_object = &pyvsmbr_handle_type_object;
-
 	PyModule_AddObject(
 	 module,
 	 "handle",
-	 (PyObject *) handle_type_object );
+	 (PyObject *) &pyvsmbr_handle_type_object );
+
+	/* Setup the partition type object
+	 */
+	pyvsmbr_partition_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyvsmbr_partition_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject * ) &pyvsmbr_partition_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "partition",
+	 (PyObject *) &pyvsmbr_partition_type_object );
+
+	/* Setup the partitions type object
+	 */
+	pyvsmbr_partitions_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyvsmbr_partitions_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject * ) &pyvsmbr_partitions_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "partitions",
+	 (PyObject *) &pyvsmbr_partitions_type_object );
 
 	PyGILState_Release(
 	 gil_state );
