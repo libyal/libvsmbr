@@ -320,8 +320,10 @@ on_error:
 int vsmbr_test_partition_free(
      void )
 {
-	libcerror_error_t *error = NULL;
-	int result               = 0;
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	int result                                    = 0;
 
 	/* Test error cases
 	 */
@@ -341,7 +343,115 @@ int vsmbr_test_partition_free(
 	libcerror_error_free(
 	 &error );
 
-/* TODO test libcthreads_read_write_lock_free failing */
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          NULL,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test libvsmbr_partition_free with pthread_rwlock_destroy failing in libcthreads_read_write_lock_free
+	 */
+	vsmbr_test_pthread_rwlock_destroy_attempts_before_fail = 0;
+
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_destroy_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_destroy_attempts_before_fail = -1;
+
+		/* Clean up
+		 */
+		result = libvsmbr_partition_free(
+		          &partition,
+		          &error );
+
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 1 );
+
+		VSMBR_TEST_ASSERT_IS_NULL(
+		 "partition",
+		 partition );
+
+		VSMBR_TEST_ASSERT_IS_NULL(
+		 "error",
+		 error );
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NULL(
+		 "partition",
+		 partition );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Clean up
+	 */
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
 
 	return( 1 );
 
@@ -350,6 +460,18 @@ on_error:
 	{
 		libcerror_error_free(
 		 &error );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
 	}
 	return( 0 );
 }
@@ -360,13 +482,87 @@ on_error:
 int vsmbr_test_partition_get_type(
      void )
 {
-	libcerror_error_t *error = NULL;
-	int result               = 0;
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	int result                                    = 0;
+	uint8_t partition_type                        = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          NULL,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_partition_get_type(
+	          partition,
+	          &partition_type,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
 	result = libvsmbr_partition_get_type(
 	          NULL,
+	          &partition_type,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_partition_get_type(
+	          partition,
 	          NULL,
 	          &error );
 
@@ -382,6 +578,101 @@ int vsmbr_test_partition_get_type(
 	libcerror_error_free(
 	 &error );
 
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
+
+	/* Test libvsmbr_partition_get_type with pthread_rwlock_rdlock failing in libcthreads_read_write_lock_grab_for_read
+	 */
+	vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = 0;
+
+	result = libvsmbr_partition_get_type(
+	          partition,
+	          &partition_type,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Test libvsmbr_partition_get_type with pthread_rwlock_unlock failing in libcthreads_read_write_lock_release_for_read
+	 * WARNING: after this test the lock is still active
+	 */
+	vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = 0;
+
+	result = libvsmbr_partition_get_type(
+	          partition,
+	          &partition_type,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_unlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
+
+	/* Clean up
+	 */
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -389,6 +680,474 @@ on_error:
 	{
 		libcerror_error_free(
 		 &error );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_internal_partition_seek_offset function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_internal_partition_seek_offset(
+     void )
+{
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	off64_t offset                                = 0;
+	int result                                    = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	partition_values->size = 4096;
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          NULL,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	offset = libvsmbr_internal_partition_seek_offset(
+	          (libvsmbr_internal_partition_t *) partition,
+	          1024,
+	          SEEK_CUR,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) 1024 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	offset = libvsmbr_internal_partition_seek_offset(
+	          (libvsmbr_internal_partition_t *) partition,
+	          1024,
+	          SEEK_CUR,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) 2048 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	offset = libvsmbr_internal_partition_seek_offset(
+	          (libvsmbr_internal_partition_t *) partition,
+	          0,
+	          SEEK_END,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) 4096 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	offset = libvsmbr_internal_partition_seek_offset(
+	          (libvsmbr_internal_partition_t *) partition,
+	          0,
+	          SEEK_SET,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) 0 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	offset = libvsmbr_internal_partition_seek_offset(
+	          NULL,
+	          0,
+	          SEEK_SET,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	offset = libvsmbr_internal_partition_seek_offset(
+	          (libvsmbr_internal_partition_t *) partition,
+	          -1,
+	          SEEK_SET,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	offset = libvsmbr_internal_partition_seek_offset(
+	          (libvsmbr_internal_partition_t *) partition,
+	          0,
+	          -1,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Clean up
+	 */
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
+	}
+	return( 0 );
+}
+
+/* Tests the libvsmbr_partition_seek_offset function
+ * Returns 1 if successful or 0 if not
+ */
+int vsmbr_test_partition_seek_offset(
+     void )
+{
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	off64_t offset                                = 0;
+	int result                                    = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          NULL,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	offset = libvsmbr_partition_seek_offset(
+	          partition,
+	          0,
+	          SEEK_SET,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) 0 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test error cases
+	 */
+	offset = libvsmbr_partition_seek_offset(
+	          NULL,
+	          0,
+	          SEEK_SET,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	/* Test libvsmbr_partition_seek_offset with libvsmbr_internal_partition_seek_offset failing
+	 */
+	offset = libvsmbr_partition_seek_offset(
+	          partition,
+	          -1,
+	          SEEK_SET,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT64(
+	 "offset",
+	 (int64_t) offset,
+	 (int64_t) -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
+
+	/* Test libvsmbr_partition_seek_offset with pthread_rwlock_rdlock failing in libcthreads_read_write_lock_grab_for_read
+	 */
+	vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = 0;
+
+	offset = libvsmbr_partition_seek_offset(
+	          partition,
+	          0,
+	          SEEK_SET,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT64(
+		 "offset",
+		 (int64_t) offset,
+		 (int64_t) -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Test libvsmbr_partition_seek_offset with pthread_rwlock_unlock failing in libcthreads_read_write_lock_release_for_read
+	 * WARNING: after this test the lock is still active
+	 */
+	vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = 0;
+
+	offset = libvsmbr_partition_seek_offset(
+	          partition,
+	          0,
+	          SEEK_SET,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_unlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT64(
+		 "offset",
+		 (int64_t) offset,
+		 (int64_t) -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
+
+	/* Clean up
+	 */
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	return( 1 );
+
+on_error:
+	if( error != NULL )
+	{
+		libcerror_error_free(
+		 &error );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
 	}
 	return( 0 );
 }
@@ -399,13 +1158,87 @@ on_error:
 int vsmbr_test_partition_get_offset(
      void )
 {
-	libcerror_error_t *error = NULL;
-	int result               = 0;
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	off64_t offset                                = 0;
+	int result                                    = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          NULL,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_partition_get_offset(
+	          partition,
+	          &offset,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
 	result = libvsmbr_partition_get_offset(
 	          NULL,
+	          &offset,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_partition_get_offset(
+	          partition,
 	          NULL,
 	          &error );
 
@@ -421,6 +1254,101 @@ int vsmbr_test_partition_get_offset(
 	libcerror_error_free(
 	 &error );
 
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
+
+	/* Test libvsmbr_partition_get_offset with pthread_rwlock_rdlock failing in libcthreads_read_write_lock_grab_for_read
+	 */
+	vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = 0;
+
+	result = libvsmbr_partition_get_offset(
+	          partition,
+	          &offset,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Test libvsmbr_partition_get_offset with pthread_rwlock_unlock failing in libcthreads_read_write_lock_release_for_read
+	 * WARNING: after this test the lock is still active
+	 */
+	vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = 0;
+
+	result = libvsmbr_partition_get_offset(
+	          partition,
+	          &offset,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_unlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
+
+	/* Clean up
+	 */
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -428,6 +1356,18 @@ on_error:
 	{
 		libcerror_error_free(
 		 &error );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
 	}
 	return( 0 );
 }
@@ -438,13 +1378,87 @@ on_error:
 int vsmbr_test_partition_get_size(
      void )
 {
-	libcerror_error_t *error = NULL;
-	int result               = 0;
+	libcerror_error_t *error                      = NULL;
+	libvsmbr_partition_t *partition               = NULL;
+	libvsmbr_partition_values_t *partition_values = NULL;
+	size64_t size                                 = 0;
+	int result                                    = 0;
+
+	/* Initialize test
+	 */
+	result = libvsmbr_partition_values_initialize(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_initialize(
+	          &partition,
+	          NULL,
+	          partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	/* Test regular cases
+	 */
+	result = libvsmbr_partition_get_size(
+	          partition,
+	          &size,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
 
 	/* Test error cases
 	 */
 	result = libvsmbr_partition_get_size(
 	          NULL,
+	          &size,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
+
+	libcerror_error_free(
+	 &error );
+
+	result = libvsmbr_partition_get_size(
+	          partition,
 	          NULL,
 	          &error );
 
@@ -460,6 +1474,101 @@ int vsmbr_test_partition_get_size(
 	libcerror_error_free(
 	 &error );
 
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
+
+	/* Test libvsmbr_partition_get_size with pthread_rwlock_rdlock failing in libcthreads_read_write_lock_grab_for_read
+	 */
+	vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = 0;
+
+	result = libvsmbr_partition_get_size(
+	          partition,
+	          &size,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+	/* Test libvsmbr_partition_get_size with pthread_rwlock_unlock failing in libcthreads_read_write_lock_release_for_read
+	 * WARNING: after this test the lock is still active
+	 */
+	vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = 0;
+
+	result = libvsmbr_partition_get_size(
+	          partition,
+	          &size,
+	          &error );
+
+	if( vsmbr_test_pthread_rwlock_unlock_attempts_before_fail != -1 )
+	{
+		vsmbr_test_pthread_rwlock_unlock_attempts_before_fail = -1;
+	}
+	else
+	{
+		VSMBR_TEST_ASSERT_EQUAL_INT(
+		 "result",
+		 result,
+		 -1 );
+
+		VSMBR_TEST_ASSERT_IS_NOT_NULL(
+		 "error",
+		 error );
+
+		libcerror_error_free(
+		 &error );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
+
+	/* Clean up
+	 */
+	result = libvsmbr_partition_free(
+	          &partition,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition",
+	 partition );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	result = libvsmbr_partition_values_free(
+	          &partition_values,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "partition_values",
+	 partition_values );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -467,6 +1576,18 @@ on_error:
 	{
 		libcerror_error_free(
 		 &error );
+	}
+	if( partition != NULL )
+	{
+		libvsmbr_partition_free(
+		 &partition,
+		 NULL );
+	}
+	if( partition_values != NULL )
+	{
+		libvsmbr_partition_values_free(
+		 &partition_values,
+		 NULL );
 	}
 	return( 0 );
 }
@@ -502,11 +1623,19 @@ int main(
 	 "libvsmbr_partition_get_type",
 	 vsmbr_test_partition_get_type );
 
+	/* TODO: add tests for libvsmbr_internal_partition_read_buffer_from_file_io_handle */
+
 	/* TODO: add tests for libvsmbr_partition_read_buffer */
 
 	/* TODO: add tests for libvsmbr_partition_read_buffer_at_offset */
 
-	/* TODO: add tests for libvsmbr_partition_seek_offset */
+	VSMBR_TEST_RUN(
+	 "libvsmbr_internal_partition_seek_offset",
+	 vsmbr_test_internal_partition_seek_offset );
+
+	VSMBR_TEST_RUN(
+	 "libvsmbr_partition_seek_offset",
+	 vsmbr_test_partition_seek_offset );
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_partition_get_offset",

@@ -33,16 +33,16 @@
  * for local use of libvsmbr
  */
 #else
-#define LIBVSMBR_VERSION					@VERSION@
+#define LIBVSMBR_VERSION			@VERSION@
 
 /* The libvsmbr version string
  */
-#define LIBVSMBR_VERSION_STRING					"@VERSION@"
+#define LIBVSMBR_VERSION_STRING			"@VERSION@"
 
 /* The endian definitions
  */
-#define LIBVSMBR_ENDIAN_BIG					_BYTE_STREAM_ENDIAN_BIG
-#define LIBVSMBR_ENDIAN_LITTLE					_BYTE_STREAM_ENDIAN_LITTLE
+#define LIBVSMBR_ENDIAN_BIG			_BYTE_STREAM_ENDIAN_BIG
+#define LIBVSMBR_ENDIAN_LITTLE			_BYTE_STREAM_ENDIAN_LITTLE
 
 /* The access flags definitions
  * bit 1        set to 1 for read access
@@ -51,20 +51,20 @@
  */
 enum LIBVSMBR_ACCESS_FLAGS
 {
-	LIBVSMBR_ACCESS_FLAG_READ				= 0x01,
+	LIBVSMBR_ACCESS_FLAG_READ		= 0x01,
 /* Reserved: not supported yet */
-	LIBVSMBR_ACCESS_FLAG_WRITE				= 0x02
+	LIBVSMBR_ACCESS_FLAG_WRITE		= 0x02
 };
 
 /* The file access macros
  */
-#define LIBVSMBR_OPEN_READ					( LIBVSMBR_ACCESS_FLAG_READ )
+#define LIBVSMBR_OPEN_READ			( LIBVSMBR_ACCESS_FLAG_READ )
 /* Reserved: not supported yet */
-#define LIBVSMBR_OPEN_WRITE					( LIBVSMBR_ACCESS_FLAG_WRITE )
+#define LIBVSMBR_OPEN_WRITE			( LIBVSMBR_ACCESS_FLAG_WRITE )
 /* Reserved: not supported yet */
-#define LIBVSMBR_OPEN_READ_WRITE				( LIBVSMBR_ACCESS_FLAG_READ | LIBVSMBR_ACCESS_FLAG_WRITE )
+#define LIBVSMBR_OPEN_READ_WRITE		( LIBVSMBR_ACCESS_FLAG_READ | LIBVSMBR_ACCESS_FLAG_WRITE )
 
-#endif
+#endif /* !defined( HAVE_LOCAL_LIBVSMBR ) */
 
-#endif
+#endif /* !defined( _LIBVSMBR_INTERNAL_DEFINITIONS_H ) */
 

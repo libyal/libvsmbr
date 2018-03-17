@@ -108,6 +108,20 @@ int libvsmbr_partition_initialize(
 
 		goto on_error;
 	}
+	if( libvsmbr_partition_values_get_size(
+	     partition_values,
+	     &( internal_partition->size ),
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve partition size.",
+		 function );
+
+		goto on_error;
+	}
 #if defined( HAVE_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_initialize(
 	     &( internal_partition->read_write_lock ),
@@ -693,7 +707,6 @@ int libvsmbr_partition_get_offset(
 {
 	libvsmbr_internal_partition_t *internal_partition = NULL;
 	static char *function                             = "libvsmbr_partition_get_offset";
-	int result                                        = 1;
 
 	if( partition == NULL )
 	{
@@ -708,6 +721,17 @@ int libvsmbr_partition_get_offset(
 	}
 	internal_partition = (libvsmbr_internal_partition_t *) partition;
 
+	if( offset == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid offset.",
+		 function );
+
+		return( -1 );
+	}
 #if defined( HAVE_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_grab_for_read(
 	     internal_partition->read_write_lock,
@@ -723,20 +747,8 @@ int libvsmbr_partition_get_offset(
 		return( -1 );
 	}
 #endif
-	if( libvsmbr_partition_values_get_offset(
-	     internal_partition->partition_values,
-	     offset,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve offset.",
-		 function );
+	*offset = internal_partition->current_offset;
 
-		result = -1;
-	}
 #if defined( HAVE_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_release_for_read(
 	     internal_partition->read_write_lock,
@@ -752,7 +764,7 @@ int libvsmbr_partition_get_offset(
 		return( -1 );
 	}
 #endif
-	return( result );
+	return( 1 );
 }
 
 /* Retrieves the partition size
@@ -765,7 +777,6 @@ int libvsmbr_partition_get_size(
 {
 	libvsmbr_internal_partition_t *internal_partition = NULL;
 	static char *function                             = "libvsmbr_partition_get_size";
-	int result                                        = 1;
 
 	if( partition == NULL )
 	{
@@ -780,6 +791,17 @@ int libvsmbr_partition_get_size(
 	}
 	internal_partition = (libvsmbr_internal_partition_t *) partition;
 
+	if( size == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid size.",
+		 function );
+
+		return( -1 );
+	}
 #if defined( HAVE_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_grab_for_read(
 	     internal_partition->read_write_lock,
@@ -795,20 +817,8 @@ int libvsmbr_partition_get_size(
 		return( -1 );
 	}
 #endif
-	if( libvsmbr_partition_values_get_size(
-	     internal_partition->partition_values,
-	     size,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size.",
-		 function );
+	*size = internal_partition->size;
 
-		result = -1;
-	}
 #if defined( HAVE_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_release_for_read(
 	     internal_partition->read_write_lock,
@@ -824,6 +834,6 @@ int libvsmbr_partition_get_size(
 		return( -1 );
 	}
 #endif
-	return( result );
+	return( 1 );
 }
 
