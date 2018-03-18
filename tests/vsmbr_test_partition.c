@@ -316,8 +316,6 @@ on_error:
 	return( 0 );
 }
 
-#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
-
 /* Tests the libvsmbr_partition_free function
  * Returns 1 if successful or 0 if not
  */
@@ -2447,6 +2445,8 @@ on_error:
 	return( 0 );
 }
 
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
+
 /* The main program
  */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
@@ -2467,8 +2467,6 @@ int main(
 	VSMBR_TEST_RUN(
 	 "libvsmbr_partition_initialize",
 	 vsmbr_test_partition_initialize );
-
-#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 	VSMBR_TEST_RUN(
 	 "libvsmbr_partition_free",
@@ -2505,6 +2503,8 @@ int main(
 	VSMBR_TEST_RUN(
 	 "libvsmbr_partition_get_size",
 	 vsmbr_test_partition_get_size );
+
+#endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 	return( EXIT_SUCCESS );
 
