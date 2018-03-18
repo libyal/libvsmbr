@@ -1,6 +1,6 @@
 # Files to ignore by git
 #
-# Version: 20170916
+# Version: 20180318
 
 # Generic auto-generated build files
 *~
@@ -90,6 +90,7 @@ stamp-h[1-9]
 /m4/wchar_t.m4
 /m4/wint_t.m4
 /m4/xsize.m4
+/MANIFEST
 /missing
 /po/boldquot.sed
 /po/en@boldquot.header
