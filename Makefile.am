@@ -43,6 +43,9 @@ GETTEXT_FILES = \
 PKGCONFIG_FILES = \
 	libvsmbr.pc.in
 
+SETUP_PY_FILES = \
+	setup.py
+
 SPEC_FILES = \
 	libvsmbr.spec \
 	libvsmbr.spec.in
@@ -51,6 +54,7 @@ EXTRA_DIST = \
 	$(DPKG_FILES) \
 	$(GETTEXT_FILES) \
 	$(PKGCONFIG_FILES) \
+	$(SETUP_PY_FILES) \
 	$(SPEC_FILES)
 
 MAINTAINERCLEANFILES = \
