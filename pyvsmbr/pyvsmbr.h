@@ -35,12 +35,12 @@ PyObject *pyvsmbr_get_version(
            PyObject *self,
            PyObject *arguments );
 
-PyObject *pyvsmbr_check_file_signature(
+PyObject *pyvsmbr_check_volume_signature(
            PyObject *self,
            PyObject *arguments,
            PyObject *keywords );
 
-PyObject *pyvsmbr_check_file_signature_file_object(
+PyObject *pyvsmbr_check_volume_signature_file_object(
            PyObject *self,
            PyObject *arguments,
            PyObject *keywords );

@@ -64,21 +64,21 @@ int libvsmbr_set_codepage(
 #endif /* !defined( HAVE_LOCAL_LIBVSMBR ) */
 
 LIBVSMBR_EXTERN \
-int libvsmbr_check_file_signature(
+int libvsmbr_check_volume_signature(
      const char *filename,
      libcerror_error_t **error );
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
 LIBVSMBR_EXTERN \
-int libvsmbr_check_file_signature_wide(
+int libvsmbr_check_volume_signature_wide(
      const wchar_t *filename,
      libcerror_error_t **error );
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
 LIBVSMBR_EXTERN \
-int libvsmbr_check_file_signature_file_io_handle(
+int libvsmbr_check_volume_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 

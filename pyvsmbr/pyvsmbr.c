@@ -41,7 +41,7 @@
 #if !defined( LIBVSMBR_HAVE_BFIO )
 
 LIBVSMBR_EXTERN \
-int libvsmbr_check_file_signature_file_io_handle(
+int libvsmbr_check_volume_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libvsmbr_error_t **error );
 
@@ -57,19 +57,19 @@ PyMethodDef pyvsmbr_module_methods[] = {
 	  "\n"
 	  "Retrieves the version." },
 
-	{ "check_file_signature",
-	  (PyCFunction) pyvsmbr_check_file_signature,
+	{ "check_volume_signature",
+	  (PyCFunction) pyvsmbr_check_volume_signature,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "check_file_signature(filename) -> Boolean\n"
+	  "check_volume_signature(filename) -> Boolean\n"
 	  "\n"
-	  "Checks if a file has a Master Boot Record (MBR) signature signature." },
+	  "Checks if a volume has a Master Boot Record (MBR) signature signature." },
 
-	{ "check_file_signature_file_object",
-	  (PyCFunction) pyvsmbr_check_file_signature_file_object,
+	{ "check_volume_signature_file_object",
+	  (PyCFunction) pyvsmbr_check_volume_signature_file_object,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "check_file_signature_file_object(filename) -> Boolean\n"
+	  "check_volume_signature_file_object(filename) -> Boolean\n"
 	  "\n"
-	  "Checks if a file has a Master Boot Record (MBR) signature using a file-like object." },
+	  "Checks if a volume has a Master Boot Record (MBR) signature using a file-like object." },
 
 	/* Sentinel */
 	{ NULL,
@@ -111,17 +111,17 @@ PyObject *pyvsmbr_get_version(
 	         errors ) );
 }
 
-/* Checks if the file has a Master Boot Record (MBR) signature
+/* Checks if the volume has a Master Boot Record (MBR) signature
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_check_file_signature(
+PyObject *pyvsmbr_check_volume_signature(
            PyObject *self PYVSMBR_ATTRIBUTE_UNUSED,
            PyObject *arguments,
            PyObject *keywords )
 {
 	PyObject *string_object      = NULL;
 	libcerror_error_t *error     = NULL;
-	static char *function        = "pyvsmbr_check_file_signature";
+	static char *function        = "pyvsmbr_check_volume_signature";
 	static char *keyword_list[]  = { "filename", NULL };
 	const char *filename_narrow  = NULL;
 	int result                   = 0;
@@ -172,7 +172,7 @@ PyObject *pyvsmbr_check_file_signature(
 		                             string_object );
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_check_file_signature_wide(
+		result = libvsmbr_check_volume_signature_wide(
 		          filename_wide,
 		          &error );
 
@@ -199,7 +199,7 @@ PyObject *pyvsmbr_check_file_signature(
 #endif
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_check_file_signature(
+		result = libvsmbr_check_volume_signature(
 		          filename_narrow,
 		          &error );
 
@@ -268,7 +268,7 @@ PyObject *pyvsmbr_check_file_signature(
 #endif
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_check_file_signature(
+		result = libvsmbr_check_volume_signature(
 		          filename_narrow,
 		          &error );
 
@@ -307,10 +307,10 @@ PyObject *pyvsmbr_check_file_signature(
 	return( NULL );
 }
 
-/* Checks if the file has a Master Boot Record (MBR) signature using a file-like object
+/* Checks if the volume has a Master Boot Record (MBR) signature using a file-like object
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_check_file_signature_file_object(
+PyObject *pyvsmbr_check_volume_signature_file_object(
            PyObject *self PYVSMBR_ATTRIBUTE_UNUSED,
            PyObject *arguments,
            PyObject *keywords )
@@ -318,7 +318,7 @@ PyObject *pyvsmbr_check_file_signature_file_object(
 	libcerror_error_t *error         = NULL;
 	libbfio_handle_t *file_io_handle = NULL;
 	PyObject *file_object            = NULL;
-	static char *function            = "pyvsmbr_check_file_signature_file_object";
+	static char *function            = "pyvsmbr_check_volume_signature_file_object";
 	static char *keyword_list[]      = { "file_object", NULL };
 	int result                       = 0;
 
@@ -351,7 +351,7 @@ PyObject *pyvsmbr_check_file_signature_file_object(
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_check_file_signature_file_io_handle(
+	result = libvsmbr_check_volume_signature_file_io_handle(
 	          file_io_handle,
 	          &error );
 

@@ -120,15 +120,15 @@ int libvsmbr_set_codepage(
 
 #endif /* !defined( HAVE_LOCAL_LIBVSMBR ) */
 
-/* Determines if a file contains a Master Boot Record (MBR) signature
+/* Determines if a volume contains a Master Boot Record (MBR) signature
  * Returns 1 if true, 0 if not or -1 on error
  */
-int libvsmbr_check_file_signature(
+int libvsmbr_check_volume_signature(
      const char *filename,
      libcerror_error_t **error )
 {
 	libbfio_handle_t *file_io_handle = NULL;
-	static char *function            = "libvsmbr_check_file_signature";
+	static char *function            = "libvsmbr_check_volume_signature";
 	size_t filename_length           = 0;
 	int result                       = 0;
 
@@ -185,7 +185,7 @@ int libvsmbr_check_file_signature(
 
 		goto on_error;
 	}
-	result = libvsmbr_check_file_signature_file_io_handle(
+	result = libvsmbr_check_volume_signature_file_io_handle(
 	          file_io_handle,
 	          error );
 
@@ -227,15 +227,15 @@ on_error:
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
-/* Determines if a file contains a Master Boot Record (MBR) signature
+/* Determines if a volume contains a Master Boot Record (MBR) signature
  * Returns 1 if true, 0 if not or -1 on error
  */
-int libvsmbr_check_file_signature_wide(
+int libvsmbr_check_volume_signature_wide(
      const wchar_t *filename,
      libcerror_error_t **error )
 {
 	libbfio_handle_t *file_io_handle = NULL;
-	static char *function            = "libvsmbr_check_file_signature_wide";
+	static char *function            = "libvsmbr_check_volume_signature_wide";
 	size_t filename_length           = 0;
 	int result                       = 0;
 
@@ -292,7 +292,7 @@ int libvsmbr_check_file_signature_wide(
 
 		goto on_error;
 	}
-	result = libvsmbr_check_file_signature_file_io_handle(
+	result = libvsmbr_check_volume_signature_file_io_handle(
 	          file_io_handle,
 	          error );
 
@@ -334,16 +334,16 @@ on_error:
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
-/* Determines if a file contains a Master Boot Record (MBR) signature using a Basic File IO (bfio) handle
+/* Determines if a volume contains a Master Boot Record (MBR) signature using a Basic File IO (bfio) handle
  * Returns 1 if true, 0 if not or -1 on error
  */
-int libvsmbr_check_file_signature_file_io_handle(
+int libvsmbr_check_volume_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error )
 {
 	uint8_t signature[ 512 ];
 
-	static char *function      = "libvsmbr_check_file_signature_file_io_handle";
+	static char *function      = "libvsmbr_check_volume_signature_file_io_handle";
 	ssize_t read_count         = 0;
 	int file_io_handle_is_open = 0;
 

@@ -85,21 +85,21 @@ int libvsmbr_set_codepage(
      int codepage,
      libvsmbr_error_t **error );
 
-/* Determines if a file contains a Master Boot Record (MBR) signature
+/* Determines if a volume contains a Master Boot Record (MBR) signature
  * Returns 1 if true, 0 if not or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_check_file_signature(
+int libvsmbr_check_volume_signature(
      const char *filename,
      libvsmbr_error_t **error );
 
 #if defined( LIBVSMBR_HAVE_WIDE_CHARACTER_TYPE )
 
-/* Determines if a file contains a Master Boot Record (MBR) signature
+/* Determines if a volume contains a Master Boot Record (MBR) signature
  * Returns 1 if true, 0 if not or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_check_file_signature_wide(
+int libvsmbr_check_volume_signature_wide(
      const wchar_t *filename,
      libvsmbr_error_t **error );
 
@@ -107,11 +107,11 @@ int libvsmbr_check_file_signature_wide(
 
 #if defined( LIBVSMBR_HAVE_BFIO )
 
-/* Determines if a file contains a Master Boot Record (MBR) signature using a Basic File IO (bfio) handle
+/* Determines if a volume contains a Master Boot Record (MBR) signature using a Basic File IO (bfio) handle
  * Returns 1 if true, 0 if not or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_check_file_signature_file_io_handle(
+int libvsmbr_check_volume_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libvsmbr_error_t **error );
 
