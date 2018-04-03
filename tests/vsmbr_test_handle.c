@@ -46,7 +46,7 @@
 #if !defined( LIBVSMBR_HAVE_BFIO )
 
 LIBVSMBR_EXTERN \
-int libvsmbr_check_file_signature_file_io_handle(
+int libvsmbr_check_volume_signature_file_io_handle(
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 
@@ -1617,7 +1617,7 @@ int main(
 	         "error",
 	         error );
 
-		result = libvsmbr_check_file_signature_file_io_handle(
+		result = libvsmbr_check_volume_signature_file_io_handle(
 		          file_io_handle,
 		          &error );
 

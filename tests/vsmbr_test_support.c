@@ -229,7 +229,7 @@ int vsmbr_test_check_volume_signature(
 		 "error",
 		 error );
 
-		/* Test check file signature
+		/* Test check volume signature
 		 */
 		result = libvsmbr_check_volume_signature(
 		          narrow_source,
@@ -353,7 +353,7 @@ int vsmbr_test_check_volume_signature_wide(
 		 "error",
 		 error );
 
-		/* Test check file signature
+		/* Test check volume signature
 		 */
 		result = libvsmbr_check_volume_signature_wide(
 		          wide_source,
@@ -532,7 +532,7 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 		 "error",
 		 error );
 
-		/* Test check file signature
+		/* Test check volume signature
 		 */
 		result = libvsmbr_check_volume_signature_file_io_handle(
 		          file_io_handle,
@@ -599,7 +599,7 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 		 "error",
 		 error );
 	}
-	/* Test check file signature with data too small
+	/* Test check volume signature with data too small
 	 */
 	result = vsmbr_test_open_file_io_handle(
 	          &file_io_handle,
@@ -649,7 +649,7 @@ int vsmbr_test_check_volume_signature_file_io_handle(
 	 "error",
 	 error );
 
-	/* Test check file signature with empty block
+	/* Test check volume signature with empty block
 	 */
 	result = vsmbr_test_open_file_io_handle(
 	          &file_io_handle,
