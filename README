@@ -1,12 +1,14 @@
-Library and tools to access the Master Boot Record (MBR) volume system.
+libvsmbr is a library to access the Master Boot Record (MBR) volume system.
 
 Note that this project currently only focuses on the analysis of the format.
 
 Project information:
+
 * Status: experimental
 * Licence: LGPLv3+
 
 For more information see:
+
 * Project documentation: https://github.com/libyal/libvsmbr/wiki/Home
 * How to build from source: https://github.com/libyal/libvsmbr/wiki/Building
 

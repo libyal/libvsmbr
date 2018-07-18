@@ -1,5 +1,5 @@
 /*
- * The internal libvsmbr header
+ * The libvsmbr header wrapper
  *
  * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
  *

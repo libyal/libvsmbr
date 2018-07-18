@@ -37,8 +37,11 @@
 
 #include <libvsmbr/extern.h>
 
+#define LIBVSMBR_EXTERN_VARIABLE	LIBVSMBR_EXTERN
+
 #else
-#define LIBVSMBR_EXTERN	/* extern */
+#define LIBVSMBR_EXTERN		/* extern */
+#define LIBVSMBR_EXTERN_VARIABLE	extern
 
 #endif /* !defined( HAVE_LOCAL_LIBVSMBR ) */
 

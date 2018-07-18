@@ -490,7 +490,7 @@ PyMODINIT_FUNC initpyvsmbr(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pyvsmbr_handle_type_object );
+	 (PyObject *) &pyvsmbr_handle_type_object );
 
 	PyModule_AddObject(
 	 module,
@@ -507,7 +507,7 @@ PyMODINIT_FUNC initpyvsmbr(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pyvsmbr_partition_type_object );
+	 (PyObject *) &pyvsmbr_partition_type_object );
 
 	PyModule_AddObject(
 	 module,
@@ -524,7 +524,7 @@ PyMODINIT_FUNC initpyvsmbr(
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject * ) &pyvsmbr_partitions_type_object );
+	 (PyObject *) &pyvsmbr_partitions_type_object );
 
 	PyModule_AddObject(
 	 module,
