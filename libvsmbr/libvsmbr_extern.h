@@ -28,13 +28,6 @@
  */
 #if !defined( HAVE_LOCAL_LIBVSMBR )
 
-/* If libtool DLL support is enabled set LIBVSMBR_DLL_EXPORT
- * before including libvsmbr/extern.h
- */
-#if defined( _WIN32 ) && defined( DLL_EXPORT )
-#define LIBVSMBR_DLL_EXPORT
-#endif
-
 #include <libvsmbr/extern.h>
 
 #define LIBVSMBR_EXTERN_VARIABLE	LIBVSMBR_EXTERN

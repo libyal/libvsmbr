@@ -24,14 +24,7 @@
 
 #include <common.h>
 
-/* If Cygwin libtool DLL support is enabled set LIBVSMBR_DLL_IMPORT
- * before including libvsmbr.h
- */
-#if defined( _WIN32 ) && defined( DLL_EXPORT )
-#define LIBVSMBR_DLL_IMPORT
-#endif
-
 #include <libvsmbr.h>
 
-#endif
+#endif /* !defined( _PYVSMBR_LIBVSMBR_H ) */
 
