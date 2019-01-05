@@ -1,7 +1,7 @@
 /*
  * Common output functions for the vsmbrtools
  *
- * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -91,7 +91,7 @@ int vsmbrtools_output_initialize(
 
 /* Prints the copyright information
  */
-void vsmbroutput_copyright_fprint(
+void vsmbrtools_output_copyright_fprint(
       FILE *stream )
 {
 	if( stream == NULL )
@@ -100,7 +100,7 @@ void vsmbroutput_copyright_fprint(
 	}
 	fprintf(
 	 stream,
-	 "Copyright (C) 2010-2018, Joachim Metz <%s>.\n"
+	 "Copyright (C) 2010-2019, Joachim Metz <%s>.\n"
 	 "This is free software; see the source for copying conditions. There is NO\n"
 	 "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",
 	 PACKAGE_BUGREPORT );
@@ -108,7 +108,7 @@ void vsmbroutput_copyright_fprint(
 
 /* Prints the version information
  */
-void vsmbroutput_version_fprint(
+void vsmbrtools_output_version_fprint(
       FILE *stream,
       const char *program )
 {
@@ -129,7 +129,7 @@ void vsmbroutput_version_fprint(
 
 /* Prints the detailed version information
  */
-void vsmbroutput_version_detailed_fprint(
+void vsmbrtools_output_version_detailed_fprint(
       FILE *stream,
       const char *program )
 {

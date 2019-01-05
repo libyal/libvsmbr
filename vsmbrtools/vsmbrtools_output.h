@@ -1,7 +1,7 @@
 /*
  * Common output functions for the vsmbrtools
  *
- * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -36,14 +36,14 @@ int vsmbrtools_output_initialize(
      int stdio_mode,
      libcerror_error_t **error );
 
-void vsmbroutput_copyright_fprint(
+void vsmbrtools_output_copyright_fprint(
       FILE *stream );
 
-void vsmbroutput_version_fprint(
+void vsmbrtools_output_version_fprint(
       FILE *stream,
       const char *program );
 
-void vsmbroutput_version_detailed_fprint(
+void vsmbrtools_output_version_detailed_fprint(
       FILE *stream,
       const char *program );
 

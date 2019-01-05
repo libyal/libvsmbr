@@ -1,7 +1,7 @@
 /*
  * Chunk data functions
  *
- * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -20,15 +20,16 @@
  */
 
 #include <common.h>
-#include <byte_stream.h>
 #include <memory.h>
 #include <types.h>
 
-#include "libvsmbr_sector_data.h"
 #include "libvsmbr_definitions.h"
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcnotify.h"
+#include "libvsmbr_libfdata.h"
+#include "libvsmbr_sector_data.h"
+#include "libvsmbr_unused.h"
 
 /* Creates a sector data
  * Make sure the value sector_data is referencing, is set to NULL
@@ -219,6 +220,18 @@ int libvsmbr_sector_data_read_file_io_handle(
 
 		return( -1 );
 	}
+	if( ( sector_data->data_size == 0 )
+	 || ( sector_data->data_size > (size_t) SSIZE_MAX ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid sector data - data size value out of bounds.",
+		 function );
+
+		return( -1 );
+	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
 	{
@@ -276,5 +289,101 @@ int libvsmbr_sector_data_read_file_io_handle(
 	}
 #endif
 	return( 1 );
+}
+
+/* Reads sector data
+ * Callback function for the sector data vector
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_read_element_data(
+     intptr_t *data_handle LIBVSMBR_ATTRIBUTE_UNUSED,
+     libbfio_handle_t *file_io_handle,
+     libfdata_vector_t *vector,
+     libfdata_cache_t *cache,
+     int element_index,
+     int element_data_file_index LIBVSMBR_ATTRIBUTE_UNUSED,
+     off64_t element_data_offset,
+     size64_t element_data_size,
+     uint32_t element_data_flags LIBVSMBR_ATTRIBUTE_UNUSED,
+     uint8_t read_flags LIBVSMBR_ATTRIBUTE_UNUSED,
+     libcerror_error_t **error )
+{
+	libvsmbr_sector_data_t *sector_data = NULL;
+	static char *function               = "libvsmbr_partition_read_element_data";
+
+	LIBVSMBR_UNREFERENCED_PARAMETER( data_handle );
+	LIBVSMBR_UNREFERENCED_PARAMETER( element_data_file_index );
+	LIBVSMBR_UNREFERENCED_PARAMETER( element_data_flags );
+	LIBVSMBR_UNREFERENCED_PARAMETER( read_flags );
+
+	if( element_data_size > (size64_t) SSIZE_MAX )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
+		 "%s: invalid element data size value exceeds maximum.",
+		 function );
+
+		goto on_error;
+	}
+	if( libvsmbr_sector_data_initialize(
+	     &sector_data,
+	     (size_t) element_data_size,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to create sector data.",
+		 function );
+
+		goto on_error;
+	}
+	if( libvsmbr_sector_data_read_file_io_handle(
+	     sector_data,
+	     file_io_handle,
+             element_data_offset,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_IO,
+		 LIBCERROR_IO_ERROR_READ_FAILED,
+		 "%s: unable to read sector data.",
+		 function );
+
+		goto on_error;
+	}
+	if( libfdata_vector_set_element_value_by_index(
+	     vector,
+	     (intptr_t *) file_io_handle,
+	     cache,
+	     element_index,
+	     (intptr_t *) sector_data,
+	     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_sector_data_free,
+	     LIBFDATA_LIST_ELEMENT_VALUE_FLAG_MANAGED,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set sector data as element value.",
+		 function );
+
+		goto on_error;
+	}
+	return( 1 );
+
+on_error:
+	if( sector_data != NULL )
+	{
+		libvsmbr_sector_data_free(
+		 &sector_data,
+		 NULL );
+	}
+	return( -1 );
 }
 

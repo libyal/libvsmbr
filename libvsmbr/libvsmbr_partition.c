@@ -1,7 +1,7 @@
 /*
  * The partition functions
  *
- * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -130,7 +130,7 @@ int libvsmbr_partition_initialize(
 	     NULL,
 	     NULL,
 	     NULL,
-	     (int (*)(intptr_t *, intptr_t *, libfdata_vector_t *, libfcache_cache_t *, int, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libvsmbr_partition_read_sector_data,
+	     (int (*)(intptr_t *, intptr_t *, libfdata_vector_t *, libfdata_cache_t *, int, int, off64_t, size64_t, uint32_t, uint8_t, libcerror_error_t **)) &libvsmbr_partition_read_element_data,
 	     NULL,
 	     LIBFDATA_DATA_HANDLE_FLAG_NON_MANAGED,
 	     error ) != 1 )
@@ -185,7 +185,7 @@ int libvsmbr_partition_initialize(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to intialize read/write lock.",
+		 "%s: unable to initialize read/write lock.",
 		 function );
 
 		goto on_error;
@@ -436,7 +436,7 @@ ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
 		if( libfdata_vector_get_element_value_at_offset(
 		     internal_partition->sectors_vector,
 		     (intptr_t *) file_io_handle,
-		     internal_partition->sectors_cache,
+		     (libfdata_cache_t *) internal_partition->sectors_cache,
 		     current_offset,
 		     &element_data_offset,
 		     (intptr_t **) &sector_data,
@@ -945,101 +945,5 @@ int libvsmbr_partition_get_size(
 	}
 #endif
 	return( 1 );
-}
-
-/* Reads sector data
- * Callback function for the sector data vector
- * Returns 1 if successful or -1 on error
- */
-int libvsmbr_partition_read_sector_data(
-     intptr_t *data_handle LIBVSMBR_ATTRIBUTE_UNUSED,
-     libbfio_handle_t *file_io_handle,
-     libfdata_vector_t *vector,
-     libfcache_cache_t *cache,
-     int element_index,
-     int element_data_file_index LIBVSMBR_ATTRIBUTE_UNUSED,
-     off64_t element_data_offset,
-     size64_t element_data_size,
-     uint32_t element_data_flags LIBVSMBR_ATTRIBUTE_UNUSED,
-     uint8_t read_flags LIBVSMBR_ATTRIBUTE_UNUSED,
-     libcerror_error_t **error )
-{
-	libvsmbr_sector_data_t *sector_data = NULL;
-	static char *function               = "libvsmbr_logical_volume_read_sector_data";
-
-	LIBVSMBR_UNREFERENCED_PARAMETER( data_handle );
-	LIBVSMBR_UNREFERENCED_PARAMETER( element_data_file_index );
-	LIBVSMBR_UNREFERENCED_PARAMETER( element_data_flags );
-	LIBVSMBR_UNREFERENCED_PARAMETER( read_flags );
-
-	if( element_data_size > (size64_t) SSIZE_MAX )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_VALUE_EXCEEDS_MAXIMUM,
-		 "%s: invalid element data size value exceeds maximum.",
-		 function );
-
-		goto on_error;
-	}
-	if( libvsmbr_sector_data_initialize(
-	     &sector_data,
-	     (size_t) element_data_size,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to create sector data.",
-		 function );
-
-		goto on_error;
-	}
-	if( libvsmbr_sector_data_read_file_io_handle(
-	     sector_data,
-	     file_io_handle,
-             element_data_offset,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read sector data.",
-		 function );
-
-		goto on_error;
-	}
-	if( libfdata_vector_set_element_value_by_index(
-	     vector,
-	     (intptr_t *) file_io_handle,
-	     cache,
-	     element_index,
-	     (intptr_t *) sector_data,
-	     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_sector_data_free,
-	     LIBFDATA_LIST_ELEMENT_VALUE_FLAG_MANAGED,
-	     error ) != 1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-		 "%s: unable to set sector data as element value.",
-		 function );
-
-		goto on_error;
-	}
-	return( 1 );
-
-on_error:
-	if( sector_data != NULL )
-	{
-		libvsmbr_sector_data_free(
-		 &sector_data,
-		 NULL );
-	}
-	return( -1 );
 }
 

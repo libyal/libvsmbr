@@ -9,6 +9,8 @@ Homepage: https://github.com/libyal/libvsmbr
 Package: libvsmbr
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libvsmbr1
+Replaces: libvsmbr1
 Suggests: libvsmbr-dbg
 Description: Library to access the Master Boot Record (MBR) volume system
  libvsmbr is a library to access the Master Boot Record (MBR) volume system.
@@ -31,6 +33,8 @@ Package: libvsmbr-tools
 Section: utils
 Architecture: any
 Depends: libvsmbr (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Conflicts: libvsmbr-utils
+Replaces: libvsmbr-utils
 Description: Several tools for Several tools for reading Master Boot Record (MBR) volume systems
  Several tools for Several tools for reading Master Boot Record (MBR) volume systems.
 
@@ -45,6 +49,8 @@ Package: libvsmbr-python
 Section: python
 Architecture: any
 Depends: libvsmbr (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Conflicts: python-libvsmbr
+Replaces: python-libvsmbr
 Suggests: libvsmbr-python-dbg
 Description: Python 2 bindings for libvsmbr
  Python 2 bindings for libvsmbr.
@@ -60,6 +66,8 @@ Package: libvsmbr-python3
 Section: python
 Architecture: any
 Depends: libvsmbr (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Conflicts: python3-libvsmbr
+Replaces: python3-libvsmbr
 Suggests: libvsmbr-python3-dbg
 Description: Python 3 bindings for libvsmbr
  Python 3 bindings for libvsmbr.

@@ -1,7 +1,7 @@
 /*
  * Read/Write lock functions for testing
  *
- * Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -24,11 +24,13 @@
 
 #include <common.h>
 
+#include "vsmbr_test_libvsmbr.h"
+
 #if defined( __cplusplus )
 extern "C" {
 #endif
 
-#if defined( HAVE_GNU_DL_DLSYM ) && defined( __GNUC__ ) && !defined( __clang__ ) && !defined( __CYGWIN__ )
+#if defined( LIBVSMBR_HAVE_MULTI_THREAD_SUPPORT ) && defined( HAVE_GNU_DL_DLSYM ) && defined( __GNUC__ ) && !defined( __clang__ ) && !defined( __CYGWIN__ )
 #define HAVE_VSMBR_TEST_RWLOCK		1
 #endif
 
