@@ -12,8 +12,8 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: libvsmbr1
 Replaces: libvsmbr1
 Suggests: libvsmbr-dbg
-Description: Library to access the Master Boot Record (MBR) volume system
- libvsmbr is a library to access the Master Boot Record (MBR) volume system.
+Description: Library to access the Master Boot Record (MBR) volume system format
+ libvsmbr is a library to access the Master Boot Record (MBR) volume system format.
 
 Package: libvsmbr-dbg
 Architecture: any

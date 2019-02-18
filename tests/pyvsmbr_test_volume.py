@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Python-bindings handle type test script
+# Python-bindings volume type test script
 #
 # Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
 #
@@ -27,34 +27,34 @@ import unittest
 import pyvsmbr
 
 
-class HandleTypeTests(unittest.TestCase):
-  """Tests the handle type."""
+class VolumeTypeTests(unittest.TestCase):
+  """Tests the volume type."""
 
   def test_signal_abort(self):
     """Tests the signal_abort function."""
-    vsmbr_handle = pyvsmbr.handle()
+    vsmbr_volume = pyvsmbr.volume()
 
-    vsmbr_handle.signal_abort()
+    vsmbr_volume.signal_abort()
 
   def test_open(self):
     """Tests the open function."""
     if not unittest.source:
       return
 
-    vsmbr_handle = pyvsmbr.handle()
+    vsmbr_volume = pyvsmbr.volume()
 
-    vsmbr_handle.open(unittest.source)
+    vsmbr_volume.open(unittest.source)
 
     with self.assertRaises(IOError):
-      vsmbr_handle.open(unittest.source)
+      vsmbr_volume.open(unittest.source)
 
-    vsmbr_handle.close()
+    vsmbr_volume.close()
 
     with self.assertRaises(TypeError):
-      vsmbr_handle.open(None)
+      vsmbr_volume.open(None)
 
     with self.assertRaises(ValueError):
-      vsmbr_handle.open(unittest.source, mode="w")
+      vsmbr_volume.open(unittest.source, mode="w")
 
   def test_open_file_object(self):
     """Tests the open_file_object function."""
@@ -63,61 +63,61 @@ class HandleTypeTests(unittest.TestCase):
 
     file_object = open(unittest.source, "rb")
 
-    vsmbr_handle = pyvsmbr.handle()
+    vsmbr_volume = pyvsmbr.volume()
 
-    vsmbr_handle.open_file_object(file_object)
+    vsmbr_volume.open_file_object(file_object)
 
     with self.assertRaises(IOError):
-      vsmbr_handle.open_file_object(file_object)
+      vsmbr_volume.open_file_object(file_object)
 
-    vsmbr_handle.close()
+    vsmbr_volume.close()
 
     # TODO: change IOError into TypeError
     with self.assertRaises(IOError):
-      vsmbr_handle.open_file_object(None)
+      vsmbr_volume.open_file_object(None)
 
     with self.assertRaises(ValueError):
-      vsmbr_handle.open_file_object(file_object, mode="w")
+      vsmbr_volume.open_file_object(file_object, mode="w")
 
   def test_close(self):
     """Tests the close function."""
     if not unittest.source:
       return
 
-    vsmbr_handle = pyvsmbr.handle()
+    vsmbr_volume = pyvsmbr.volume()
 
     with self.assertRaises(IOError):
-      vsmbr_handle.close()
+      vsmbr_volume.close()
 
   def test_open_close(self):
     """Tests the open and close functions."""
     if not unittest.source:
       return
 
-    vsmbr_handle = pyvsmbr.handle()
+    vsmbr_volume = pyvsmbr.volume()
 
     # Test open and close.
-    vsmbr_handle.open(unittest.source)
-    vsmbr_handle.close()
+    vsmbr_volume.open(unittest.source)
+    vsmbr_volume.close()
 
     # Test open and close a second time to validate clean up on close.
-    vsmbr_handle.open(unittest.source)
-    vsmbr_handle.close()
+    vsmbr_volume.open(unittest.source)
+    vsmbr_volume.close()
 
     file_object = open(unittest.source, "rb")
 
     # Test open_file_object and close.
-    vsmbr_handle.open_file_object(file_object)
-    vsmbr_handle.close()
+    vsmbr_volume.open_file_object(file_object)
+    vsmbr_volume.close()
 
     # Test open_file_object and close a second time to validate clean up on close.
-    vsmbr_handle.open_file_object(file_object)
-    vsmbr_handle.close()
+    vsmbr_volume.open_file_object(file_object)
+    vsmbr_volume.close()
 
     # Test open_file_object and close and dereferencing file_object.
-    vsmbr_handle.open_file_object(file_object)
+    vsmbr_volume.open_file_object(file_object)
     del file_object
-    vsmbr_handle.close()
+    vsmbr_volume.close()
 
 
 if __name__ == "__main__":

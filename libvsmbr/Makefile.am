@@ -26,7 +26,6 @@ libvsmbr_la_SOURCES = \
 	libvsmbr_definitions.h \
 	libvsmbr_error.c libvsmbr_error.h \
 	libvsmbr_extern.h \
-	libvsmbr_handle.c libvsmbr_handle.h \
 	libvsmbr_io_handle.c libvsmbr_io_handle.h \
 	libvsmbr_libbfio.h \
 	libvsmbr_libcdata.h \
@@ -45,6 +44,7 @@ libvsmbr_la_SOURCES = \
 	libvsmbr_support.c libvsmbr_support.h \
 	libvsmbr_types.h \
 	libvsmbr_unused.h \
+	libvsmbr_volume.c libvsmbr_volume.h \
 	libvsmbr_volume_type.c libvsmbr_volume_type.h \
 	vsmbr_boot_record.h \
 	vsmbr_partition_entry.h

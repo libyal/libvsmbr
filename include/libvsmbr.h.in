@@ -198,52 +198,52 @@ int libvsmbr_error_backtrace_sprint(
      size_t size );
 
 /* -------------------------------------------------------------------------
- * Handle functions
+ * Volume functions
  * ------------------------------------------------------------------------- */
 
-/* Creates a handle
- * Make sure the value handle is referencing, is set to NULL
+/* Creates a volume
+ * Make sure the value volume is referencing, is set to NULL
  * Returns 1 if successful or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_initialize(
-     libvsmbr_handle_t **handle,
+int libvsmbr_volume_initialize(
+     libvsmbr_volume_t **volume,
      libvsmbr_error_t **error );
 
-/* Frees a handle
+/* Frees a volume
  * Returns 1 if successful or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_free(
-     libvsmbr_handle_t **handle,
+int libvsmbr_volume_free(
+     libvsmbr_volume_t **volume,
      libvsmbr_error_t **error );
 
-/* Signals a handle to abort its current activity
+/* Signals a volume to abort its current activity
  * Returns 1 if successful or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_signal_abort(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_signal_abort(
+     libvsmbr_volume_t *volume,
      libvsmbr_error_t **error );
 
-/* Opens a handle
+/* Opens a volume
  * Returns 1 if successful or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_open(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open(
+     libvsmbr_volume_t *volume,
      const char *filename,
      int access_flags,
      libvsmbr_error_t **error );
 
 #if defined( LIBVSMBR_HAVE_WIDE_CHARACTER_TYPE )
 
-/* Opens a handle
+/* Opens a volume
  * Returns 1 if successful or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_open_wide(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open_wide(
+     libvsmbr_volume_t *volume,
      const wchar_t *filename,
      int access_flags,
      libvsmbr_error_t **error );
@@ -252,48 +252,48 @@ int libvsmbr_handle_open_wide(
 
 #if defined( LIBVSMBR_HAVE_BFIO )
 
-/* Opens a handle using a Basic File IO (bfio) handle
+/* Opens a volume using a Basic File IO (bfio) handle
  * Returns 1 if successful or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_open_handle_io_handle(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open_file_io_handle(
+     libvsmbr_volume_t *volume,
      libbfio_handle_t *file_io_handle,
      int access_flags,
      libvsmbr_error_t **error );
 
 #endif /* defined( LIBVSMBR_HAVE_BFIO ) */
 
-/* Closes a handle
+/* Closes a volume
  * Returns 0 if successful or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_close(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_close(
+     libvsmbr_volume_t *volume,
      libvsmbr_error_t **error );
 
 /* Retrieves the number of bytes per sector
  * Returns 1 if successful or -1 on error
  */
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_get_bytes_per_sector(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_bytes_per_sector(
+     libvsmbr_volume_t *volume,
      uint32_t *bytes_per_sector,
      libvsmbr_error_t **error );
 
 /* Retrieves the number of partitions
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_get_number_of_partitions(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_number_of_partitions(
+     libvsmbr_volume_t *volume,
      int *number_of_partitions,
      libvsmbr_error_t **error );
 
 /* Retrieves a specific partition
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_get_partition_by_index(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_partition_by_index(
+     libvsmbr_volume_t *volume,
      int partition_index,
      libvsmbr_partition_t **partition,
      libvsmbr_error_t **error );

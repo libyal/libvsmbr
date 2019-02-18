@@ -1,5 +1,5 @@
 /*
- * The handle functions
+ * The volume functions
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -28,7 +28,7 @@
 #include "libvsmbr_boot_record.h"
 #include "libvsmbr_debug.h"
 #include "libvsmbr_definitions.h"
-#include "libvsmbr_handle.h"
+#include "libvsmbr_volume.h"
 #include "libvsmbr_io_handle.h"
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
@@ -39,72 +39,72 @@
 #include "libvsmbr_section_values.h"
 #include "libvsmbr_types.h"
 
-/* Creates a handle
- * Make sure the value handle is referencing, is set to NULL
+/* Creates a volume
+ * Make sure the value volume is referencing, is set to NULL
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_initialize(
-     libvsmbr_handle_t **handle,
+int libvsmbr_volume_initialize(
+     libvsmbr_volume_t **volume,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_initialize";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_initialize";
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	if( *handle != NULL )
+	if( *volume != NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid handle value already set.",
+		 "%s: invalid volume value already set.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = memory_allocate_structure(
-	                   libvsmbr_internal_handle_t );
+	internal_volume = memory_allocate_structure(
+	                   libvsmbr_internal_volume_t );
 
-	if( internal_handle == NULL )
+	if( internal_volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_MEMORY,
 		 LIBCERROR_MEMORY_ERROR_INSUFFICIENT,
-		 "%s: unable to create handle.",
+		 "%s: unable to create volume.",
 		 function );
 
 		goto on_error;
 	}
 	if( memory_set(
-	     internal_handle,
+	     internal_volume,
 	     0,
-	     sizeof( libvsmbr_internal_handle_t ) ) == NULL )
+	     sizeof( libvsmbr_internal_volume_t ) ) == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_MEMORY,
 		 LIBCERROR_MEMORY_ERROR_SET_FAILED,
-		 "%s: unable to clear handle.",
+		 "%s: unable to clear volume.",
 		 function );
 
 		memory_free(
-		 internal_handle );
+		 internal_volume );
 
 		return( -1 );
 	}
 	if( libvsmbr_io_handle_initialize(
-	     &( internal_handle->io_handle ),
+	     &( internal_volume->io_handle ),
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -117,7 +117,7 @@ int libvsmbr_handle_initialize(
 		goto on_error;
 	}
 	if( libcdata_array_initialize(
-	     &( internal_handle->partitions ),
+	     &( internal_volume->partitions ),
 	     0,
 	     error ) != 1 )
 	{
@@ -130,71 +130,71 @@ int libvsmbr_handle_initialize(
 
 		goto on_error;
 	}
-	*handle = (libvsmbr_handle_t *) internal_handle;
+	*volume = (libvsmbr_volume_t *) internal_volume;
 
 	return( 1 );
 
 on_error:
-	if( internal_handle != NULL )
+	if( internal_volume != NULL )
 	{
-		if( internal_handle->io_handle != NULL )
+		if( internal_volume->io_handle != NULL )
 		{
 			libvsmbr_io_handle_free(
-			 &( internal_handle->io_handle ),
+			 &( internal_volume->io_handle ),
 			 NULL );
 		}
 		memory_free(
-		 internal_handle );
+		 internal_volume );
 	}
 	return( -1 );
 }
 
-/* Frees a handle
+/* Frees a volume
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_free(
-     libvsmbr_handle_t **handle,
+int libvsmbr_volume_free(
+     libvsmbr_volume_t **volume,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_free";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_free";
 	int result                                  = 1;
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	if( *handle != NULL )
+	if( *volume != NULL )
 	{
-		internal_handle = (libvsmbr_internal_handle_t *) *handle;
+		internal_volume = (libvsmbr_internal_volume_t *) *volume;
 
-		if( internal_handle->file_io_handle != NULL )
+		if( internal_volume->file_io_handle != NULL )
 		{
-			if( libvsmbr_handle_close(
-			     *handle,
+			if( libvsmbr_volume_close(
+			     *volume,
 			     error ) != 0 )
 			{
 				libcerror_error_set(
 				 error,
 				 LIBCERROR_ERROR_DOMAIN_IO,
 				 LIBCERROR_IO_ERROR_CLOSE_FAILED,
-				 "%s: unable to close handle.",
+				 "%s: unable to close volume.",
 				 function );
 
 				result = -1;
 			}
 		}
-		*handle = NULL;
+		*volume = NULL;
 
 		if( libcdata_array_free(
-		     &( internal_handle->partitions ),
+		     &( internal_volume->partitions ),
 		     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_partition_values_free,
 		     error ) != 1 )
 		{
@@ -208,7 +208,7 @@ int libvsmbr_handle_free(
 			result = -1;
 		}
 		if( libvsmbr_io_handle_free(
-		     &( internal_handle->io_handle ),
+		     &( internal_volume->io_handle ),
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -221,75 +221,75 @@ int libvsmbr_handle_free(
 			result = -1;
 		}
 		memory_free(
-		 internal_handle );
+		 internal_volume );
 	}
 	return( result );
 }
 
-/* Signals the handle to abort its current activity
+/* Signals the volume to abort its current activity
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_signal_abort(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_signal_abort(
+     libvsmbr_volume_t *volume,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_signal_abort";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_signal_abort";
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = (libvsmbr_internal_handle_t *) handle;
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
-	if( internal_handle->io_handle == NULL )
+	if( internal_volume->io_handle == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-		 "%s: invalid handle - missing IO handle.",
+		 "%s: invalid volume - missing IO handle.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle->io_handle->abort = 1;
+	internal_volume->io_handle->abort = 1;
 
 	return( 1 );
 }
 
-/* Opens a handle
+/* Opens a volume
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_open(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open(
+     libvsmbr_volume_t *volume,
      const char *filename,
      int access_flags,
      libcerror_error_t **error )
 {
 	libbfio_handle_t *file_io_handle            = NULL;
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_open";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_open";
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = (libvsmbr_internal_handle_t *) handle;
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
 	if( filename == NULL )
 	{
@@ -370,8 +370,8 @@ int libvsmbr_handle_open(
 
 		goto on_error;
 	}
-	if( libvsmbr_handle_open_file_io_handle(
-	     handle,
+	if( libvsmbr_volume_open_file_io_handle(
+	     volume,
 	     file_io_handle,
 	     access_flags,
 	     error ) != 1 )
@@ -386,7 +386,7 @@ int libvsmbr_handle_open(
 
 		goto on_error;
 	}
-	internal_handle->file_io_handle_created_in_library = 1;
+	internal_volume->file_io_handle_created_in_library = 1;
 
 	return( 1 );
 
@@ -402,31 +402,31 @@ on_error:
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
-/* Opens a handle
+/* Opens a volume
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_open_wide(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open_wide(
+     libvsmbr_volume_t *volume,
      const wchar_t *filename,
      int access_flags,
      libcerror_error_t **error )
 {
 	libbfio_handle_t *file_io_handle            = NULL;
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_open_wide";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_open_wide";
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = (libvsmbr_internal_handle_t *) handle;
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
 	if( filename == NULL )
 	{
@@ -507,8 +507,8 @@ int libvsmbr_handle_open_wide(
 
 		goto on_error;
 	}
-	if( libvsmbr_handle_open_file_io_handle(
-	     handle,
+	if( libvsmbr_volume_open_file_io_handle(
+	     volume,
 	     file_io_handle,
 	     access_flags,
 	     error ) != 1 )
@@ -523,7 +523,7 @@ int libvsmbr_handle_open_wide(
 
 		goto on_error;
 	}
-	internal_handle->file_io_handle_created_in_library = 1;
+	internal_volume->file_io_handle_created_in_library = 1;
 
 	return( 1 );
 
@@ -539,41 +539,41 @@ on_error:
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
-/* Opens a handle using a Basic File IO (bfio) handle
+/* Opens a volume using a Basic File IO (bfio) volume
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_open_file_io_handle(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open_file_io_handle(
+     libvsmbr_volume_t *volume,
      libbfio_handle_t *file_io_handle,
      int access_flags,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_open_file_io_handle";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_open_file_io_handle";
 	int bfio_access_flags                       = 0;
 	int file_io_handle_is_open                  = 0;
 	int file_io_handle_opened_in_library        = 0;
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = (libvsmbr_internal_handle_t *) handle;
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
-	if( internal_handle->file_io_handle != NULL )
+	if( internal_volume->file_io_handle != NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid handle - file IO handle already set.",
+		 "%s: invalid volume - file IO handle already set.",
 		 function );
 
 		return( -1 );
@@ -649,8 +649,8 @@ int libvsmbr_handle_open_file_io_handle(
 		}
 		file_io_handle_opened_in_library = 1;
 	}
-	if( libvsmbr_handle_open_read(
-	     internal_handle,
+	if( libvsmbr_volume_open_read(
+	     internal_volume,
 	     file_io_handle,
 	     error ) != 1 )
 	{
@@ -663,8 +663,8 @@ int libvsmbr_handle_open_file_io_handle(
 
 		goto on_error;
 	}
-	internal_handle->file_io_handle                   = file_io_handle;
-	internal_handle->file_io_handle_opened_in_library = (uint8_t) file_io_handle_opened_in_library;
+	internal_volume->file_io_handle                   = file_io_handle;
+	internal_volume->file_io_handle_opened_in_library = (uint8_t) file_io_handle_opened_in_library;
 
 	return( 1 );
 
@@ -679,48 +679,48 @@ on_error:
 	return( -1 );
 }
 
-/* Closes a handle
+/* Closes a volume
  * Returns 0 if successful or -1 on error
  */
-int libvsmbr_handle_close(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_close(
+     libvsmbr_volume_t *volume,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_close";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_close";
 	int result                                  = 0;
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = (libvsmbr_internal_handle_t *) handle;
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
-	if( internal_handle->file_io_handle == NULL )
+	if( internal_volume->file_io_handle == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-		 "%s: invalid handle - missing file IO handle.",
+		 "%s: invalid volume - missing file IO handle.",
 		 function );
 
 		return( -1 );
 	}
-	if( internal_handle->file_io_handle_created_in_library != 0 )
+	if( internal_volume->file_io_handle_created_in_library != 0 )
 	{
 #if defined( HAVE_DEBUG_OUTPUT )
 		if( libcnotify_verbose != 0 )
 		{
 			if( libvsmbr_debug_print_read_offsets(
-			     internal_handle->file_io_handle,
+			     internal_volume->file_io_handle,
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -735,7 +735,7 @@ int libvsmbr_handle_close(
 		}
 #endif
 		if( libbfio_handle_close(
-		     internal_handle->file_io_handle,
+		     internal_volume->file_io_handle,
 		     error ) != 0 )
 		{
 			libcerror_error_set(
@@ -748,7 +748,7 @@ int libvsmbr_handle_close(
 			result = -1;
 		}
 		if( libbfio_handle_free(
-		     &( internal_handle->file_io_handle ),
+		     &( internal_volume->file_io_handle ),
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -761,11 +761,11 @@ int libvsmbr_handle_close(
 			result = -1;
 		}
 	}
-	internal_handle->file_io_handle                    = NULL;
-	internal_handle->file_io_handle_created_in_library = 0;
+	internal_volume->file_io_handle                    = NULL;
+	internal_volume->file_io_handle_created_in_library = 0;
 
 	if( libvsmbr_io_handle_clear(
-	     internal_handle->io_handle,
+	     internal_volume->io_handle,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -778,7 +778,7 @@ int libvsmbr_handle_close(
 		result = -1;
 	}
 	if( libcdata_array_empty(
-	     internal_handle->partitions,
+	     internal_volume->partitions,
 	     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_partition_values_free,
 	     error ) != 1 )
 	{
@@ -794,25 +794,25 @@ int libvsmbr_handle_close(
 	return( result );
 }
 
-/* Opens a handle for reading
+/* Opens a volume for reading
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_open_read(
-     libvsmbr_internal_handle_t *internal_handle,
+int libvsmbr_volume_open_read(
+     libvsmbr_internal_volume_t *internal_volume,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error )
 {
 	libvsmbr_boot_record_t *master_boot_record = NULL;
-	static char *function                      = "libvsmbr_handle_open_read";
+	static char *function                      = "libvsmbr_volume_open_read";
 	uint8_t first_partition_entry              = 1;
 
-	if( internal_handle == NULL )
+	if( internal_volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid internal handle.",
+		 "%s: invalid internal volume.",
 		 function );
 
 		return( -1 );
@@ -853,8 +853,8 @@ int libvsmbr_handle_open_read(
 
 		goto on_error;
 	}
-	if( libvsmbr_handle_read_partition_entries(
-	     internal_handle,
+	if( libvsmbr_volume_read_partition_entries(
+	     internal_volume,
 	     file_io_handle,
 	     0,
 	     master_boot_record,
@@ -898,8 +898,8 @@ on_error:
 /* Reads partition entries in a master boot record or extended partition record
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_read_partition_entries(
-     libvsmbr_internal_handle_t *internal_handle,
+int libvsmbr_volume_read_partition_entries(
+     libvsmbr_internal_volume_t *internal_volume,
      libbfio_handle_t *file_io_handle,
      off64_t file_offset,
      libvsmbr_boot_record_t *boot_record,
@@ -909,19 +909,19 @@ int libvsmbr_handle_read_partition_entries(
 	libvsmbr_boot_record_t *extended_partition_record = NULL;
 	libvsmbr_partition_entry_t *partition_entry       = NULL;
 	libvsmbr_partition_values_t *partition_values     = NULL;
-	static char *function                             = "libvsmbr_handle_read_partition_entries";
+	static char *function                             = "libvsmbr_volume_read_partition_entries";
 	off64_t extended_partition_record_offset          = 0;
 	int entry_index                                   = 0;
 	int partition_entry_index                         = 0;
 	int result                                        = 0;
 
-	if( internal_handle == NULL )
+	if( internal_volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid internal handle.",
+		 "%s: invalid internal volume.",
 		 function );
 
 		return( -1 );
@@ -988,7 +988,7 @@ int libvsmbr_handle_read_partition_entries(
 
 				goto on_error;
 			}
-			extended_partition_record_offset = file_offset + ( partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector );
+			extended_partition_record_offset = file_offset + ( partition_entry->start_address_lba * internal_volume->io_handle->bytes_per_sector );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 			if( libcnotify_verbose != 0 )
@@ -1021,14 +1021,14 @@ int libvsmbr_handle_read_partition_entries(
 
 			if( ( result != 1 )
 			 && ( *first_partition_entry == 1 )
-			 && ( internal_handle->io_handle->bytes_per_sector == 512 ) )
+			 && ( internal_volume->io_handle->bytes_per_sector == 512 ) )
 			{
 				libcerror_error_free(
 				 error );
 
-				internal_handle->io_handle->bytes_per_sector = 4096;
+				internal_volume->io_handle->bytes_per_sector = 4096;
 
-				extended_partition_record_offset = partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector;
+				extended_partition_record_offset = partition_entry->start_address_lba * internal_volume->io_handle->bytes_per_sector;
 
 				result = libvsmbr_boot_record_read_file_io_handle(
 				          extended_partition_record,
@@ -1066,13 +1066,13 @@ int libvsmbr_handle_read_partition_entries(
 			}
 			partition_values->type = partition_entry->type;
 
-			partition_values->offset = file_offset + ( partition_entry->start_address_lba * internal_handle->io_handle->bytes_per_sector );
-			partition_values->size   = partition_entry->number_of_sectors * internal_handle->io_handle->bytes_per_sector;
+			partition_values->offset = file_offset + ( partition_entry->start_address_lba * internal_volume->io_handle->bytes_per_sector );
+			partition_values->size   = partition_entry->number_of_sectors * internal_volume->io_handle->bytes_per_sector;
 
 /* TODO offset and size sanity check */
 
 			if( libcdata_array_append_entry(
-			     internal_handle->partitions,
+			     internal_volume->partitions,
 			     &entry_index,
 			     (intptr_t *) partition_values,
 			     error ) != 1 )
@@ -1092,8 +1092,8 @@ int libvsmbr_handle_read_partition_entries(
 	}
 	if( extended_partition_record != NULL )
 	{
-		if( libvsmbr_handle_read_partition_entries(
-		     internal_handle,
+		if( libvsmbr_volume_read_partition_entries(
+		     internal_volume,
 		     file_io_handle,
 		     extended_partition_record_offset,
 		     extended_partition_record,
@@ -1144,34 +1144,34 @@ on_error:
 /* Retrieves the number of bytes per sector
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_get_bytes_per_sector(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_bytes_per_sector(
+     libvsmbr_volume_t *volume,
      uint32_t *bytes_per_sector,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_get_bytes_per_sector";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_get_bytes_per_sector";
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = (libvsmbr_internal_handle_t *) handle;
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
-	if( internal_handle->io_handle == NULL )
+	if( internal_volume->io_handle == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
-		 "%s: invalid handle - missing IO handle.",
+		 "%s: invalid volume - missing IO handle.",
 		 function );
 
 		return( -1 );
@@ -1187,7 +1187,7 @@ int libvsmbr_handle_get_bytes_per_sector(
 
 		return( -1 );
 	}
-	*bytes_per_sector = internal_handle->io_handle->bytes_per_sector;
+	*bytes_per_sector = internal_volume->io_handle->bytes_per_sector;
 
 	return( 1 );
 }
@@ -1195,29 +1195,29 @@ int libvsmbr_handle_get_bytes_per_sector(
 /* Retrieves the number of partitions
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_get_number_of_partitions(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_number_of_partitions(
+     libvsmbr_volume_t *volume,
      int *number_of_partitions,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle = NULL;
-	static char *function                       = "libvsmbr_handle_get_number_of_partitions";
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_get_number_of_partitions";
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = (libvsmbr_internal_handle_t *) handle;
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
 	if( libcdata_array_get_number_of_entries(
-	     internal_handle->partitions,
+	     internal_volume->partitions,
 	     number_of_partitions,
 	     error ) != 1 )
 	{
@@ -1236,28 +1236,28 @@ int libvsmbr_handle_get_number_of_partitions(
 /* Retrieves a specific partition
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_handle_get_partition_by_index(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_partition_by_index(
+     libvsmbr_volume_t *volume,
      int partition_index,
      libvsmbr_partition_t **partition,
      libcerror_error_t **error )
 {
-	libvsmbr_internal_handle_t *internal_handle   = NULL;
+	libvsmbr_internal_volume_t *internal_volume   = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
-	static char *function                         = "libvsmbr_handle_get_partition_by_index";
+	static char *function                         = "libvsmbr_volume_get_partition_by_index";
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	internal_handle = (libvsmbr_internal_handle_t *) handle;
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
 	if( partition == NULL )
 	{
@@ -1282,7 +1282,7 @@ int libvsmbr_handle_get_partition_by_index(
 		return( -1 );
 	}
 	if( libcdata_array_get_entry_by_index(
-	     internal_handle->partitions,
+	     internal_volume->partitions,
 	     partition_index,
 	     (intptr_t **) &partition_values,
 	     error ) != 1 )
@@ -1299,7 +1299,7 @@ int libvsmbr_handle_get_partition_by_index(
 	}
 	if( libvsmbr_partition_initialize(
 	     partition,
-	     internal_handle->file_io_handle,
+	     internal_volume->file_io_handle,
 	     partition_values,
 	     error ) != 1 )
 	{

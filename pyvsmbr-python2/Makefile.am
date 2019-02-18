@@ -24,7 +24,6 @@ BUILT_SOURCES = \
 	pyvsmbr.c pyvsmbr.h \
 	pyvsmbr_error.c pyvsmbr_error.h \
 	pyvsmbr_file_object_io_handle.c pyvsmbr_file_object_io_handle.h \
-	pyvsmbr_handle.c pyvsmbr_handle.h \
 	pyvsmbr_integer.c pyvsmbr_integer.h \
 	pyvsmbr_libbfio.h \
 	pyvsmbr_libcerror.h \
@@ -33,7 +32,8 @@ BUILT_SOURCES = \
 	pyvsmbr_partition.c pyvsmbr_partition.h \
 	pyvsmbr_partitions.c pyvsmbr_partitions.h \
 	pyvsmbr_python.h \
-	pyvsmbr_unused.h
+	pyvsmbr_unused.h \
+	pyvsmbr_volume.c pyvsmbr_volume.h
 
 pyexec_LTLIBRARIES = pyvsmbr.la
 

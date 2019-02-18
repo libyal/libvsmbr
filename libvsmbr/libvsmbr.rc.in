@@ -21,7 +21,7 @@ BEGIN
   BEGIN
     BLOCK "040904E4"
     BEGIN
-      VALUE "FileDescription",		"Library to access the Master Boot Record (MBR) volume system\0"
+      VALUE "FileDescription",		"Library to access the Master Boot Record (MBR) volume system format\0"
       VALUE "FileVersion",		"@VERSION@" "\0"
       VALUE "InternalName",		"libvsmbr.dll\0"
       VALUE "LegalCopyright",		"(C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>\0"

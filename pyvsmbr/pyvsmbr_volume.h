@@ -1,5 +1,5 @@
 /*
- * Python object wrapper of libvsmbr_handle_t
+ * Python object wrapper of libvsmbr_volume_t
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _PYVSMBR_HANDLE_H )
-#define _PYVSMBR_HANDLE_H
+#if !defined( _PYVSMBR_VOLUME_H )
+#define _PYVSMBR_VOLUME_H
 
 #include <common.h>
 #include <types.h>
@@ -33,84 +33,74 @@
 extern "C" {
 #endif
 
-typedef struct pyvsmbr_handle pyvsmbr_handle_t;
+typedef struct pyvsmbr_volume pyvsmbr_volume_t;
 
-struct pyvsmbr_handle
+struct pyvsmbr_volume
 {
 	/* Python object initialization
 	 */
 	PyObject_HEAD
 
-	/* The libvsmbr handle
+	/* The libvsmbr volume
 	 */
-	libvsmbr_handle_t *handle;
+	libvsmbr_volume_t *volume;
 
 	/* The libbfio file IO handle
 	 */
 	libbfio_handle_t *file_io_handle;
 };
 
-extern PyMethodDef pyvsmbr_handle_object_methods[];
-extern PyTypeObject pyvsmbr_handle_type_object;
+extern PyMethodDef pyvsmbr_volume_object_methods[];
+extern PyTypeObject pyvsmbr_volume_type_object;
 
-PyObject *pyvsmbr_handle_new_open(
-           PyObject *self,
+int pyvsmbr_volume_init(
+     pyvsmbr_volume_t *pyvsmbr_volume );
+
+void pyvsmbr_volume_free(
+      pyvsmbr_volume_t *pyvsmbr_volume );
+
+PyObject *pyvsmbr_volume_signal_abort(
+           pyvsmbr_volume_t *pyvsmbr_volume,
+           PyObject *arguments );
+
+PyObject *pyvsmbr_volume_open(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments,
            PyObject *keywords );
 
-PyObject *pyvsmbr_handle_new_open_file_object(
-           PyObject *self,
+PyObject *pyvsmbr_volume_open_file_object(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments,
            PyObject *keywords );
 
-int pyvsmbr_handle_init(
-     pyvsmbr_handle_t *pyvsmbr_handle );
-
-void pyvsmbr_handle_free(
-      pyvsmbr_handle_t *pyvsmbr_handle );
-
-PyObject *pyvsmbr_handle_signal_abort(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_close(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments );
 
-PyObject *pyvsmbr_handle_open(
-           pyvsmbr_handle_t *pyvsmbr_handle,
-           PyObject *arguments,
-           PyObject *keywords );
-
-PyObject *pyvsmbr_handle_open_file_object(
-           pyvsmbr_handle_t *pyvsmbr_handle,
-           PyObject *arguments,
-           PyObject *keywords );
-
-PyObject *pyvsmbr_handle_close(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_bytes_per_sector(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments );
 
-PyObject *pyvsmbr_handle_get_bytes_per_sector(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_number_of_partitions(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments );
 
-PyObject *pyvsmbr_handle_get_number_of_partitions(
-           pyvsmbr_handle_t *pyvsmbr_handle,
-           PyObject *arguments );
-
-PyObject *pyvsmbr_handle_get_partition_by_index(
-           PyObject *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_partition_by_index(
+           PyObject *pyvsmbr_volume,
            int partition_index );
 
-PyObject *pyvsmbr_handle_get_partition(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_partition(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments,
            PyObject *keywords );
 
-PyObject *pyvsmbr_handle_get_partitions(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_partitions(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments );
 
 #if defined( __cplusplus )
 }
 #endif
 
-#endif /* !defined( _PYVSMBR_HANDLE_H ) */
+#endif /* !defined( _PYVSMBR_VOLUME_H ) */
 

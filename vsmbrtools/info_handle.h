@@ -37,9 +37,9 @@ typedef struct info_handle info_handle_t;
 
 struct info_handle
 {
-	/* The libvsmbr input handle
+	/* The libvsmbr input volume
 	 */
-	libvsmbr_handle_t *input_handle;
+	libvsmbr_volume_t *input_volume;
 
 	/* The notification output stream
 	 */

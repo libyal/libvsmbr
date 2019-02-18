@@ -16,7 +16,6 @@ MSVSCPP_FILES = \
 	vsmbr_test_boot_record/vsmbr_test_boot_record.vcproj \
 	vsmbr_test_chs_address/vsmbr_test_chs_address.vcproj \
 	vsmbr_test_error/vsmbr_test_error.vcproj \
-	vsmbr_test_handle/vsmbr_test_handle.vcproj \
 	vsmbr_test_io_handle/vsmbr_test_io_handle.vcproj \
 	vsmbr_test_notify/vsmbr_test_notify.vcproj \
 	vsmbr_test_partition/vsmbr_test_partition.vcproj \
@@ -25,6 +24,7 @@ MSVSCPP_FILES = \
 	vsmbr_test_section_values/vsmbr_test_section_values.vcproj \
 	vsmbr_test_sector_data/vsmbr_test_sector_data.vcproj \
 	vsmbr_test_support/vsmbr_test_support.vcproj \
+	vsmbr_test_volume/vsmbr_test_volume.vcproj \
 	vsmbr_test_volume_type/vsmbr_test_volume_type.vcproj \
 	vsmbrinfo/vsmbrinfo.vcproj \
 	libvsmbr.sln

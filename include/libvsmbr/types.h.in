@@ -201,8 +201,8 @@ typedef int64_t off64_t;
 
 /* The following type definitions hide internal data structures
  */
-typedef intptr_t libvsmbr_handle_t;
 typedef intptr_t libvsmbr_partition_t;
+typedef intptr_t libvsmbr_volume_t;
 
 #ifdef __cplusplus
 }

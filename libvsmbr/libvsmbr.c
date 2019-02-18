@@ -1,5 +1,5 @@
 /*
- * Library to access the Master Boot Record (MBR) volume system
+ * Library to access the Master Boot Record (MBR) volume system format
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *

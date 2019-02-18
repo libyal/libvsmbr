@@ -39,21 +39,21 @@ PyMethodDef pyvsmbr_partition_object_methods[] = {
 	{ "get_type",
 	  (PyCFunction) pyvsmbr_partition_get_type,
 	  METH_NOARGS,
-	  "get_type() -> Integer or None\n"
+	  "get_type() -> Integer\n"
 	  "\n"
 	  "Retrieves the type." },
 
 	{ "read_buffer",
 	  (PyCFunction) pyvsmbr_partition_read_buffer,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "read_buffer(size) -> Binary string or None\n"
+	  "read_buffer(size) -> Binary string\n"
 	  "\n"
 	  "Reads a buffer of data." },
 
 	{ "read_buffer_at_offset",
 	  (PyCFunction) pyvsmbr_partition_read_buffer_at_offset,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "read_buffer_at_offset(size, offset) -> Binary string or None\n"
+	  "read_buffer_at_offset(size, offset) -> Binary string\n"
 	  "\n"
 	  "Reads a buffer of data at a specific offset." },
 
@@ -67,14 +67,14 @@ PyMethodDef pyvsmbr_partition_object_methods[] = {
 	{ "get_offset",
 	  (PyCFunction) pyvsmbr_partition_get_offset,
 	  METH_NOARGS,
-	  "get_offset() -> Integer or None\n"
+	  "get_offset() -> Integer\n"
 	  "\n"
 	  "Retrieves the current offset within the data." },
 
 	{ "read",
 	  (PyCFunction) pyvsmbr_partition_read_buffer,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "read(size) -> String\n"
+	  "read(size) -> Binary string\n"
 	  "\n"
 	  "Reads a buffer of data." },
 
@@ -95,7 +95,7 @@ PyMethodDef pyvsmbr_partition_object_methods[] = {
 	{ "get_size",
 	  (PyCFunction) pyvsmbr_partition_get_size,
 	  METH_NOARGS,
-	  "get_size() -> Integer or None\n"
+	  "get_size() -> Integer\n"
 	  "\n"
 	  "Retrieves the size." },
 
@@ -253,9 +253,11 @@ PyObject *pyvsmbr_partition_new(
 	pyvsmbr_partition->partition     = partition;
 	pyvsmbr_partition->parent_object = parent_object;
 
-	Py_IncRef(
-	 (PyObject *) pyvsmbr_partition->parent_object );
-
+	if( pyvsmbr_partition->parent_object != NULL )
+	{
+		Py_IncRef(
+		 pyvsmbr_partition->parent_object );
+	}
 	return( (PyObject *) pyvsmbr_partition );
 
 on_error:
@@ -350,7 +352,7 @@ void pyvsmbr_partition_free(
 		{
 			pyvsmbr_error_raise(
 			 error,
-			 PyExc_IOError,
+			 PyExc_MemoryError,
 			 "%s: unable to free libvsmbr partition.",
 			 function );
 
@@ -361,7 +363,7 @@ void pyvsmbr_partition_free(
 	if( pyvsmbr_partition->parent_object != NULL )
 	{
 		Py_DecRef(
-		 (PyObject *) pyvsmbr_partition->parent_object );
+		 pyvsmbr_partition->parent_object );
 	}
 	ob_type->tp_free(
 	 (PyObject*) pyvsmbr_partition );
@@ -400,7 +402,7 @@ PyObject *pyvsmbr_partition_get_type(
 
 	Py_END_ALLOW_THREADS
 
-	if( result == -1 )
+	if( result != 1 )
 	{
 		pyvsmbr_error_raise(
 		 error,
@@ -412,13 +414,6 @@ PyObject *pyvsmbr_partition_get_type(
 		 &error );
 
 		return( NULL );
-	}
-	else if( result == 0 )
-	{
-		Py_IncRef(
-		 Py_None );
-
-		return( Py_None );
 	}
 #if PY_MAJOR_VERSION >= 3
 	integer_object = PyLong_FromLong(

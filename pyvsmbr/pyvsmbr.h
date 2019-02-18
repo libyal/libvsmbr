@@ -45,6 +45,16 @@ PyObject *pyvsmbr_check_volume_signature_file_object(
            PyObject *arguments,
            PyObject *keywords );
 
+PyObject *pyvsmbr_open_new_volume(
+           PyObject *self,
+           PyObject *arguments,
+           PyObject *keywords );
+
+PyObject *pyvsmbr_open_new_volume_with_file_object(
+           PyObject *self,
+           PyObject *arguments,
+           PyObject *keywords );
+
 #if PY_MAJOR_VERSION >= 3
 PyMODINIT_FUNC PyInit_pyvsmbr(
                 void );

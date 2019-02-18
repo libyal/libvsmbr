@@ -1,5 +1,5 @@
 /*
- * Python object wrapper of libvsmbr_handle_t
+ * Python object wrapper of libvsmbr_volume_t
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -28,7 +28,7 @@
 
 #include "pyvsmbr_error.h"
 #include "pyvsmbr_file_object_io_handle.h"
-#include "pyvsmbr_handle.h"
+#include "pyvsmbr_volume.h"
 #include "pyvsmbr_libbfio.h"
 #include "pyvsmbr_libcerror.h"
 #include "pyvsmbr_libvsmbr.h"
@@ -40,62 +40,62 @@
 #if !defined( LIBVSMBR_HAVE_BFIO )
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_open_file_io_handle(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open_file_io_handle(
+     libvsmbr_volume_t *volume,
      libbfio_handle_t *file_io_handle,
      int access_flags,
      libvsmbr_error_t **error );
 
 #endif /* !defined( LIBVSMBR_HAVE_BFIO ) */
 
-PyMethodDef pyvsmbr_handle_object_methods[] = {
+PyMethodDef pyvsmbr_volume_object_methods[] = {
 
 	{ "signal_abort",
-	  (PyCFunction) pyvsmbr_handle_signal_abort,
+	  (PyCFunction) pyvsmbr_volume_signal_abort,
 	  METH_NOARGS,
 	  "signal_abort() -> None\n"
 	  "\n"
-	  "Signals the handle to abort the current activity." },
+	  "Signals the volume to abort the current activity." },
 
 	{ "open",
-	  (PyCFunction) pyvsmbr_handle_open,
+	  (PyCFunction) pyvsmbr_volume_open,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "open(filename, mode='r') -> None\n"
 	  "\n"
-	  "Opens a handle." },
+	  "Opens a volume." },
 
 	{ "open_file_object",
-	  (PyCFunction) pyvsmbr_handle_open_file_object,
+	  (PyCFunction) pyvsmbr_volume_open_file_object,
 	  METH_VARARGS | METH_KEYWORDS,
 	  "open_file_object(file_object, mode='r') -> None\n"
 	  "\n"
-	  "Opens a handle using a file-like object." },
+	  "Opens a volume using a file-like object." },
 
 	{ "close",
-	  (PyCFunction) pyvsmbr_handle_close,
+	  (PyCFunction) pyvsmbr_volume_close,
 	  METH_NOARGS,
 	  "close() -> None\n"
 	  "\n"
-	  "Closes a handle." },
+	  "Closes a volume." },
 
 	{ "get_bytes_per_sector",
-	  (PyCFunction) pyvsmbr_handle_get_bytes_per_sector,
+	  (PyCFunction) pyvsmbr_volume_get_bytes_per_sector,
 	  METH_NOARGS,
-	  "get_bytes_per_sector() -> Integer or None\n"
+	  "get_bytes_per_sector() -> Integer\n"
 	  "\n"
-	  "Retrieves the bytes per sector." },
+	  "Retrieves the number of bytes per sector." },
 
 	{ "get_number_of_partitions",
-	  (PyCFunction) pyvsmbr_handle_get_number_of_partitions,
+	  (PyCFunction) pyvsmbr_volume_get_number_of_partitions,
 	  METH_NOARGS,
-	  "get_number_of_partitions() -> Integer or None\n"
+	  "get_number_of_partitions() -> Integer\n"
 	  "\n"
 	  "Retrieves the number of partitions." },
 
 	{ "get_partition",
-	  (PyCFunction) pyvsmbr_handle_get_partition,
+	  (PyCFunction) pyvsmbr_volume_get_partition,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "get_partition(partition_index) -> Object or None\n"
+	  "get_partition(partition_index) -> Object\n"
 	  "\n"
 	  "Retrieves the partition specified by the index." },
 
@@ -103,22 +103,22 @@ PyMethodDef pyvsmbr_handle_object_methods[] = {
 	{ NULL, NULL, 0, NULL }
 };
 
-PyGetSetDef pyvsmbr_handle_object_get_set_definitions[] = {
+PyGetSetDef pyvsmbr_volume_object_get_set_definitions[] = {
 
 	{ "bytes_per_sector",
-	  (getter) pyvsmbr_handle_get_bytes_per_sector,
+	  (getter) pyvsmbr_volume_get_bytes_per_sector,
 	  (setter) 0,
-	  "The bytes per sector.",
+	  "The number of bytes per sector.",
 	  NULL },
 
 	{ "number_of_partitions",
-	  (getter) pyvsmbr_handle_get_number_of_partitions,
+	  (getter) pyvsmbr_volume_get_number_of_partitions,
 	  (setter) 0,
 	  "The number of partitions.",
 	  NULL },
 
 	{ "partitions",
-	  (getter) pyvsmbr_handle_get_partitions,
+	  (getter) pyvsmbr_volume_get_partitions,
 	  (setter) 0,
 	  "The partitions.",
 	  NULL },
@@ -127,17 +127,17 @@ PyGetSetDef pyvsmbr_handle_object_get_set_definitions[] = {
 	{ NULL, NULL, NULL, NULL, NULL }
 };
 
-PyTypeObject pyvsmbr_handle_type_object = {
+PyTypeObject pyvsmbr_volume_type_object = {
 	PyVarObject_HEAD_INIT( NULL, 0 )
 
 	/* tp_name */
-	"pyvsmbr.handle",
+	"pyvsmbr.volume",
 	/* tp_basicsize */
-	sizeof( pyvsmbr_handle_t ),
+	sizeof( pyvsmbr_volume_t ),
 	/* tp_itemsize */
 	0,
 	/* tp_dealloc */
-	(destructor) pyvsmbr_handle_free,
+	(destructor) pyvsmbr_volume_free,
 	/* tp_print */
 	0,
 	/* tp_getattr */
@@ -169,7 +169,7 @@ PyTypeObject pyvsmbr_handle_type_object = {
 	/* tp_flags */
 	Py_TPFLAGS_DEFAULT,
 	/* tp_doc */
-	"pyvsmbr handle object (wraps libvsmbr_handle_t)",
+	"pyvsmbr volume object (wraps libvsmbr_volume_t)",
 	/* tp_traverse */
 	0,
 	/* tp_clear */
@@ -183,11 +183,11 @@ PyTypeObject pyvsmbr_handle_type_object = {
 	/* tp_iternext */
 	0,
 	/* tp_methods */
-	pyvsmbr_handle_object_methods,
+	pyvsmbr_volume_object_methods,
 	/* tp_members */
 	0,
 	/* tp_getset */
-	pyvsmbr_handle_object_get_set_definitions,
+	pyvsmbr_volume_object_get_set_definitions,
 	/* tp_base */
 	0,
 	/* tp_dict */
@@ -199,7 +199,7 @@ PyTypeObject pyvsmbr_handle_type_object = {
 	/* tp_dictoffset */
 	0,
 	/* tp_init */
-	(initproc) pyvsmbr_handle_init,
+	(initproc) pyvsmbr_volume_init,
 	/* tp_alloc */
 	0,
 	/* tp_new */
@@ -222,81 +222,37 @@ PyTypeObject pyvsmbr_handle_type_object = {
 	0
 };
 
-/* Creates a new handle object and opens it
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pyvsmbr_handle_new_open(
-           PyObject *self PYVSMBR_ATTRIBUTE_UNUSED,
-           PyObject *arguments,
-           PyObject *keywords )
-{
-	PyObject *pyvsmbr_handle = NULL;
-
-	PYVSMBR_UNREFERENCED_PARAMETER( self )
-
-	pyvsmbr_handle_init(
-	 (pyvsmbr_handle_t *) pyvsmbr_handle );
-
-	pyvsmbr_handle_open(
-	 (pyvsmbr_handle_t *) pyvsmbr_handle,
-	 arguments,
-	 keywords );
-
-	return( pyvsmbr_handle );
-}
-
-/* Creates a new handle object and opens it using a file-like object
- * Returns a Python object if successful or NULL on error
- */
-PyObject *pyvsmbr_handle_new_open_file_object(
-           PyObject *self PYVSMBR_ATTRIBUTE_UNUSED,
-           PyObject *arguments,
-           PyObject *keywords )
-{
-	PyObject *pyvsmbr_handle = NULL;
-
-	PYVSMBR_UNREFERENCED_PARAMETER( self )
-
-	pyvsmbr_handle_init(
-	 (pyvsmbr_handle_t *) pyvsmbr_handle );
-
-	pyvsmbr_handle_open_file_object(
-	 (pyvsmbr_handle_t *) pyvsmbr_handle,
-	 arguments,
-	 keywords );
-
-	return( pyvsmbr_handle );
-}
-
-/* Intializes a handle object
+/* Intializes a volume object
  * Returns 0 if successful or -1 on error
  */
-int pyvsmbr_handle_init(
-     pyvsmbr_handle_t *pyvsmbr_handle )
+int pyvsmbr_volume_init(
+     pyvsmbr_volume_t *pyvsmbr_volume )
 {
 	libcerror_error_t *error = NULL;
-	static char *function    = "pyvsmbr_handle_init";
+	static char *function    = "pyvsmbr_volume_init";
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	pyvsmbr_handle->handle         = NULL;
-	pyvsmbr_handle->file_io_handle = NULL;
+	/* Make sure libvsmbr volume is set to NULL
+	 */
+	pyvsmbr_volume->volume         = NULL;
+	pyvsmbr_volume->file_io_handle = NULL;
 
-	if( libvsmbr_handle_initialize(
-	     &( pyvsmbr_handle->handle ),
+	if( libvsmbr_volume_initialize(
+	     &( pyvsmbr_volume->volume ),
 	     &error ) != 1 )
 	{
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_MemoryError,
-		 "%s: unable to initialize handle.",
+		 "%s: unable to initialize volume.",
 		 function );
 
 		libcerror_error_free(
@@ -307,27 +263,27 @@ int pyvsmbr_handle_init(
 	return( 0 );
 }
 
-/* Frees a handle object
+/* Frees a volume object
  */
-void pyvsmbr_handle_free(
-      pyvsmbr_handle_t *pyvsmbr_handle )
+void pyvsmbr_volume_free(
+      pyvsmbr_volume_t *pyvsmbr_volume )
 {
 	struct _typeobject *ob_type = NULL;
 	libcerror_error_t *error    = NULL;
-	static char *function       = "pyvsmbr_handle_free";
+	static char *function       = "pyvsmbr_volume_free";
 	int result                  = 0;
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return;
 	}
 	ob_type = Py_TYPE(
-	           pyvsmbr_handle );
+	           pyvsmbr_volume );
 
 	if( ob_type == NULL )
 	{
@@ -347,12 +303,12 @@ void pyvsmbr_handle_free(
 
 		return;
 	}
-	if( pyvsmbr_handle->handle != NULL )
+	if( pyvsmbr_volume->volume != NULL )
 	{
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_handle_free(
-		          &( pyvsmbr_handle->handle ),
+		result = libvsmbr_volume_free(
+		          &( pyvsmbr_volume->volume ),
 		          &error );
 
 		Py_END_ALLOW_THREADS
@@ -362,7 +318,7 @@ void pyvsmbr_handle_free(
 			pyvsmbr_error_raise(
 			 error,
 			 PyExc_MemoryError,
-			 "%s: unable to free libvsmbr handle.",
+			 "%s: unable to free libvsmbr volume.",
 			 function );
 
 			libcerror_error_free(
@@ -370,35 +326,35 @@ void pyvsmbr_handle_free(
 		}
 	}
 	ob_type->tp_free(
-	 (PyObject*) pyvsmbr_handle );
+	 (PyObject*) pyvsmbr_volume );
 }
 
-/* Signals the handle to abort the current activity
+/* Signals the volume to abort the current activity
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_signal_abort(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_signal_abort(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
-	static char *function    = "pyvsmbr_handle_signal_abort";
+	static char *function    = "pyvsmbr_volume_signal_abort";
 	int result               = 0;
 
 	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( NULL );
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_handle_signal_abort(
-	          pyvsmbr_handle->handle,
+	result = libvsmbr_volume_signal_abort(
+	          pyvsmbr_volume->volume,
 	          &error );
 
 	Py_END_ALLOW_THREADS
@@ -422,18 +378,18 @@ PyObject *pyvsmbr_handle_signal_abort(
 	return( Py_None );
 }
 
-/* Opens a handle
+/* Opens a volume
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_open(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_open(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments,
            PyObject *keywords )
 {
 	PyObject *string_object      = NULL;
 	libcerror_error_t *error     = NULL;
 	const char *filename_narrow  = NULL;
-	static char *function        = "pyvsmbr_handle_open";
+	static char *function        = "pyvsmbr_volume_open";
 	static char *keyword_list[]  = { "filename", "mode", NULL };
 	char *mode                   = NULL;
 	int result                   = 0;
@@ -444,11 +400,11 @@ PyObject *pyvsmbr_handle_open(
 	PyObject *utf8_string_object = NULL;
 #endif
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( NULL );
@@ -489,7 +445,7 @@ PyObject *pyvsmbr_handle_open(
 	{
 		pyvsmbr_error_fetch_and_raise(
 		 PyExc_RuntimeError,
-		 "%s: unable to determine if string object is of type unicode.",
+		 "%s: unable to determine if string object is of type Unicode.",
 		 function );
 
 		return( NULL );
@@ -503,8 +459,8 @@ PyObject *pyvsmbr_handle_open(
 		                             string_object );
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_handle_open_wide(
-		          pyvsmbr_handle->handle,
+		result = libvsmbr_volume_open_wide(
+		          pyvsmbr_volume->volume,
 		          filename_wide,
 		          LIBVSMBR_OPEN_READ,
 		          &error );
@@ -518,7 +474,7 @@ PyObject *pyvsmbr_handle_open(
 		{
 			pyvsmbr_error_fetch_and_raise(
 			 PyExc_RuntimeError,
-			 "%s: unable to convert unicode string to UTF-8.",
+			 "%s: unable to convert Unicode string to UTF-8.",
 			 function );
 
 			return( NULL );
@@ -532,8 +488,8 @@ PyObject *pyvsmbr_handle_open(
 #endif
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_handle_open(
-		          pyvsmbr_handle->handle,
+		result = libvsmbr_volume_open(
+		          pyvsmbr_volume->volume,
 		          filename_narrow,
 		          LIBVSMBR_OPEN_READ,
 		          &error );
@@ -548,7 +504,7 @@ PyObject *pyvsmbr_handle_open(
 			pyvsmbr_error_raise(
 			 error,
 			 PyExc_IOError,
-			 "%s: unable to open handle.",
+			 "%s: unable to open volume.",
 			 function );
 
 			libcerror_error_free(
@@ -594,8 +550,8 @@ PyObject *pyvsmbr_handle_open(
 #endif
 		Py_BEGIN_ALLOW_THREADS
 
-		result = libvsmbr_handle_open(
-		          pyvsmbr_handle->handle,
+		result = libvsmbr_volume_open(
+		          pyvsmbr_volume->volume,
 		          filename_narrow,
 		          LIBVSMBR_OPEN_READ,
 		          &error );
@@ -607,7 +563,7 @@ PyObject *pyvsmbr_handle_open(
 			pyvsmbr_error_raise(
 			 error,
 			 PyExc_IOError,
-			 "%s: unable to open handle.",
+			 "%s: unable to open volume.",
 			 function );
 
 			libcerror_error_free(
@@ -628,26 +584,26 @@ PyObject *pyvsmbr_handle_open(
 	return( NULL );
 }
 
-/* Opens a handle using a file-like object
+/* Opens a volume using a file-like object
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_open_file_object(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_open_file_object(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments,
            PyObject *keywords )
 {
 	PyObject *file_object       = NULL;
 	libcerror_error_t *error    = NULL;
-	static char *function       = "pyvsmbr_handle_open_file_object";
+	static char *function       = "pyvsmbr_volume_open_file_object";
 	static char *keyword_list[] = { "file_object", "mode", NULL };
 	char *mode                  = NULL;
 	int result                  = 0;
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( NULL );
@@ -673,25 +629,25 @@ PyObject *pyvsmbr_handle_open_file_object(
 
 		return( NULL );
 	}
-	if( pyvsmbr_handle->file_io_handle != NULL )
+	if( pyvsmbr_volume->file_io_handle != NULL )
 	{
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: invalid handle - file IO handle already set.",
+		 "%s: invalid volume - file IO volume already set.",
 		 function );
 
 		goto on_error;
 	}
 	if( pyvsmbr_file_object_initialize(
-	     &( pyvsmbr_handle->file_io_handle ),
+	     &( pyvsmbr_volume->file_io_handle ),
 	     file_object,
 	     &error ) != 1 )
 	{
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_MemoryError,
-		 "%s: unable to initialize file IO handle.",
+		 "%s: unable to initialize file IO volume.",
 		 function );
 
 		libcerror_error_free(
@@ -701,9 +657,9 @@ PyObject *pyvsmbr_handle_open_file_object(
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_handle_open_file_io_handle(
-	          pyvsmbr_handle->handle,
-	          pyvsmbr_handle->file_io_handle,
+	result = libvsmbr_volume_open_file_io_handle(
+	          pyvsmbr_volume->volume,
+	          pyvsmbr_volume->file_io_handle,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
 
@@ -714,7 +670,7 @@ PyObject *pyvsmbr_handle_open_file_object(
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to open handle.",
+		 "%s: unable to open volume.",
 		 function );
 
 		libcerror_error_free(
@@ -728,41 +684,41 @@ PyObject *pyvsmbr_handle_open_file_object(
 	return( Py_None );
 
 on_error:
-	if( pyvsmbr_handle->file_io_handle != NULL )
+	if( pyvsmbr_volume->file_io_handle != NULL )
 	{
 		libbfio_handle_free(
-		 &( pyvsmbr_handle->file_io_handle ),
+		 &( pyvsmbr_volume->file_io_handle ),
 		 NULL );
 	}
 	return( NULL );
 }
 
-/* Closes a handle
+/* Closes a volume
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_close(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_close(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
 {
 	libcerror_error_t *error = NULL;
-	static char *function    = "pyvsmbr_handle_close";
+	static char *function    = "pyvsmbr_volume_close";
 	int result               = 0;
 
 	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( NULL );
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_handle_close(
-	          pyvsmbr_handle->handle,
+	result = libvsmbr_volume_close(
+	          pyvsmbr_volume->volume,
 	          &error );
 
 	Py_END_ALLOW_THREADS
@@ -772,7 +728,7 @@ PyObject *pyvsmbr_handle_close(
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to close handle.",
+		 "%s: unable to close volume.",
 		 function );
 
 		libcerror_error_free(
@@ -780,12 +736,12 @@ PyObject *pyvsmbr_handle_close(
 
 		return( NULL );
 	}
-	if( pyvsmbr_handle->file_io_handle != NULL )
+	if( pyvsmbr_volume->file_io_handle != NULL )
 	{
 		Py_BEGIN_ALLOW_THREADS
 
 		result = libbfio_handle_free(
-		          &( pyvsmbr_handle->file_io_handle ),
+		          &( pyvsmbr_volume->file_io_handle ),
 		          &error );
 
 		Py_END_ALLOW_THREADS
@@ -794,8 +750,8 @@ PyObject *pyvsmbr_handle_close(
 		{
 			pyvsmbr_error_raise(
 			 error,
-			 PyExc_IOError,
-			 "%s: unable to free libbfio file IO handle.",
+			 PyExc_MemoryError,
+			 "%s: unable to free libbfio file IO volume.",
 			 function );
 
 			libcerror_error_free(
@@ -810,58 +766,51 @@ PyObject *pyvsmbr_handle_close(
 	return( Py_None );
 }
 
-/* Retrieves the bytes per sector
+/* Retrieves the number of bytes per sector
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_get_bytes_per_sector(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_bytes_per_sector(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
 {
 	PyObject *integer_object = NULL;
 	libcerror_error_t *error = NULL;
-	static char *function    = "pyvsmbr_handle_get_bytes_per_sector";
+	static char *function    = "pyvsmbr_volume_get_bytes_per_sector";
 	uint32_t value_32bit     = 0;
 	int result               = 0;
 
 	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( NULL );
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_handle_get_bytes_per_sector(
-	          pyvsmbr_handle->handle,
+	result = libvsmbr_volume_get_bytes_per_sector(
+	          pyvsmbr_volume->volume,
 	          &value_32bit,
 	          &error );
 
 	Py_END_ALLOW_THREADS
 
-	if( result == -1 )
+	if( result != 1 )
 	{
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve bytes per sector.",
+		 "%s: unable to retrieve number of bytes per sector.",
 		 function );
 
 		libcerror_error_free(
 		 &error );
 
 		return( NULL );
-	}
-	else if( result == 0 )
-	{
-		Py_IncRef(
-		 Py_None );
-
-		return( Py_None );
 	}
 	integer_object = PyLong_FromUnsignedLong(
 	                  (unsigned long) value_32bit );
@@ -872,31 +821,31 @@ PyObject *pyvsmbr_handle_get_bytes_per_sector(
 /* Retrieves the number of partitions
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_get_number_of_partitions(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_number_of_partitions(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
 {
 	PyObject *integer_object = NULL;
 	libcerror_error_t *error = NULL;
-	static char *function    = "pyvsmbr_handle_get_number_of_partitions";
+	static char *function    = "pyvsmbr_volume_get_number_of_partitions";
 	int number_of_partitions = 0;
 	int result               = 0;
 
 	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( NULL );
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_handle_get_number_of_partitions(
-	          pyvsmbr_handle->handle,
+	result = libvsmbr_volume_get_number_of_partitions(
+	          pyvsmbr_volume->volume,
 	          &number_of_partitions,
 	          &error );
 
@@ -928,29 +877,29 @@ PyObject *pyvsmbr_handle_get_number_of_partitions(
 /* Retrieves a specific partition by index
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_get_partition_by_index(
-           PyObject *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_partition_by_index(
+           PyObject *pyvsmbr_volume,
            int partition_index )
 {
 	PyObject *partition_object      = NULL;
 	libcerror_error_t *error        = NULL;
 	libvsmbr_partition_t *partition = NULL;
-	static char *function           = "pyvsmbr_handle_get_partition_by_index";
+	static char *function           = "pyvsmbr_volume_get_partition_by_index";
 	int result                      = 0;
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( NULL );
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_handle_get_partition_by_index(
-	          ( (pyvsmbr_handle_t *) pyvsmbr_handle )->handle,
+	result = libvsmbr_volume_get_partition_by_index(
+	          ( (pyvsmbr_volume_t *) pyvsmbr_volume )->volume,
 	          partition_index,
 	          &partition,
 	          &error );
@@ -973,7 +922,7 @@ PyObject *pyvsmbr_handle_get_partition_by_index(
 	}
 	partition_object = pyvsmbr_partition_new(
 	                    partition,
-	                    (PyObject *) pyvsmbr_handle );
+	                    pyvsmbr_volume );
 
 	if( partition_object == NULL )
 	{
@@ -999,8 +948,8 @@ on_error:
 /* Retrieves a specific partition
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_get_partition(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_partition(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments,
            PyObject *keywords )
 {
@@ -1017,8 +966,8 @@ PyObject *pyvsmbr_handle_get_partition(
 	{
 		return( NULL );
 	}
-	partition_object = pyvsmbr_handle_get_partition_by_index(
-	                    (PyObject *) pyvsmbr_handle,
+	partition_object = pyvsmbr_volume_get_partition_by_index(
+	                    (PyObject *) pyvsmbr_volume,
 	                    partition_index );
 
 	return( partition_object );
@@ -1027,31 +976,31 @@ PyObject *pyvsmbr_handle_get_partition(
 /* Retrieves a sequence and iterator object for the partitions
  * Returns a Python object if successful or NULL on error
  */
-PyObject *pyvsmbr_handle_get_partitions(
-           pyvsmbr_handle_t *pyvsmbr_handle,
+PyObject *pyvsmbr_volume_get_partitions(
+           pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
 {
 	PyObject *sequence_object = NULL;
 	libcerror_error_t *error  = NULL;
-	static char *function     = "pyvsmbr_handle_get_partitions";
+	static char *function     = "pyvsmbr_volume_get_partitions";
 	int number_of_partitions  = 0;
 	int result                = 0;
 
 	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
 
-	if( pyvsmbr_handle == NULL )
+	if( pyvsmbr_volume == NULL )
 	{
 		PyErr_Format(
 		 PyExc_ValueError,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( NULL );
 	}
 	Py_BEGIN_ALLOW_THREADS
 
-	result = libvsmbr_handle_get_number_of_partitions(
-	          pyvsmbr_handle->handle,
+	result = libvsmbr_volume_get_number_of_partitions(
+	          pyvsmbr_volume->volume,
 	          &number_of_partitions,
 	          &error );
 
@@ -1071,8 +1020,8 @@ PyObject *pyvsmbr_handle_get_partitions(
 		return( NULL );
 	}
 	sequence_object = pyvsmbr_partitions_new(
-	                   (PyObject *) pyvsmbr_handle,
-	                   &pyvsmbr_handle_get_partition_by_index,
+	                   (PyObject *) pyvsmbr_volume,
+	                   &pyvsmbr_volume_get_partition_by_index,
 	                   number_of_partitions );
 
 	if( sequence_object == NULL )

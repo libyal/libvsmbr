@@ -94,8 +94,8 @@ int info_handle_initialize(
 
 		goto on_error;
 	}
-	if( libvsmbr_handle_initialize(
-	     &( ( *info_handle )->input_handle ),
+	if( libvsmbr_volume_initialize(
+	     &( ( *info_handle )->input_volume ),
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -145,10 +145,10 @@ int info_handle_free(
 	}
 	if( *info_handle != NULL )
 	{
-		if( ( *info_handle )->input_handle != NULL )
+		if( ( *info_handle )->input_volume != NULL )
 		{
-			if( libvsmbr_handle_free(
-			     &( ( *info_handle )->input_handle ),
+			if( libvsmbr_volume_free(
+			     &( ( *info_handle )->input_volume ),
 			     error ) != 1 )
 			{
 				libcerror_error_set(
@@ -191,10 +191,10 @@ int info_handle_signal_abort(
 	}
 	info_handle->abort = 1;
 
-	if( info_handle->input_handle != NULL )
+	if( info_handle->input_volume != NULL )
 	{
-		if( libvsmbr_handle_signal_abort(
-		     info_handle->input_handle,
+		if( libvsmbr_volume_signal_abort(
+		     info_handle->input_volume,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
@@ -232,14 +232,14 @@ int info_handle_open_input(
 		return( -1 );
 	}
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	if( libvsmbr_handle_open_wide(
-	     info_handle->input_handle,
+	if( libvsmbr_volume_open_wide(
+	     info_handle->input_volume,
 	     filename,
 	     LIBVSMBR_OPEN_READ,
 	     error ) != 1 )
 #else
-	if( libvsmbr_handle_open(
-	     info_handle->input_handle,
+	if( libvsmbr_volume_open(
+	     info_handle->input_volume,
 	     filename,
 	     LIBVSMBR_OPEN_READ,
 	     error ) != 1 )
@@ -277,8 +277,8 @@ int info_handle_close_input(
 
 		return( -1 );
 	}
-	if( libvsmbr_handle_close(
-	     info_handle->input_handle,
+	if( libvsmbr_volume_close(
+	     info_handle->input_volume,
 	     error ) != 0 )
 	{
 		libcerror_error_set(
@@ -406,8 +406,8 @@ int info_handle_partitions_fprint(
 	 info_handle->notify_stream,
 	 "Master Boot Record (MBR) information:\n" );
 
-	if( libvsmbr_handle_get_bytes_per_sector(
-	     info_handle->input_handle,
+	if( libvsmbr_volume_get_bytes_per_sector(
+	     info_handle->input_volume,
 	     &bytes_per_sector,
 	     error ) != 1 )
 	{
@@ -425,8 +425,8 @@ int info_handle_partitions_fprint(
 	 "\tBytes per sector\t: %" PRIu32 "\n",
 	 bytes_per_sector );
 
-	if( libvsmbr_handle_get_number_of_partitions(
-	     info_handle->input_handle,
+	if( libvsmbr_volume_get_number_of_partitions(
+	     info_handle->input_volume,
 	     &number_of_partitions,
 	     error ) != 1 )
 	{
@@ -459,8 +459,8 @@ int info_handle_partitions_fprint(
 			 "Partition: %d\n",
 			 partition_index + 1 );
 
-			if( libvsmbr_handle_get_partition_by_index(
-			     info_handle->input_handle,
+			if( libvsmbr_volume_get_partition_by_index(
+			     info_handle->input_volume,
 			     partition_index,
 			     &partition,
 			     error ) != 1 )

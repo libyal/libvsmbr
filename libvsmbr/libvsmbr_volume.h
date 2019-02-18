@@ -1,5 +1,5 @@
 /*
- * The handle functions
+ * The volume functions
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBVSMBR_HANDLE_H )
-#define _LIBVSMBR_HANDLE_H
+#if !defined( _LIBVSMBR_VOLUME_H )
+#define _LIBVSMBR_VOLUME_H
 
 #include <common.h>
 #include <types.h>
@@ -37,9 +37,9 @@
 extern "C" {
 #endif
 
-typedef struct libvsmbr_internal_handle libvsmbr_internal_handle_t;
+typedef struct libvsmbr_internal_volume libvsmbr_internal_volume_t;
 
-struct libvsmbr_internal_handle
+struct libvsmbr_internal_volume
 {
 	/* The partitions array
 	 */
@@ -63,23 +63,23 @@ struct libvsmbr_internal_handle
 };
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_initialize(
-     libvsmbr_handle_t **handle,
+int libvsmbr_volume_initialize(
+     libvsmbr_volume_t **volume,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_free(
-     libvsmbr_handle_t **handle,
+int libvsmbr_volume_free(
+     libvsmbr_volume_t **volume,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_signal_abort(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_signal_abort(
+     libvsmbr_volume_t *volume,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_open(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open(
+     libvsmbr_volume_t *volume,
      char const *filename,
      int access_flags,
      libcerror_error_t **error );
@@ -87,8 +87,8 @@ int libvsmbr_handle_open(
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_open_wide(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open_wide(
+     libvsmbr_volume_t *volume,
      wchar_t const *filename,
      int access_flags,
      libcerror_error_t **error );
@@ -96,24 +96,24 @@ int libvsmbr_handle_open_wide(
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_open_file_io_handle(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open_file_io_handle(
+     libvsmbr_volume_t *volume,
      libbfio_handle_t *file_io_handle,
      int access_flags,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_close(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_close(
+     libvsmbr_volume_t *volume,
      libcerror_error_t **error );
 
-int libvsmbr_handle_open_read(
-     libvsmbr_internal_handle_t *internal_handle,
+int libvsmbr_volume_open_read(
+     libvsmbr_internal_volume_t *internal_volume,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 
-int libvsmbr_handle_read_partition_entries(
-     libvsmbr_internal_handle_t *internal_handle,
+int libvsmbr_volume_read_partition_entries(
+     libvsmbr_internal_volume_t *internal_volume,
      libbfio_handle_t *file_io_handle,
      off64_t file_offset,
      libvsmbr_boot_record_t *boot_record,
@@ -121,20 +121,20 @@ int libvsmbr_handle_read_partition_entries(
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_get_bytes_per_sector(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_bytes_per_sector(
+     libvsmbr_volume_t *volume,
      uint32_t *bytes_per_sector,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_get_number_of_partitions(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_number_of_partitions(
+     libvsmbr_volume_t *volume,
      int *number_of_partitions,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_get_partition_by_index(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_get_partition_by_index(
+     libvsmbr_volume_t *volume,
      int partition_index,
      libvsmbr_partition_t **partition,
      libcerror_error_t **error );
@@ -143,5 +143,5 @@ int libvsmbr_handle_get_partition_by_index(
 }
 #endif
 
-#endif /* !defined( _LIBVSMBR_HANDLE_H ) */
+#endif /* !defined( _LIBVSMBR_VOLUME_H ) */
 

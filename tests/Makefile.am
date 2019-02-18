@@ -27,9 +27,9 @@ TESTS = \
 	$(TESTS_PYVSMBR)
 
 check_SCRIPTS = \
-	pyvsmbr_test_handle.py \
 	pyvsmbr_test_partition.py \
 	pyvsmbr_test_support.py \
+	pyvsmbr_test_volume.py \
 	test_library.sh \
 	test_python_module.sh \
 	test_runner.sh \
@@ -42,7 +42,6 @@ check_PROGRAMS = \
 	vsmbr_test_boot_record \
 	vsmbr_test_chs_address \
 	vsmbr_test_error \
-	vsmbr_test_handle \
 	vsmbr_test_io_handle \
 	vsmbr_test_notify \
 	vsmbr_test_partition \
@@ -51,6 +50,7 @@ check_PROGRAMS = \
 	vsmbr_test_section_values \
 	vsmbr_test_sector_data \
 	vsmbr_test_support \
+	vsmbr_test_volume \
 	vsmbr_test_volume_type
 
 vsmbr_test_boot_record_SOURCES = \
@@ -95,35 +95,6 @@ vsmbr_test_error_SOURCES = \
 
 vsmbr_test_error_LDADD = \
 	../libvsmbr/libvsmbr.la
-
-vsmbr_test_handle_SOURCES = \
-	vsmbr_test_functions.c vsmbr_test_functions.h \
-	vsmbr_test_getopt.c vsmbr_test_getopt.h \
-	vsmbr_test_handle.c \
-	vsmbr_test_libbfio.h \
-	vsmbr_test_libcerror.h \
-	vsmbr_test_libclocale.h \
-	vsmbr_test_libcnotify.h \
-	vsmbr_test_libuna.h \
-	vsmbr_test_libvsmbr.h \
-	vsmbr_test_macros.h \
-	vsmbr_test_memory.c vsmbr_test_memory.h \
-	vsmbr_test_rwlock.c vsmbr_test_rwlock.h \
-	vsmbr_test_unused.h
-
-vsmbr_test_handle_LDADD = \
-	@LIBBFIO_LIBADD@ \
-	@LIBCPATH_LIBADD@ \
-	@LIBCFILE_LIBADD@ \
-	@LIBUNA_LIBADD@ \
-	@LIBCSPLIT_LIBADD@ \
-	@LIBCNOTIFY_LIBADD@ \
-	@LIBCLOCALE_LIBADD@ \
-	@LIBCDATA_LIBADD@ \
-	../libvsmbr/libvsmbr.la \
-	@LIBCTHREADS_LIBADD@ \
-	@LIBCERROR_LIBADD@ \
-	@PTHREAD_LIBADD@
 
 vsmbr_test_io_handle_SOURCES = \
 	vsmbr_test_io_handle.c \
@@ -256,6 +227,35 @@ vsmbr_test_support_LDADD = \
 	@LIBCDATA_LIBADD@ \
 	../libvsmbr/libvsmbr.la \
 	@LIBCERROR_LIBADD@
+
+vsmbr_test_volume_SOURCES = \
+	vsmbr_test_functions.c vsmbr_test_functions.h \
+	vsmbr_test_getopt.c vsmbr_test_getopt.h \
+	vsmbr_test_libbfio.h \
+	vsmbr_test_libcerror.h \
+	vsmbr_test_libclocale.h \
+	vsmbr_test_libcnotify.h \
+	vsmbr_test_libuna.h \
+	vsmbr_test_libvsmbr.h \
+	vsmbr_test_macros.h \
+	vsmbr_test_memory.c vsmbr_test_memory.h \
+	vsmbr_test_rwlock.c vsmbr_test_rwlock.h \
+	vsmbr_test_unused.h \
+	vsmbr_test_volume.c
+
+vsmbr_test_volume_LDADD = \
+	@LIBBFIO_LIBADD@ \
+	@LIBCPATH_LIBADD@ \
+	@LIBCFILE_LIBADD@ \
+	@LIBUNA_LIBADD@ \
+	@LIBCSPLIT_LIBADD@ \
+	@LIBCNOTIFY_LIBADD@ \
+	@LIBCLOCALE_LIBADD@ \
+	@LIBCDATA_LIBADD@ \
+	../libvsmbr/libvsmbr.la \
+	@LIBCTHREADS_LIBADD@ \
+	@LIBCERROR_LIBADD@ \
+	@PTHREAD_LIBADD@
 
 vsmbr_test_volume_type_SOURCES = \
 	vsmbr_test_libcerror.h \

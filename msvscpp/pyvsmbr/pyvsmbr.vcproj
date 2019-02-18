@@ -182,10 +182,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\pyvsmbr\pyvsmbr_handle.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\pyvsmbr\pyvsmbr_integer.c"
 				>
 			</File>
@@ -195,6 +191,10 @@
 			</File>
 			<File
 				RelativePath="..\..\pyvsmbr\pyvsmbr_partitions.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyvsmbr\pyvsmbr_volume.c"
 				>
 			</File>
 		</Filter>
@@ -213,10 +213,6 @@
 			</File>
 			<File
 				RelativePath="..\..\pyvsmbr\pyvsmbr_file_object_io_handle.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\pyvsmbr\pyvsmbr_handle.h"
 				>
 			</File>
 			<File
@@ -253,6 +249,10 @@
 			</File>
 			<File
 				RelativePath="..\..\pyvsmbr\pyvsmbr_unused.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\pyvsmbr\pyvsmbr_volume.h"
 				>
 			</File>
 		</Filter>

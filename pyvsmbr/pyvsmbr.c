@@ -30,13 +30,13 @@
 #include "pyvsmbr.h"
 #include "pyvsmbr_error.h"
 #include "pyvsmbr_file_object_io_handle.h"
-#include "pyvsmbr_handle.h"
 #include "pyvsmbr_libcerror.h"
 #include "pyvsmbr_libvsmbr.h"
 #include "pyvsmbr_partition.h"
 #include "pyvsmbr_partitions.h"
 #include "pyvsmbr_python.h"
 #include "pyvsmbr_unused.h"
+#include "pyvsmbr_volume.h"
 
 #if !defined( LIBVSMBR_HAVE_BFIO )
 
@@ -62,20 +62,31 @@ PyMethodDef pyvsmbr_module_methods[] = {
 	  METH_VARARGS | METH_KEYWORDS,
 	  "check_volume_signature(filename) -> Boolean\n"
 	  "\n"
-	  "Checks if a volume has a Master Boot Record (MBR) signature signature." },
+	  "Checks if a volume has a Master Boot Record (MBR) volume system signature." },
 
 	{ "check_volume_signature_file_object",
 	  (PyCFunction) pyvsmbr_check_volume_signature_file_object,
 	  METH_VARARGS | METH_KEYWORDS,
-	  "check_volume_signature_file_object(filename) -> Boolean\n"
+	  "check_volume_signature_file_object(file_object) -> Boolean\n"
 	  "\n"
-	  "Checks if a volume has a Master Boot Record (MBR) signature using a file-like object." },
+	  "Checks if a volume has a Master Boot Record (MBR) volume system signature using a file-like object." },
+
+	{ "open",
+	  (PyCFunction) pyvsmbr_open_new_volume,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "open(filename, mode='r') -> Object\n"
+	  "\n"
+	  "Opens a volume." },
+
+	{ "open_file_object",
+	  (PyCFunction) pyvsmbr_open_new_volume_with_file_object,
+	  METH_VARARGS | METH_KEYWORDS,
+	  "open_file_object(file_object, mode='r') -> Object\n"
+	  "\n"
+	  "Opens a volume using a file-like object." },
 
 	/* Sentinel */
-	{ NULL,
-	  NULL,
-	  0,
-	  NULL}
+	{ NULL, NULL, 0, NULL }
 };
 
 /* Retrieves the pyvsmbr/libvsmbr version
@@ -111,7 +122,7 @@ PyObject *pyvsmbr_get_version(
 	         errors ) );
 }
 
-/* Checks if the volume has a Master Boot Record (MBR) signature
+/* Checks if a volume has a Master Boot Record (MBR) volume system signature
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyvsmbr_check_volume_signature(
@@ -158,7 +169,7 @@ PyObject *pyvsmbr_check_volume_signature(
 	{
 		pyvsmbr_error_fetch_and_raise(
 	         PyExc_RuntimeError,
-		 "%s: unable to determine if string object is of type unicode.",
+		 "%s: unable to determine if string object is of type Unicode.",
 		 function );
 
 		return( NULL );
@@ -185,7 +196,7 @@ PyObject *pyvsmbr_check_volume_signature(
 		{
 			pyvsmbr_error_fetch_and_raise(
 			 PyExc_RuntimeError,
-			 "%s: unable to convert unicode string to UTF-8.",
+			 "%s: unable to convert Unicode string to UTF-8.",
 			 function );
 
 			return( NULL );
@@ -208,14 +219,14 @@ PyObject *pyvsmbr_check_volume_signature(
 		Py_DecRef(
 		 utf8_string_object );
 
-#endif /* #if defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
+#endif /* defined( HAVE_WIDE_SYSTEM_CHARACTER ) */
 
 		if( result == -1 )
 		{
 			pyvsmbr_error_raise(
 			 error,
 			 PyExc_IOError,
-			 "%s: unable to check file signature.",
+			 "%s: unable to check volume signature.",
 			 function );
 
 			libcerror_error_free(
@@ -279,7 +290,7 @@ PyObject *pyvsmbr_check_volume_signature(
 			pyvsmbr_error_raise(
 			 error,
 			 PyExc_IOError,
-			 "%s: unable to check file signature.",
+			 "%s: unable to check volume signature.",
 			 function );
 
 			libcerror_error_free(
@@ -307,7 +318,7 @@ PyObject *pyvsmbr_check_volume_signature(
 	return( NULL );
 }
 
-/* Checks if the volume has a Master Boot Record (MBR) signature using a file-like object
+/* Checks if a volume has a Master Boot Record (MBR) volume system signature using a file-like object
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyvsmbr_check_volume_signature_file_object(
@@ -362,7 +373,7 @@ PyObject *pyvsmbr_check_volume_signature_file_object(
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to check file signature.",
+		 "%s: unable to check volume signature.",
 		 function );
 
 		libcerror_error_free(
@@ -405,6 +416,52 @@ on_error:
 		 NULL );
 	}
 	return( NULL );
+}
+
+/* Creates a new volume object and opens it
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_open_new_volume(
+           PyObject *self PYVSMBR_ATTRIBUTE_UNUSED,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *pyvsmbr_volume = NULL;
+
+	PYVSMBR_UNREFERENCED_PARAMETER( self )
+
+	pyvsmbr_volume_init(
+	 (pyvsmbr_volume_t *) pyvsmbr_volume );
+
+	pyvsmbr_volume_open(
+	 (pyvsmbr_volume_t *) pyvsmbr_volume,
+	 arguments,
+	 keywords );
+
+	return( pyvsmbr_volume );
+}
+
+/* Creates a new volume object and opens it using a file-like object
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_open_new_volume_with_file_object(
+           PyObject *self PYVSMBR_ATTRIBUTE_UNUSED,
+           PyObject *arguments,
+           PyObject *keywords )
+{
+	PyObject *pyvsmbr_volume = NULL;
+
+	PYVSMBR_UNREFERENCED_PARAMETER( self )
+
+	pyvsmbr_volume_init(
+	 (pyvsmbr_volume_t *) pyvsmbr_volume );
+
+	pyvsmbr_volume_open_file_object(
+	 (pyvsmbr_volume_t *) pyvsmbr_volume,
+	 arguments,
+	 keywords );
+
+	return( pyvsmbr_volume );
 }
 
 #if PY_MAJOR_VERSION >= 3
@@ -480,22 +537,22 @@ PyMODINIT_FUNC initpyvsmbr(
 
 	gil_state = PyGILState_Ensure();
 
-	/* Setup the handle type object
+	/* Setup the volume type object
 	 */
-	pyvsmbr_handle_type_object.tp_new = PyType_GenericNew;
+	pyvsmbr_volume_type_object.tp_new = PyType_GenericNew;
 
 	if( PyType_Ready(
-	     &pyvsmbr_handle_type_object ) < 0 )
+	     &pyvsmbr_volume_type_object ) < 0 )
 	{
 		goto on_error;
 	}
 	Py_IncRef(
-	 (PyObject *) &pyvsmbr_handle_type_object );
+	 (PyObject *) &pyvsmbr_volume_type_object );
 
 	PyModule_AddObject(
 	 module,
-	 "handle",
-	 (PyObject *) &pyvsmbr_handle_type_object );
+	 "volume",
+	 (PyObject *) &pyvsmbr_volume_type_object );
 
 	/* Setup the partition type object
 	 */

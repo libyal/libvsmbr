@@ -1,5 +1,5 @@
 /*
- * Library handle type test program
+ * Library volume type test program
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -40,7 +40,7 @@
 #include "vsmbr_test_unused.h"
 
 #if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
-#include "../libvsmbr/libvsmbr_handle.h"
+#include "../libvsmbr/libvsmbr_volume.h"
 #endif
 
 #if !defined( LIBVSMBR_HAVE_BFIO )
@@ -51,8 +51,8 @@ int libvsmbr_check_volume_signature_file_io_handle(
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
-int libvsmbr_handle_open_file_io_handle(
-     libvsmbr_handle_t *handle,
+int libvsmbr_volume_open_file_io_handle(
+     libvsmbr_volume_t *volume,
      libbfio_handle_t *file_io_handle,
      int access_flags,
      libvsmbr_error_t **error );
@@ -63,28 +63,28 @@ int libvsmbr_handle_open_file_io_handle(
 #error Unsupported size of wchar_t
 #endif
 
-/* Define to make vsmbr_test_handle generate verbose output
+/* Define to make vsmbr_test_volume generate verbose output
 #define VSMBR_TEST_HANDLE_VERBOSE
  */
 
-/* Creates and opens a source handle
+/* Creates and opens a source volume
  * Returns 1 if successful or -1 on error
  */
-int vsmbr_test_handle_open_source(
-     libvsmbr_handle_t **handle,
+int vsmbr_test_volume_open_source(
+     libvsmbr_volume_t **volume,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error )
 {
-	static char *function = "vsmbr_test_handle_open_source";
+	static char *function = "vsmbr_test_volume_open_source";
 	int result            = 0;
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
@@ -100,21 +100,21 @@ int vsmbr_test_handle_open_source(
 
 		return( -1 );
 	}
-	if( libvsmbr_handle_initialize(
-	     handle,
+	if( libvsmbr_volume_initialize(
+	     volume,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
-		 "%s: unable to initialize handle.",
+		 "%s: unable to initialize volume.",
 		 function );
 
 		goto on_error;
 	}
-	result = libvsmbr_handle_open_file_io_handle(
-	          *handle,
+	result = libvsmbr_volume_open_file_io_handle(
+	          *volume,
 	          file_io_handle,
 	          LIBVSMBR_OPEN_READ,
 	          error );
@@ -125,7 +125,7 @@ int vsmbr_test_handle_open_source(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_OPEN_FAILED,
-		 "%s: unable to open handle.",
+		 "%s: unable to open volume.",
 		 function );
 
 		goto on_error;
@@ -133,58 +133,58 @@ int vsmbr_test_handle_open_source(
 	return( 1 );
 
 on_error:
-	if( *handle != NULL )
+	if( *volume != NULL )
 	{
-		libvsmbr_handle_free(
-		 handle,
+		libvsmbr_volume_free(
+		 volume,
 		 NULL );
 	}
 	return( -1 );
 }
 
-/* Closes and frees a source handle
+/* Closes and frees a source volume
  * Returns 1 if successful or -1 on error
  */
-int vsmbr_test_handle_close_source(
-     libvsmbr_handle_t **handle,
+int vsmbr_test_volume_close_source(
+     libvsmbr_volume_t **volume,
      libcerror_error_t **error )
 {
-	static char *function = "vsmbr_test_handle_close_source";
+	static char *function = "vsmbr_test_volume_close_source";
 	int result            = 0;
 
-	if( handle == NULL )
+	if( volume == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid handle.",
+		 "%s: invalid volume.",
 		 function );
 
 		return( -1 );
 	}
-	if( libvsmbr_handle_close(
-	     *handle,
+	if( libvsmbr_volume_close(
+	     *volume,
 	     error ) != 0 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_CLOSE_FAILED,
-		 "%s: unable to close handle.",
+		 "%s: unable to close volume.",
 		 function );
 
 		result = -1;
 	}
-	if( libvsmbr_handle_free(
-	     handle,
+	if( libvsmbr_volume_free(
+	     volume,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
-		 "%s: unable to free handle.",
+		 "%s: unable to free volume.",
 		 function );
 
 		result = -1;
@@ -192,14 +192,14 @@ int vsmbr_test_handle_close_source(
 	return( result );
 }
 
-/* Tests the libvsmbr_handle_initialize function
+/* Tests the libvsmbr_volume_initialize function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_initialize(
+int vsmbr_test_volume_initialize(
      void )
 {
 	libcerror_error_t *error        = NULL;
-	libvsmbr_handle_t *handle       = NULL;
+	libvsmbr_volume_t *volume       = NULL;
 	int result                      = 0;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
@@ -210,8 +210,8 @@ int vsmbr_test_handle_initialize(
 
 	/* Test regular cases
 	 */
-	result = libvsmbr_handle_initialize(
-	          &handle,
+	result = libvsmbr_volume_initialize(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -220,15 +220,15 @@ int vsmbr_test_handle_initialize(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NOT_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
 
-	result = libvsmbr_handle_free(
-	          &handle,
+	result = libvsmbr_volume_free(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -237,8 +237,8 @@ int vsmbr_test_handle_initialize(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -246,7 +246,7 @@ int vsmbr_test_handle_initialize(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_initialize(
+	result = libvsmbr_volume_initialize(
 	          NULL,
 	          &error );
 
@@ -262,10 +262,10 @@ int vsmbr_test_handle_initialize(
 	libcerror_error_free(
 	 &error );
 
-	handle = (libvsmbr_handle_t *) 0x12345678UL;
+	volume = (libvsmbr_volume_t *) 0x12345678UL;
 
-	result = libvsmbr_handle_initialize(
-	          &handle,
+	result = libvsmbr_volume_initialize(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -280,7 +280,7 @@ int vsmbr_test_handle_initialize(
 	libcerror_error_free(
 	 &error );
 
-	handle = NULL;
+	volume = NULL;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 
@@ -288,22 +288,22 @@ int vsmbr_test_handle_initialize(
 	     test_number < number_of_malloc_fail_tests;
 	     test_number++ )
 	{
-		/* Test libvsmbr_handle_initialize with malloc failing
+		/* Test libvsmbr_volume_initialize with malloc failing
 		 */
 		vsmbr_test_malloc_attempts_before_fail = test_number;
 
-		result = libvsmbr_handle_initialize(
-		          &handle,
+		result = libvsmbr_volume_initialize(
+		          &volume,
 		          &error );
 
 		if( vsmbr_test_malloc_attempts_before_fail != -1 )
 		{
 			vsmbr_test_malloc_attempts_before_fail = -1;
 
-			if( handle != NULL )
+			if( volume != NULL )
 			{
-				libvsmbr_handle_free(
-				 &handle,
+				libvsmbr_volume_free(
+				 &volume,
 				 NULL );
 			}
 		}
@@ -315,8 +315,8 @@ int vsmbr_test_handle_initialize(
 			 -1 );
 
 			VSMBR_TEST_ASSERT_IS_NULL(
-			 "handle",
-			 handle );
+			 "volume",
+			 volume );
 
 			VSMBR_TEST_ASSERT_IS_NOT_NULL(
 			 "error",
@@ -330,22 +330,22 @@ int vsmbr_test_handle_initialize(
 	     test_number < number_of_memset_fail_tests;
 	     test_number++ )
 	{
-		/* Test libvsmbr_handle_initialize with memset failing
+		/* Test libvsmbr_volume_initialize with memset failing
 		 */
 		vsmbr_test_memset_attempts_before_fail = test_number;
 
-		result = libvsmbr_handle_initialize(
-		          &handle,
+		result = libvsmbr_volume_initialize(
+		          &volume,
 		          &error );
 
 		if( vsmbr_test_memset_attempts_before_fail != -1 )
 		{
 			vsmbr_test_memset_attempts_before_fail = -1;
 
-			if( handle != NULL )
+			if( volume != NULL )
 			{
-				libvsmbr_handle_free(
-				 &handle,
+				libvsmbr_volume_free(
+				 &volume,
 				 NULL );
 			}
 		}
@@ -357,8 +357,8 @@ int vsmbr_test_handle_initialize(
 			 -1 );
 
 			VSMBR_TEST_ASSERT_IS_NULL(
-			 "handle",
-			 handle );
+			 "volume",
+			 volume );
 
 			VSMBR_TEST_ASSERT_IS_NOT_NULL(
 			 "error",
@@ -378,19 +378,19 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( handle != NULL )
+	if( volume != NULL )
 	{
-		libvsmbr_handle_free(
-		 &handle,
+		libvsmbr_volume_free(
+		 &volume,
 		 NULL );
 	}
 	return( 0 );
 }
 
-/* Tests the libvsmbr_handle_free function
+/* Tests the libvsmbr_volume_free function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_free(
+int vsmbr_test_volume_free(
      void )
 {
 	libcerror_error_t *error = NULL;
@@ -398,7 +398,7 @@ int vsmbr_test_handle_free(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_free(
+	result = libvsmbr_volume_free(
 	          NULL,
 	          &error );
 
@@ -425,16 +425,16 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libvsmbr_handle_open function
+/* Tests the libvsmbr_volume_open function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_open(
+int vsmbr_test_volume_open(
      const system_character_t *source )
 {
 	char narrow_source[ 256 ];
 
 	libcerror_error_t *error  = NULL;
-	libvsmbr_handle_t *handle = NULL;
+	libvsmbr_volume_t *volume = NULL;
 	int result                = 0;
 
 	/* Initialize test
@@ -454,8 +454,8 @@ int vsmbr_test_handle_open(
 	 "error",
 	 error );
 
-	result = libvsmbr_handle_initialize(
-	          &handle,
+	result = libvsmbr_volume_initialize(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -464,8 +464,8 @@ int vsmbr_test_handle_open(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NOT_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -473,8 +473,8 @@ int vsmbr_test_handle_open(
 
 	/* Test open
 	 */
-	result = libvsmbr_handle_open(
-	          handle,
+	result = libvsmbr_volume_open(
+	          volume,
 	          narrow_source,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -490,7 +490,7 @@ int vsmbr_test_handle_open(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_open(
+	result = libvsmbr_volume_open(
 	          NULL,
 	          narrow_source,
 	          LIBVSMBR_OPEN_READ,
@@ -508,8 +508,8 @@ int vsmbr_test_handle_open(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_handle_open(
-	          handle,
+	result = libvsmbr_volume_open(
+	          volume,
 	          NULL,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -526,8 +526,8 @@ int vsmbr_test_handle_open(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_handle_open(
-	          handle,
+	result = libvsmbr_volume_open(
+	          volume,
 	          narrow_source,
 	          -1,
 	          &error );
@@ -546,8 +546,8 @@ int vsmbr_test_handle_open(
 
 	/* Test open when already opened
 	 */
-	result = libvsmbr_handle_open(
-	          handle,
+	result = libvsmbr_volume_open(
+	          volume,
 	          narrow_source,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -566,8 +566,8 @@ int vsmbr_test_handle_open(
 
 	/* Clean up
 	 */
-	result = libvsmbr_handle_free(
-	          &handle,
+	result = libvsmbr_volume_free(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -576,8 +576,8 @@ int vsmbr_test_handle_open(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -591,10 +591,10 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( handle != NULL )
+	if( volume != NULL )
 	{
-		libvsmbr_handle_free(
-		 &handle,
+		libvsmbr_volume_free(
+		 &volume,
 		 NULL );
 	}
 	return( 0 );
@@ -602,16 +602,16 @@ on_error:
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
-/* Tests the libvsmbr_handle_open_wide function
+/* Tests the libvsmbr_volume_open_wide function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_open_wide(
+int vsmbr_test_volume_open_wide(
      const system_character_t *source )
 {
 	wchar_t wide_source[ 256 ];
 
 	libcerror_error_t *error  = NULL;
-	libvsmbr_handle_t *handle = NULL;
+	libvsmbr_volume_t *volume = NULL;
 	int result                = 0;
 
 	/* Initialize test
@@ -631,8 +631,8 @@ int vsmbr_test_handle_open_wide(
 	 "error",
 	 error );
 
-	result = libvsmbr_handle_initialize(
-	          &handle,
+	result = libvsmbr_volume_initialize(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -641,8 +641,8 @@ int vsmbr_test_handle_open_wide(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NOT_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -650,8 +650,8 @@ int vsmbr_test_handle_open_wide(
 
 	/* Test open
 	 */
-	result = libvsmbr_handle_open_wide(
-	          handle,
+	result = libvsmbr_volume_open_wide(
+	          volume,
 	          wide_source,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -667,7 +667,7 @@ int vsmbr_test_handle_open_wide(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_open_wide(
+	result = libvsmbr_volume_open_wide(
 	          NULL,
 	          wide_source,
 	          LIBVSMBR_OPEN_READ,
@@ -685,8 +685,8 @@ int vsmbr_test_handle_open_wide(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_handle_open_wide(
-	          handle,
+	result = libvsmbr_volume_open_wide(
+	          volume,
 	          NULL,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -703,8 +703,8 @@ int vsmbr_test_handle_open_wide(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_handle_open_wide(
-	          handle,
+	result = libvsmbr_volume_open_wide(
+	          volume,
 	          wide_source,
 	          -1,
 	          &error );
@@ -723,8 +723,8 @@ int vsmbr_test_handle_open_wide(
 
 	/* Test open when already opened
 	 */
-	result = libvsmbr_handle_open_wide(
-	          handle,
+	result = libvsmbr_volume_open_wide(
+	          volume,
 	          wide_source,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -743,8 +743,8 @@ int vsmbr_test_handle_open_wide(
 
 	/* Clean up
 	 */
-	result = libvsmbr_handle_free(
-	          &handle,
+	result = libvsmbr_volume_free(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -753,8 +753,8 @@ int vsmbr_test_handle_open_wide(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -768,10 +768,10 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( handle != NULL )
+	if( volume != NULL )
 	{
-		libvsmbr_handle_free(
-		 &handle,
+		libvsmbr_volume_free(
+		 &volume,
 		 NULL );
 	}
 	return( 0 );
@@ -779,15 +779,15 @@ on_error:
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
-/* Tests the libvsmbr_handle_open_file_io_handle function
+/* Tests the libvsmbr_volume_open_file_io_handle function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_open_file_io_handle(
+int vsmbr_test_volume_open_file_io_handle(
      const system_character_t *source )
 {
 	libbfio_handle_t *file_io_handle = NULL;
 	libcerror_error_t *error         = NULL;
-	libvsmbr_handle_t *handle        = NULL;
+	libvsmbr_volume_t *volume        = NULL;
 	size_t string_length             = 0;
 	int result                       = 0;
 
@@ -835,8 +835,8 @@ int vsmbr_test_handle_open_file_io_handle(
          "error",
          error );
 
-	result = libvsmbr_handle_initialize(
-	          &handle,
+	result = libvsmbr_volume_initialize(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -845,8 +845,8 @@ int vsmbr_test_handle_open_file_io_handle(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NOT_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -854,8 +854,8 @@ int vsmbr_test_handle_open_file_io_handle(
 
 	/* Test open
 	 */
-	result = libvsmbr_handle_open_file_io_handle(
-	          handle,
+	result = libvsmbr_volume_open_file_io_handle(
+	          volume,
 	          file_io_handle,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -871,7 +871,7 @@ int vsmbr_test_handle_open_file_io_handle(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_open_file_io_handle(
+	result = libvsmbr_volume_open_file_io_handle(
 	          NULL,
 	          file_io_handle,
 	          LIBVSMBR_OPEN_READ,
@@ -889,8 +889,8 @@ int vsmbr_test_handle_open_file_io_handle(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_handle_open_file_io_handle(
-	          handle,
+	result = libvsmbr_volume_open_file_io_handle(
+	          volume,
 	          NULL,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -907,8 +907,8 @@ int vsmbr_test_handle_open_file_io_handle(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_handle_open_file_io_handle(
-	          handle,
+	result = libvsmbr_volume_open_file_io_handle(
+	          volume,
 	          file_io_handle,
 	          -1,
 	          &error );
@@ -927,8 +927,8 @@ int vsmbr_test_handle_open_file_io_handle(
 
 	/* Test open when already opened
 	 */
-	result = libvsmbr_handle_open_file_io_handle(
-	          handle,
+	result = libvsmbr_volume_open_file_io_handle(
+	          volume,
 	          file_io_handle,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -947,8 +947,8 @@ int vsmbr_test_handle_open_file_io_handle(
 
 	/* Clean up
 	 */
-	result = libvsmbr_handle_free(
-	          &handle,
+	result = libvsmbr_volume_free(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -957,8 +957,8 @@ int vsmbr_test_handle_open_file_io_handle(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -989,10 +989,10 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( handle != NULL )
+	if( volume != NULL )
 	{
-		libvsmbr_handle_free(
-		 &handle,
+		libvsmbr_volume_free(
+		 &volume,
 		 NULL );
 	}
 	if( file_io_handle != NULL )
@@ -1004,10 +1004,10 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libvsmbr_handle_close function
+/* Tests the libvsmbr_volume_close function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_close(
+int vsmbr_test_volume_close(
      void )
 {
 	libcerror_error_t *error = NULL;
@@ -1015,7 +1015,7 @@ int vsmbr_test_handle_close(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_close(
+	result = libvsmbr_volume_close(
 	          NULL,
 	          &error );
 
@@ -1042,20 +1042,20 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libvsmbr_handle_open and libvsmbr_handle_close functions
+/* Tests the libvsmbr_volume_open and libvsmbr_volume_close functions
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_open_close(
+int vsmbr_test_volume_open_close(
      const system_character_t *source )
 {
 	libcerror_error_t *error  = NULL;
-	libvsmbr_handle_t *handle = NULL;
+	libvsmbr_volume_t *volume = NULL;
 	int result                = 0;
 
 	/* Initialize test
 	 */
-	result = libvsmbr_handle_initialize(
-	          &handle,
+	result = libvsmbr_volume_initialize(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -1064,8 +1064,8 @@ int vsmbr_test_handle_open_close(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NOT_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -1074,14 +1074,14 @@ int vsmbr_test_handle_open_close(
 	/* Test open and close
 	 */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	result = libvsmbr_handle_open_wide(
-	          handle,
+	result = libvsmbr_volume_open_wide(
+	          volume,
 	          source,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
 #else
-	result = libvsmbr_handle_open(
-	          handle,
+	result = libvsmbr_volume_open(
+	          volume,
 	          source,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -1096,8 +1096,8 @@ int vsmbr_test_handle_open_close(
 	 "error",
 	 error );
 
-	result = libvsmbr_handle_close(
-	          handle,
+	result = libvsmbr_volume_close(
+	          volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -1112,14 +1112,14 @@ int vsmbr_test_handle_open_close(
 	/* Test open and close a second time to validate clean up on close
 	 */
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
-	result = libvsmbr_handle_open_wide(
-	          handle,
+	result = libvsmbr_volume_open_wide(
+	          volume,
 	          source,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
 #else
-	result = libvsmbr_handle_open(
-	          handle,
+	result = libvsmbr_volume_open(
+	          volume,
 	          source,
 	          LIBVSMBR_OPEN_READ,
 	          &error );
@@ -1134,8 +1134,8 @@ int vsmbr_test_handle_open_close(
 	 "error",
 	 error );
 
-	result = libvsmbr_handle_close(
-	          handle,
+	result = libvsmbr_volume_close(
+	          volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -1149,8 +1149,8 @@ int vsmbr_test_handle_open_close(
 
 	/* Clean up
 	 */
-	result = libvsmbr_handle_free(
-	          &handle,
+	result = libvsmbr_volume_free(
+	          &volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -1159,8 +1159,8 @@ int vsmbr_test_handle_open_close(
 	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
-	 "handle",
-	 handle );
+	 "volume",
+	 volume );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
@@ -1174,28 +1174,28 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( handle != NULL )
+	if( volume != NULL )
 	{
-		libvsmbr_handle_free(
-		 &handle,
+		libvsmbr_volume_free(
+		 &volume,
 		 NULL );
 	}
 	return( 0 );
 }
 
-/* Tests the libvsmbr_handle_signal_abort function
+/* Tests the libvsmbr_volume_signal_abort function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_signal_abort(
-     libvsmbr_handle_t *handle )
+int vsmbr_test_volume_signal_abort(
+     libvsmbr_volume_t *volume )
 {
 	libcerror_error_t *error = NULL;
 	int result               = 0;
 
 	/* Test regular cases
 	 */
-	result = libvsmbr_handle_signal_abort(
-	          handle,
+	result = libvsmbr_volume_signal_abort(
+	          volume,
 	          &error );
 
 	VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -1209,7 +1209,7 @@ int vsmbr_test_handle_signal_abort(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_signal_abort(
+	result = libvsmbr_volume_signal_abort(
 	          NULL,
 	          &error );
 
@@ -1236,11 +1236,11 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libvsmbr_handle_get_bytes_per_sector function
+/* Tests the libvsmbr_volume_get_bytes_per_sector function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_get_bytes_per_sector(
-     libvsmbr_handle_t *handle )
+int vsmbr_test_volume_get_bytes_per_sector(
+     libvsmbr_volume_t *volume )
 {
 	libcerror_error_t *error    = NULL;
 	uint32_t bytes_per_sector   = 0;
@@ -1249,8 +1249,8 @@ int vsmbr_test_handle_get_bytes_per_sector(
 
 	/* Test regular cases
 	 */
-	result = libvsmbr_handle_get_bytes_per_sector(
-	          handle,
+	result = libvsmbr_volume_get_bytes_per_sector(
+	          volume,
 	          &bytes_per_sector,
 	          &error );
 
@@ -1267,7 +1267,7 @@ int vsmbr_test_handle_get_bytes_per_sector(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_get_bytes_per_sector(
+	result = libvsmbr_volume_get_bytes_per_sector(
 	          NULL,
 	          &bytes_per_sector,
 	          &error );
@@ -1286,8 +1286,8 @@ int vsmbr_test_handle_get_bytes_per_sector(
 
 	if( bytes_per_sector_is_set != 0 )
 	{
-		result = libvsmbr_handle_get_bytes_per_sector(
-		          handle,
+		result = libvsmbr_volume_get_bytes_per_sector(
+		          volume,
 		          NULL,
 		          &error );
 
@@ -1314,11 +1314,11 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libvsmbr_handle_get_number_of_partitions function
+/* Tests the libvsmbr_volume_get_number_of_partitions function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_get_number_of_partitions(
-     libvsmbr_handle_t *handle )
+int vsmbr_test_volume_get_number_of_partitions(
+     libvsmbr_volume_t *volume )
 {
 	libcerror_error_t *error        = NULL;
 	int number_of_partitions        = 0;
@@ -1327,8 +1327,8 @@ int vsmbr_test_handle_get_number_of_partitions(
 
 	/* Test regular cases
 	 */
-	result = libvsmbr_handle_get_number_of_partitions(
-	          handle,
+	result = libvsmbr_volume_get_number_of_partitions(
+	          volume,
 	          &number_of_partitions,
 	          &error );
 
@@ -1345,7 +1345,7 @@ int vsmbr_test_handle_get_number_of_partitions(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_get_number_of_partitions(
+	result = libvsmbr_volume_get_number_of_partitions(
 	          NULL,
 	          &number_of_partitions,
 	          &error );
@@ -1364,8 +1364,8 @@ int vsmbr_test_handle_get_number_of_partitions(
 
 	if( number_of_partitions_is_set != 0 )
 	{
-		result = libvsmbr_handle_get_number_of_partitions(
-		          handle,
+		result = libvsmbr_volume_get_number_of_partitions(
+		          volume,
 		          NULL,
 		          &error );
 
@@ -1392,11 +1392,11 @@ on_error:
 	return( 0 );
 }
 
-/* Tests the libvsmbr_handle_get_partition_by_index function
+/* Tests the libvsmbr_volume_get_partition_by_index function
  * Returns 1 if successful or 0 if not
  */
-int vsmbr_test_handle_get_partition_by_index(
-     libvsmbr_handle_t *handle )
+int vsmbr_test_volume_get_partition_by_index(
+     libvsmbr_volume_t *volume )
 {
 	libcerror_error_t *error                 = NULL;
 	libvsmbr_partition_t *partition_by_index = 0;
@@ -1404,8 +1404,8 @@ int vsmbr_test_handle_get_partition_by_index(
 
 	/* Test regular cases
 	 */
-	result = libvsmbr_handle_get_partition_by_index(
-	          handle,
+	result = libvsmbr_volume_get_partition_by_index(
+	          volume,
 	          0,
 	          &partition_by_index,
 	          &error );
@@ -1438,7 +1438,7 @@ int vsmbr_test_handle_get_partition_by_index(
 
 	/* Test error cases
 	 */
-	result = libvsmbr_handle_get_partition_by_index(
+	result = libvsmbr_volume_get_partition_by_index(
 	          NULL,
 	          0,
 	          &partition_by_index,
@@ -1460,8 +1460,8 @@ int vsmbr_test_handle_get_partition_by_index(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_handle_get_partition_by_index(
-	          handle,
+	result = libvsmbr_volume_get_partition_by_index(
+	          volume,
 	          -1,
 	          &partition_by_index,
 	          &error );
@@ -1482,8 +1482,8 @@ int vsmbr_test_handle_get_partition_by_index(
 	libcerror_error_free(
 	 &error );
 
-	result = libvsmbr_handle_get_partition_by_index(
-	          handle,
+	result = libvsmbr_volume_get_partition_by_index(
+	          volume,
 	          0,
 	          NULL,
 	          &error );
@@ -1529,7 +1529,7 @@ int main(
 {
 	libbfio_handle_t *file_io_handle = NULL;
 	libcerror_error_t *error         = NULL;
-	libvsmbr_handle_t *handle        = NULL;
+	libvsmbr_volume_t *volume        = NULL;
 	system_character_t *source       = NULL;
 	system_integer_t option          = 0;
 	size_t string_length             = 0;
@@ -1565,12 +1565,12 @@ int main(
 #endif
 
 	VSMBR_TEST_RUN(
-	 "libvsmbr_handle_initialize",
-	 vsmbr_test_handle_initialize );
+	 "libvsmbr_volume_initialize",
+	 vsmbr_test_volume_initialize );
 
 	VSMBR_TEST_RUN(
-	 "libvsmbr_handle_free",
-	 vsmbr_test_handle_free );
+	 "libvsmbr_volume_free",
+	 vsmbr_test_volume_free );
 
 #if !defined( __BORLANDC__ ) || ( __BORLANDC__ >= 0x0560 )
 	if( source != NULL )
@@ -1633,37 +1633,37 @@ int main(
 	if( result != 0 )
 	{
 		VSMBR_TEST_RUN_WITH_ARGS(
-		 "libvsmbr_handle_open",
-		 vsmbr_test_handle_open,
+		 "libvsmbr_volume_open",
+		 vsmbr_test_volume_open,
 		 source );
 
 #if defined( HAVE_WIDE_CHARACTER_TYPE )
 
 		VSMBR_TEST_RUN_WITH_ARGS(
-		 "libvsmbr_handle_open_wide",
-		 vsmbr_test_handle_open_wide,
+		 "libvsmbr_volume_open_wide",
+		 vsmbr_test_volume_open_wide,
 		 source );
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
 		VSMBR_TEST_RUN_WITH_ARGS(
-		 "libvsmbr_handle_open_file_io_handle",
-		 vsmbr_test_handle_open_file_io_handle,
+		 "libvsmbr_volume_open_file_io_handle",
+		 vsmbr_test_volume_open_file_io_handle,
 		 source );
 
 		VSMBR_TEST_RUN(
-		 "libvsmbr_handle_close",
-		 vsmbr_test_handle_close );
+		 "libvsmbr_volume_close",
+		 vsmbr_test_volume_close );
 
 		VSMBR_TEST_RUN_WITH_ARGS(
-		 "libvsmbr_handle_open_close",
-		 vsmbr_test_handle_open_close,
+		 "libvsmbr_volume_open_close",
+		 vsmbr_test_volume_open_close,
 		 source );
 
-		/* Initialize handle for tests
+		/* Initialize volume for tests
 		 */
-		result = vsmbr_test_handle_open_source(
-		          &handle,
+		result = vsmbr_test_volume_open_source(
+		          &volume,
 		          file_io_handle,
 		          &error );
 
@@ -1673,45 +1673,45 @@ int main(
 		 1 );
 
 		VSMBR_TEST_ASSERT_IS_NOT_NULL(
-		 "handle",
-		 handle );
+		 "volume",
+		 volume );
 
 		VSMBR_TEST_ASSERT_IS_NULL(
 		 "error",
 		 error );
 
 		VSMBR_TEST_RUN_WITH_ARGS(
-		 "libvsmbr_handle_signal_abort",
-		 vsmbr_test_handle_signal_abort,
-		 handle );
+		 "libvsmbr_volume_signal_abort",
+		 vsmbr_test_volume_signal_abort,
+		 volume );
 
 #if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
-		/* TODO: add tests for libvsmbr_handle_open_read */
+		/* TODO: add tests for libvsmbr_volume_open_read */
 
-		/* TODO: add tests for libvsmbr_handle_read_partition_entries */
+		/* TODO: add tests for libvsmbr_volume_read_partition_entries */
 
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 
 		VSMBR_TEST_RUN_WITH_ARGS(
-		 "libvsmbr_handle_get_bytes_per_sector",
-		 vsmbr_test_handle_get_bytes_per_sector,
-		 handle );
+		 "libvsmbr_volume_get_bytes_per_sector",
+		 vsmbr_test_volume_get_bytes_per_sector,
+		 volume );
 
 		VSMBR_TEST_RUN_WITH_ARGS(
-		 "libvsmbr_handle_get_number_of_partitions",
-		 vsmbr_test_handle_get_number_of_partitions,
-		 handle );
+		 "libvsmbr_volume_get_number_of_partitions",
+		 vsmbr_test_volume_get_number_of_partitions,
+		 volume );
 
 		VSMBR_TEST_RUN_WITH_ARGS(
-		 "libvsmbr_handle_get_partition_by_index",
-		 vsmbr_test_handle_get_partition_by_index,
-		 handle );
+		 "libvsmbr_volume_get_partition_by_index",
+		 vsmbr_test_volume_get_partition_by_index,
+		 volume );
 
 		/* Clean up
 		 */
-		result = vsmbr_test_handle_close_source(
-		          &handle,
+		result = vsmbr_test_volume_close_source(
+		          &volume,
 		          &error );
 
 		VSMBR_TEST_ASSERT_EQUAL_INT(
@@ -1720,8 +1720,8 @@ int main(
 		 0 );
 
 		VSMBR_TEST_ASSERT_IS_NULL(
-		 "handle",
-		 handle );
+		 "volume",
+		 volume );
 
 		VSMBR_TEST_ASSERT_IS_NULL(
 		 "error",
@@ -1756,10 +1756,10 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
-	if( handle != NULL )
+	if( volume != NULL )
 	{
-		libvsmbr_handle_free(
-		 &handle,
+		libvsmbr_volume_free(
+		 &volume,
 		 NULL );
 	}
 	if( file_io_handle != NULL )

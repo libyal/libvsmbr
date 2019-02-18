@@ -190,10 +190,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\libvsmbr\libvsmbr_handle.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_io_handle.c"
 				>
 			</File>
@@ -223,6 +219,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_support.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libvsmbr\libvsmbr_volume.c"
 				>
 			</File>
 			<File
@@ -257,10 +257,6 @@
 			</File>
 			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_extern.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libvsmbr\libvsmbr_handle.h"
 				>
 			</File>
 			<File
@@ -333,6 +329,10 @@
 			</File>
 			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_unused.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\libvsmbr\libvsmbr_volume.h"
 				>
 			</File>
 			<File
