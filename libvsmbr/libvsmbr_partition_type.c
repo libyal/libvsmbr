@@ -22,11 +22,11 @@
 #include <common.h>
 #include <types.h>
 
-#include "libvsmbr_volume_type.h"
+#include "libvsmbr_partition_type.h"
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
-libvsmbr_volume_type_t libvsmbr_volume_types[ ] = {
+libvsmbr_partition_type_t libvsmbr_partition_types[ ] = {
 	{ 0x00,		"Empty" },
 	{ 0x01,		"FAT12 (CHS)" },
 	{ 0x02,		"XENIX root" },
@@ -82,8 +82,8 @@ libvsmbr_volume_type_t libvsmbr_volume_types[ ] = {
 	{ 0x83,		"Linux" },
 	{ 0x84,		"OS/2 hidden C: drive" },
 	{ 0x85,		"Linux extended" },
-	{ 0x86,		"NTFS volume set" },
-	{ 0x87,		"NTFS volume set" },
+	{ 0x86,		"NTFS partition set" },
+	{ 0x87,		"NTFS partition set" },
 	{ 0x8e,		"Linux LVM" },
 	{ 0x93,		"Amoeba" },
 	{ 0x94,		"Amoeba BBT" },
@@ -121,23 +121,23 @@ libvsmbr_volume_type_t libvsmbr_volume_types[ ] = {
 
 	{ (uint16_t) -1, "Unknown" } };
 
-/* Retrieves a string containing the value type description
+/* Retrieves a string containing the partition type description
  */
-const char *libvsmbr_volume_type_get_description(
-             uint8_t volume_type )
+const char *libvsmbr_partition_type_get_description(
+             uint8_t partition_type )
 {
 	int iterator = 0;
 
-	while( ( libvsmbr_volume_types[ iterator ] ).volume_type != (uint16_t) -1 )
+	while( ( libvsmbr_partition_types[ iterator ] ).type != (uint16_t) -1 )
 	{
-		if( ( libvsmbr_volume_types[ iterator ] ).volume_type == (uint16_t) volume_type )
+		if( ( libvsmbr_partition_types[ iterator ] ).type == (uint16_t) partition_type )
 		{
 			break;
 		}
 		iterator++;
 	}
 	return(
-	 ( libvsmbr_volume_types[ iterator ] ).description );
+	 ( libvsmbr_partition_types[ iterator ] ).description );
 }
 
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */

@@ -38,6 +38,7 @@ libvsmbr_la_SOURCES = \
 	libvsmbr_notify.c libvsmbr_notify.h \
 	libvsmbr_partition.c libvsmbr_partition.h \
 	libvsmbr_partition_entry.c libvsmbr_partition_entry.h \
+	libvsmbr_partition_type.c libvsmbr_partition_type.h \
 	libvsmbr_partition_values.c libvsmbr_partition_values.h \
 	libvsmbr_section_values.c libvsmbr_section_values.h \
 	libvsmbr_sector_data.c libvsmbr_sector_data.h \
@@ -45,7 +46,6 @@ libvsmbr_la_SOURCES = \
 	libvsmbr_types.h \
 	libvsmbr_unused.h \
 	libvsmbr_volume.c libvsmbr_volume.h \
-	libvsmbr_volume_type.c libvsmbr_volume_type.h \
 	vsmbr_boot_record.h \
 	vsmbr_partition_entry.h
 

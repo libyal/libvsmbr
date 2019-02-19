@@ -30,7 +30,7 @@
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcnotify.h"
 #include "libvsmbr_partition_entry.h"
-#include "libvsmbr_volume_type.h"
+#include "libvsmbr_partition_type.h"
 
 #include "vsmbr_partition_entry.h"
 
@@ -270,7 +270,7 @@ int libvsmbr_partition_entry_read_data(
 		 function,
 		 partition_entry->index,
 		 partition_entry->type,
-		 libvsmbr_volume_type_get_description(
+		 libvsmbr_partition_type_get_description(
 		  partition_entry->type ) );
 
 		if( libvsmbr_chs_address_copy_from_byte_stream(

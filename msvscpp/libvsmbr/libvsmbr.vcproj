@@ -206,6 +206,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libvsmbr\libvsmbr_partition_type.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_partition_values.c"
 				>
 			</File>
@@ -223,10 +227,6 @@
 			</File>
 			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_volume.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libvsmbr\libvsmbr_volume_type.c"
 				>
 			</File>
 		</Filter>
@@ -308,6 +308,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\libvsmbr\libvsmbr_partition_type.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_partition_values.h"
 				>
 			</File>
@@ -333,10 +337,6 @@
 			</File>
 			<File
 				RelativePath="..\..\libvsmbr\libvsmbr_volume.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\libvsmbr\libvsmbr_volume_type.h"
 				>
 			</File>
 			<File

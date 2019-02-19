@@ -1,5 +1,5 @@
 /*
- * Volume type functions
+ * Partition type functions
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _LIBVSMBR_VOLUME_TYPE_H )
-#define _LIBVSMBR_VOLUME_TYPE_H
+#if !defined( _LIBVSMBR_PARTITION_TYPE_H )
+#define _LIBVSMBR_PARTITION_TYPE_H
 
 #include <common.h>
 #include <types.h>
@@ -31,21 +31,21 @@ extern "C" {
 
 #if defined( HAVE_DEBUG_OUTPUT )
 
-typedef struct libvsmbr_volume_type libvsmbr_volume_type_t;
+typedef struct libvsmbr_partition_type libvsmbr_partition_type_t;
 
-struct libvsmbr_volume_type
+struct libvsmbr_partition_type
 {
-	/* The value type
+	/* The type
 	 */
-	uint16_t volume_type;
+	uint16_t type;
 
 	/* The description
 	 */
 	const char *description;
 };
 
-const char *libvsmbr_volume_type_get_description(
-             uint8_t volume_type );
+const char *libvsmbr_partition_type_get_description(
+             uint8_t partition_type );
 
 #endif /* defined( HAVE_DEBUG_OUTPUT ) */
 
@@ -53,5 +53,5 @@ const char *libvsmbr_volume_type_get_description(
 }
 #endif
 
-#endif /* !defined( _LIBVSMBR_VOLUME_TYPE_H ) */
+#endif /* !defined( _LIBVSMBR_PARTITION_TYPE_H ) */
 
