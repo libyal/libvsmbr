@@ -20,12 +20,12 @@ MSVSCPP_FILES = \
 	vsmbr_test_notify/vsmbr_test_notify.vcproj \
 	vsmbr_test_partition/vsmbr_test_partition.vcproj \
 	vsmbr_test_partition_entry/vsmbr_test_partition_entry.vcproj \
+	vsmbr_test_partition_type/vsmbr_test_partition_type.vcproj \
 	vsmbr_test_partition_values/vsmbr_test_partition_values.vcproj \
 	vsmbr_test_section_values/vsmbr_test_section_values.vcproj \
 	vsmbr_test_sector_data/vsmbr_test_sector_data.vcproj \
 	vsmbr_test_support/vsmbr_test_support.vcproj \
 	vsmbr_test_volume/vsmbr_test_volume.vcproj \
-	vsmbr_test_volume_type/vsmbr_test_volume_type.vcproj \
 	vsmbrinfo/vsmbrinfo.vcproj \
 	libvsmbr.sln
 

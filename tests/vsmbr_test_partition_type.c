@@ -1,5 +1,5 @@
 /*
- * Library volume_type type test program
+ * Library partition_type type test program
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -33,7 +33,7 @@
 #include "vsmbr_test_memory.h"
 #include "vsmbr_test_unused.h"
 
-#include "../libvsmbr/libvsmbr_volume_type.h"
+#include "../libvsmbr/libvsmbr_partition_type.h"
 
 /* The main program
  */
@@ -52,7 +52,7 @@ int main(
 
 #if defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT )
 
-	/* TODO: add tests for libvsmbr_volume_type_get_description */
+	/* TODO: add tests for libvsmbr_partition_type_get_description */
 
 #endif /* defined( __GNUC__ ) && !defined( LIBVSMBR_DLL_IMPORT ) */
 

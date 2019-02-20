@@ -133,12 +133,12 @@ stamp-h[1-9]
 /tests/vsmbr_test_notify
 /tests/vsmbr_test_partition
 /tests/vsmbr_test_partition_entry
+/tests/vsmbr_test_partition_type
 /tests/vsmbr_test_partition_values
 /tests/vsmbr_test_section_values
 /tests/vsmbr_test_sector_data
 /tests/vsmbr_test_support
 /tests/vsmbr_test_volume
-/tests/vsmbr_test_volume_type
 
 # Local library dependencies specific files
 /libbfio

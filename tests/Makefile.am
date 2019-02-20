@@ -46,12 +46,12 @@ check_PROGRAMS = \
 	vsmbr_test_notify \
 	vsmbr_test_partition \
 	vsmbr_test_partition_entry \
+	vsmbr_test_partition_type \
 	vsmbr_test_partition_values \
 	vsmbr_test_section_values \
 	vsmbr_test_sector_data \
 	vsmbr_test_support \
-	vsmbr_test_volume \
-	vsmbr_test_volume_type
+	vsmbr_test_volume
 
 vsmbr_test_boot_record_SOURCES = \
 	vsmbr_test_boot_record.c \
@@ -156,6 +156,18 @@ vsmbr_test_partition_entry_LDADD = \
 	../libvsmbr/libvsmbr.la \
 	@LIBCERROR_LIBADD@
 
+vsmbr_test_partition_type_SOURCES = \
+	vsmbr_test_libcerror.h \
+	vsmbr_test_libvsmbr.h \
+	vsmbr_test_macros.h \
+	vsmbr_test_memory.c vsmbr_test_memory.h \
+	vsmbr_test_partition_type.c \
+	vsmbr_test_unused.h
+
+vsmbr_test_partition_type_LDADD = \
+	../libvsmbr/libvsmbr.la \
+	@LIBCERROR_LIBADD@
+
 vsmbr_test_partition_values_SOURCES = \
 	vsmbr_test_libcerror.h \
 	vsmbr_test_libvsmbr.h \
@@ -256,18 +268,6 @@ vsmbr_test_volume_LDADD = \
 	@LIBCTHREADS_LIBADD@ \
 	@LIBCERROR_LIBADD@ \
 	@PTHREAD_LIBADD@
-
-vsmbr_test_volume_type_SOURCES = \
-	vsmbr_test_libcerror.h \
-	vsmbr_test_libvsmbr.h \
-	vsmbr_test_macros.h \
-	vsmbr_test_memory.c vsmbr_test_memory.h \
-	vsmbr_test_unused.h \
-	vsmbr_test_volume_type.c
-
-vsmbr_test_volume_type_LDADD = \
-	../libvsmbr/libvsmbr.la \
-	@LIBCERROR_LIBADD@
 
 MAINTAINERCLEANFILES = \
 	Makefile.in

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="vsmbr_test_volume_type"
-	ProjectGUID="{F3CF0F09-387E-4415-AF93-0EA5809EEC3D}"
-	RootNamespace="vsmbr_test_volume_type"
+	Name="vsmbr_test_partition_type"
+	ProjectGUID="{DA828799-CF59-49C8-B130-2EC0CD3A40AB}"
+	RootNamespace="vsmbr_test_partition_type"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -180,7 +180,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tests\vsmbr_test_volume_type.c"
+				RelativePath="..\..\tests\vsmbr_test_partition_type.c"
 				>
 			</File>
 		</Filter>
