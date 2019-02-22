@@ -1047,6 +1047,7 @@ int libvsmbr_volume_read_partition_entries(
 
 				goto on_error;
 			}
+			internal_volume->bytes_per_sector_set_by_library = 1;
 		}
 		else
 		{
@@ -1186,6 +1187,71 @@ int libvsmbr_volume_get_bytes_per_sector(
 		return( -1 );
 	}
 	*bytes_per_sector = internal_volume->io_handle->bytes_per_sector;
+
+	return( 1 );
+}
+
+/* Sets the number of bytes per sector
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_volume_set_bytes_per_sector(
+     libvsmbr_volume_t *volume,
+     uint32_t bytes_per_sector,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_set_bytes_per_sector";
+
+	if( volume == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid volume.",
+		 function );
+
+		return( -1 );
+	}
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
+
+	if( internal_volume->io_handle == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_MISSING,
+		 "%s: invalid volume - missing IO handle.",
+		 function );
+
+		return( -1 );
+	}
+	if( internal_volume->bytes_per_sector_set_by_library != 0 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
+		 "%s: bytes per sector value already set.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( bytes_per_sector != 512 )
+	 && ( bytes_per_sector != 1024 )
+	 && ( bytes_per_sector != 2048 )
+	 && ( bytes_per_sector != 4096 ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_UNSUPPORTED_VALUE,
+		 "%s: unsupported bytes per sector.",
+		 function );
+
+		return( -1 );
+	}
+	bytes_per_sector = internal_volume->io_handle->bytes_per_sector = bytes_per_sector;
 
 	return( 1 );
 }

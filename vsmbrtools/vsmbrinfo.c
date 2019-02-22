@@ -61,13 +61,15 @@ void usage_fprint(
 	{
 		return;
 	}
-	fprintf( stream, "Use vsmbrinfo to determine information about a Master\n"
-	                 "Record (MBR) volume system.\n\n" );
+	fprintf( stream, "Use vsmbrinfo to determine information about a Master Record (MBR)\n"
+	                 "volume system.\n\n" );
 
-	fprintf( stream, "Usage: vsmbrinfo [ -hvV ] source\n\n" );
+	fprintf( stream, "Usage: vsmbrinfo [ -b bytes_per_sector ] [ -hvV ] source\n\n" );
 
 	fprintf( stream, "\tsource: the source file\n\n" );
 
+	fprintf( stream, "\t-b:     specify the number of bytes per sector (default is 512)\n"
+	                 "\t        (use this to override the automatic bytes per sector detection)\n" );
 	fprintf( stream, "\t-h:     shows this help\n" );
 	fprintf( stream, "\t-v:     verbose output to stderr\n" );
 	fprintf( stream, "\t-V:     print version\n" );
@@ -125,11 +127,13 @@ int wmain( int argc, wchar_t * const argv[] )
 int main( int argc, char * const argv[] )
 #endif
 {
-	libcerror_error_t *error   = NULL;
-	system_character_t *source = NULL;
-	char *program              = "vsmbrinfo";
-	system_integer_t option    = 0;
-	int verbose                = 0;
+	libcerror_error_t *error                    = NULL;
+	system_character_t *option_bytes_per_sector = NULL;
+	system_character_t *source                  = NULL;
+	char *program                               = "vsmbrinfo";
+	system_integer_t option                     = 0;
+	int result                                  = 0;
+	int verbose                                 = 0;
 
 	libcnotify_stream_set(
 	 stderr,
@@ -164,7 +168,7 @@ int main( int argc, char * const argv[] )
 	while( ( option = vsmbrtools_getopt(
 	                   argc,
 	                   argv,
-	                   _SYSTEM_STRING( "hvV" ) ) ) != (system_integer_t) -1 )
+	                   _SYSTEM_STRING( "b:hvV" ) ) ) != (system_integer_t) -1 )
 	{
 		switch( option )
 		{
@@ -179,6 +183,11 @@ int main( int argc, char * const argv[] )
 				 stdout );
 
 				return( EXIT_FAILURE );
+
+			case (system_integer_t) 'b':
+				option_bytes_per_sector = optarg;
+
+				break;
 
 			case (system_integer_t) 'h':
 				usage_fprint(
@@ -228,6 +237,29 @@ int main( int argc, char * const argv[] )
 		 "Unable to initialize info handle.\n" );
 
 		goto on_error;
+	}
+	if( option_bytes_per_sector != NULL )
+	{
+		result = info_handle_set_bytes_per_sector(
+			  vsmbrinfo_info_handle,
+			  option_bytes_per_sector,
+			  &error );
+
+		if( result == -1 )
+		{
+			fprintf(
+			 stderr,
+			 "Unable to set bytes per sector.\n" );
+
+			goto on_error;
+		}
+		else if( result == 0 )
+		{
+			fprintf(
+			 stderr,
+			 "Unsupported bytes per sector defaulting to: %" PRIu32 ".\n",
+			 vsmbrinfo_info_handle->bytes_per_sector );
+		}
 	}
 	if( info_handle_open_input(
 	     vsmbrinfo_info_handle,

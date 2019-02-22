@@ -37,6 +37,10 @@ typedef struct info_handle info_handle_t;
 
 struct info_handle
 {
+	/* The number of bytes per sector
+	 */
+	uint32_t bytes_per_sector;
+
 	/* The libvsmbr input volume
 	 */
 	libvsmbr_volume_t *input_volume;
@@ -50,6 +54,12 @@ struct info_handle
 	int abort;
 };
 
+int vsmbrtools_system_string_copy_from_64_bit_in_decimal(
+     const system_character_t *string,
+     size_t string_size,
+     uint64_t *value_64bit,
+     libcerror_error_t **error );
+
 int info_handle_initialize(
      info_handle_t **info_handle,
      libcerror_error_t **error );
@@ -60,6 +70,11 @@ int info_handle_free(
 
 int info_handle_signal_abort(
      info_handle_t *info_handle,
+     libcerror_error_t **error );
+
+int info_handle_set_bytes_per_sector(
+     info_handle_t *info_handle,
+     const system_character_t *string,
      libcerror_error_t **error );
 
 int info_handle_open_input(

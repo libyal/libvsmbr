@@ -1,4 +1,4 @@
-.Dd February 18, 2019
+.Dd February 22, 2019
 .Dt libvsmbr 3
 .Os libvsmbr
 .Sh NAME
@@ -68,6 +68,8 @@ Volume functions
 .Fn libvsmbr_volume_close "libvsmbr_volume_t *volume, libvsmbr_error_t **error"
 .Ft int
 .Fn libvsmbr_volume_get_bytes_per_sector "libvsmbr_volume_t *volume, uint32_t *bytes_per_sector, libvsmbr_error_t **error"
+.Ft int
+.Fn libvsmbr_volume_set_bytes_per_sector "libvsmbr_volume_t *volume, uint32_t bytes_per_sector, libvsmbr_error_t **error"
 .Pp
 Available when compiled with wide character string support:
 .Ft int

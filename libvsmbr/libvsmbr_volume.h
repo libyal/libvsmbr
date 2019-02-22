@@ -60,6 +60,10 @@ struct libvsmbr_internal_volume
 	/* Value to indicate if the file IO handle was opened inside the library
 	 */
 	uint8_t file_io_handle_opened_in_library;
+
+	/* Value to indicate if bytes per sector was set by library
+	 */
+	uint8_t bytes_per_sector_set_by_library;
 };
 
 LIBVSMBR_EXTERN \
@@ -124,6 +128,12 @@ LIBVSMBR_EXTERN \
 int libvsmbr_volume_get_bytes_per_sector(
      libvsmbr_volume_t *volume,
      uint32_t *bytes_per_sector,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_volume_set_bytes_per_sector(
+     libvsmbr_volume_t *volume,
+     uint32_t bytes_per_sector,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \

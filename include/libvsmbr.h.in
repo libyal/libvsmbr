@@ -281,6 +281,15 @@ int libvsmbr_volume_get_bytes_per_sector(
      uint32_t *bytes_per_sector,
      libvsmbr_error_t **error );
 
+/* Sets the number of bytes per sector
+ * Returns 1 if successful or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_volume_set_bytes_per_sector(
+     libvsmbr_volume_t *volume,
+     uint32_t bytes_per_sector,
+     libvsmbr_error_t **error );
+
 /* Retrieves the number of partitions
  * Returns 1 if successful or -1 on error
  */
