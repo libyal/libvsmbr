@@ -7,6 +7,7 @@ Analysis of the MBR partition table
 :numbered!:
 [abstract]
 == Summary
+
 The Master Boot Record (MBR) Partition Table is a partitioning schema mainly
 used on the family of Intel x86 based computers. It was first introduced on the
 IBM personal computer (PC).
@@ -16,6 +17,7 @@ specification.
 
 [preface]
 == Document information
+
 [cols="1,5"]
 |===
 | Author(s): | Joachim Metz <joachim.metz@gmail.com>
@@ -26,8 +28,9 @@ specification.
 
 [preface]
 == License
+
 ....
-Copyright (C) 2010-2018, Joachim Metz <joachim.metz@gmail.com>.
+Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>.
 Permission is granted to copy, distribute and/or modify this document under the
 terms of the GNU Free Documentation License, Version 1.3 or any later version
 published by the Free Software Foundation; with no Invariant Sections, no
@@ -37,6 +40,7 @@ in the section entitled "GNU Free Documentation License".
 
 [preface]
 == Revision history
+
 [cols="1,1,1,5",options="header"]
 |===
 | Version | Author | Date | Comments
@@ -45,10 +49,12 @@ in the section entitled "GNU Free Documentation License".
 | 0.0.3 | J.B. Metz | December 2012 | Applied updates.
 | 0.0.4 | J.B. Metz | December 2012 | Additional information regarding MBR variants.
 | 0.0.5 | J.B. Metz | January 2018 | Switched to asciidoc format.
+| 0.0.6 | J.B. Metz | February 2019 | Additional information about sector sizes.
 |===
 
 :numbered:
 == Overview
+
 The Master Boot Record (MBR) partition table is mainly used on the family of 
 Intel x86 based computers.
 
@@ -61,26 +67,30 @@ The MBR partition table consists of:
 |===
 | Characteristics | Description
 | Byte order | little-endian
-| Date and time values | 
-| Character strings | 
 |===
 
 === Terminology
+
 Physical block:
 fixed location on the storage media defined by the storage media.
 
 Logical block:
 abstract location on the storage media defined by software.
 
-=== 512 versus 4096 bytes per sector
+=== Sector size(s)
 
-....
-MBR sigature at offset 510 for both 512 and 4k sector size
+Traditionally the size of sector is 512 bytes, but modern hard disk drives use
+4096 bytes. The linux fdisk utility supports sector sizes of: 512, 1024, 2048
+and 4096.
 
-check offset of first partition start (sector 1) which should be at 4096 instead of 512
-....
+The location of of the "boot signature" of the MBR does not indicate the sector
+size. Methods to derive the sector size from the data:
+
+* check the "boot signature" of the first EPR, if present
+* check the content of well known partition types
 
 == Cylinder Head Sector (CHS) address
+
 The Cylinder Head Sector (CHS) address is 24 bits of size and consists of:
 
 [cols="1,1,1,5",options="header"]
@@ -93,12 +103,14 @@ The Cylinder Head Sector (CHS) address is 24 bits of size and consists of:
 
 The logical block address (LBA) can be determined from the CHS with the 
 following calculation:
+
 ....
 LBA = ( ( ( cylinder x heads per cylinder ) + head ) x sectors per track )
     + sector - 1
 ....
 
 == The Master Boot Record (MBR)
+
 The Master Boot Record (MBR) is a data structure that describes the properties 
 of the storage medium and its partitions.
 
@@ -115,6 +127,7 @@ classical MBR has evolved into different variants like:
 Also see the following paragraphs for more information.
 
 === The classical MBR
+
 The classical MBR is 512 bytes of size and consists of:
 
 [cols="1,1,1,5",options="header"]
@@ -129,15 +142,14 @@ The classical MBR is 512 bytes of size and consists of:
 |===
 
 === The modern MBR
-The modern MBR is 512 bytes of size and consists of:
 
 The modern MBR is 512 bytes of size and consists of:
 
 [cols="1,1,1,5",options="header"]
 |===
 | Offset | Size | Value | Description
-| 0 | 218 | 
-4+| _The first part of the boot (loader) code_ +
+| 0 | 218 | | The first part of the boot (loader) code
+4+| _Disk timestamp_ +
 Microsoft Windows 95, 98 and ME. Also see: [SEDORY04]
 | *218* | *2* | *0x0000* | [yellow-background]*Unknown (Reserved)*
 | *220* | *1* | | [yellow-background]*Unknown (Original physical drive)* +
@@ -153,7 +165,8 @@ Microsoft Windows 95, 98 and ME. Also see: [SEDORY04]
 4+| _With disk identity - UEFI, Microsoft Windows NT or later_
 | 224 | 216 | | The second part of the boot (loader) code
 | *440* | *4* | | *Disk identity (signature)*
-| *444* | *2* | *0x0000* | *Padding*
+| *444* | *2* | *0x0000* +
+*0x5a5a* | *copy-protection marker*
 4+| _Common_
 | 446 | 16 | | Partition table entry 1
 | 462 | 16 | | Partition table entry 2
@@ -163,6 +176,7 @@ Microsoft Windows 95, 98 and ME. Also see: [SEDORY04]
 |===
 
 === The Advanced Active Partitions (AAP) MBR
+
 The Advanced Active Partitions (AAP) MBR is used by:
 
 * PTS-DOS 6.60
@@ -191,6 +205,7 @@ The AAP MBR is 512 bytes of size and consists of:
 [yellow-background]*TODO: determine if the AAP is optional*
 
 === The NEWLDR MBR
+
 The NEWLDR MBR is a variant based on the Advanced Active Partitions (AAP) MBR 
 and is used by:
 
@@ -229,6 +244,7 @@ The NEWLDR MBR is 512 bytes of size and consists of:
 [yellow-background]*TODO: determine if the AAP is optional*
 
 === The AST/NEC MS-DOS and SpeedStor MBR
+
 The AST/NEC MS-DOS and SpeedStor MBR is used by:
 
 * AST/NEC MS-DOS
@@ -254,6 +270,7 @@ The AST/NEC MS-DOS and SpeedStor MBR is 512 bytes of size and consists of:
 |===
 
 === The Disk Manager MBR
+
 The Disk Manager MBR is 512 bytes of size and consists of:
 
 [cols="1,1,1,5",options="header"]
@@ -281,6 +298,7 @@ The Disk Manager MBR is 512 bytes of size and consists of:
 |===
 
 == The extended partition record
+
 The extended partition record (EBR) starts with a 64 byte (extended) partition 
 record (EPR) like the MBR. This partition table contains information about the 
 logical partition (volume) and additional extended partition tables.
@@ -307,6 +325,7 @@ next EPR. The LBA addresses in the EPR are relative to the start of the EPR.
 What about CHS addresses?
 
 == The partition table entry
+
 The partition table entry is 16 bytes of size and consists of:
 
 [cols="1,1,1,5",options="header"]
@@ -326,6 +345,7 @@ Value in LBA (sectors) relative from the start of the harddisk
 |===
 
 === [[partition_flags]]Partition flags
+
 The partition flags consist of the following values:
 
 [cols="1,1,5",options="header"]
@@ -335,6 +355,7 @@ The partition flags consist of the following values:
 |===
 
 === [[partition_types]]Partition types
+
 The partition types consist of the following values:
 
 [cols="1,1,5",options="header"]
@@ -514,6 +535,12 @@ OS/2 hidden C: drive
 
 [cols="1,5",options="header"]
 |===
+| Title: | Disk sector
+| URL: | https://en.wikipedia.org/wiki/Disk_sector
+|===
+
+[cols="1,5",options="header"]
+|===
 | Title: | Extended Boot Record
 | URL: | http://en.wikipedia.org/wiki/Extended_Boot_Record
 |===
@@ -532,6 +559,7 @@ OS/2 hidden C: drive
 
 [appendix]
 == GNU Free Documentation License
+
 Version 1.3, 3 November 2008
 Copyright © 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc.
 <http://fsf.org/>
@@ -540,6 +568,7 @@ Everyone is permitted to copy and distribute verbatim copies of this license
 document, but changing it is not allowed.
 
 === 0. PREAMBLE
+
 The purpose of this License is to make a manual, textbook, or other functional
 and useful document "free" in the sense of freedom: to assure everyone the
 effective freedom to copy and redistribute it, with or without modifying it,
@@ -560,6 +589,7 @@ recommend this License principally for works whose purpose is instruction or
 reference.
 
 === 1. APPLICABILITY AND DEFINITIONS
+
 This License applies to any manual or other work, in any medium, that contains
 a notice placed by the copyright holder saying it can be distributed under the
 terms of this License. Such a notice grants a world-wide, royalty-free license,
@@ -638,6 +668,7 @@ disclaiming warranties: any other implication that these Warranty Disclaimers
 may have is void and has no effect on the meaning of this License.
 
 === 2. VERBATIM COPYING
+
 You may copy and distribute the Document in any medium, either commercially or
 noncommercially, provided that this License, the copyright notices, and the
 license notice saying this License applies to the Document are reproduced in
@@ -651,6 +682,7 @@ You may also lend copies, under the same conditions stated above, and you may
 publicly display copies.
 
 === 3. COPYING IN QUANTITY
+
 If you publish printed copies (or copies in media that commonly have printed
 covers) of the Document, numbering more than 100, and the Document's license
 notice requires Cover Texts, you must enclose the copies in covers that carry,
@@ -684,6 +716,7 @@ well before redistributing any large number of copies, to give them a chance to
 provide you with an updated version of the Document.
 
 === 4. MODIFICATIONS
+
 You may copy and distribute a Modified Version of the Document under the
 conditions of sections 2 and 3 above, provided that you release the Modified
 Version under precisely this License, with the Modified Version filling the
@@ -776,6 +809,7 @@ permission to use their names for publicity for or to assert or imply
 endorsement of any Modified Version.
 
 === 5. COMBINING DOCUMENTS
+
 You may combine the Document with other documents released under this License,
 under the terms defined in section 4 above for modified versions, provided that
 you include in the combination all of the Invariant Sections of all of the
@@ -797,6 +831,7 @@ combine any sections Entitled "Acknowledgements", and any sections Entitled
 "Dedications". You must delete all sections Entitled "Endorsements".
 
 === 6. COLLECTIONS OF DOCUMENTS
+
 You may make a collection consisting of the Document and other documents
 released under this License, and replace the individual copies of this License
 in the various documents with a single copy that is included in the collection,
@@ -809,6 +844,7 @@ into the extracted document, and follow this License in all other respects
 regarding verbatim copying of that document.
 
 === 7. AGGREGATION WITH INDEPENDENT WORKS
+
 A compilation of the Document or its derivatives with other separate and
 independent documents or works, in or on a volume of a storage or distribution
 medium, is called an "aggregate" if the copyright resulting from the
@@ -825,6 +861,7 @@ in electronic form. Otherwise they must appear on printed covers that bracket
 the whole aggregate.
 
 === 8. TRANSLATION
+
 Translation is considered a kind of modification, so you may distribute
 translations of the Document under the terms of section 4. Replacing Invariant
 Sections with translations requires special permission from their copyright
@@ -842,6 +879,7 @@ If a section in the Document is Entitled "Acknowledgements", "Dedications", or
 typically require changing the actual title.
 
 === 9. TERMINATION
+
 You may not copy, modify, sublicense, or distribute the Document except as
 expressly provided under this License. Any attempt otherwise to copy, modify,
 sublicense, or distribute it is void, and will automatically terminate your
@@ -865,6 +903,7 @@ your rights have been terminated and not permanently reinstated, receipt of a
 copy of some or all of the same material does not give you any rights to use it.
 
 === 10. FUTURE REVISIONS OF THIS LICENSE
+
 The Free Software Foundation may publish new, revised versions of the GNU Free
 Documentation License from time to time. Such new versions will be similar in
 spirit to the present version, but may differ in detail to address new problems
@@ -882,6 +921,7 @@ License can be used, that proxy's public statement of acceptance of a version
 permanently authorizes you to choose that version for the Document.
 
 === 11. RELICENSING
+
 "Massive Multiauthor Collaboration Site" (or "MMC Site") means any World Wide
 Web server that publishes copyrightable works and also provides prominent
 facilities for anybody to edit those works. A public wiki that anybody can edit

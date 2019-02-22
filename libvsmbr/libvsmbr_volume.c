@@ -804,7 +804,6 @@ int libvsmbr_volume_open_read(
 {
 	libvsmbr_boot_record_t *master_boot_record = NULL;
 	static char *function                      = "libvsmbr_volume_open_read";
-	uint8_t first_partition_entry              = 1;
 
 	if( internal_volume == NULL )
 	{
@@ -858,7 +857,7 @@ int libvsmbr_volume_open_read(
 	     file_io_handle,
 	     0,
 	     master_boot_record,
-	     &first_partition_entry,
+	     1,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -903,7 +902,7 @@ int libvsmbr_volume_read_partition_entries(
      libbfio_handle_t *file_io_handle,
      off64_t file_offset,
      libvsmbr_boot_record_t *boot_record,
-     uint8_t *first_partition_entry,
+     uint8_t is_master_boot_record,
      libcerror_error_t **error )
 {
 	libvsmbr_boot_record_t *extended_partition_record = NULL;
@@ -922,17 +921,6 @@ int libvsmbr_volume_read_partition_entries(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid internal volume.",
-		 function );
-
-		return( -1 );
-	}
-	if( first_partition_entry == NULL )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
-		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid first partition entry.",
 		 function );
 
 		return( -1 );
@@ -1014,27 +1002,39 @@ int libvsmbr_volume_read_partition_entries(
 				goto on_error;
 			}
 			result = libvsmbr_boot_record_read_file_io_handle(
-			          extended_partition_record,
-			          file_io_handle,
-			          extended_partition_record_offset,
-			          error );
+				  extended_partition_record,
+				  file_io_handle,
+				  extended_partition_record_offset,
+				  error );
 
-			if( ( result != 1 )
-			 && ( *first_partition_entry == 1 )
-			 && ( internal_volume->io_handle->bytes_per_sector == 512 ) )
+			/* Linux fdisk supports sector sizes of: 512, 1024, 2048, 4096
+			 */
+			while( ( result != 1 )
+			    && ( is_master_boot_record != 0 )
+			    && ( internal_volume->io_handle->bytes_per_sector <= 4096 ) )
 			{
 				libcerror_error_free(
 				 error );
 
-				internal_volume->io_handle->bytes_per_sector = 4096;
+				internal_volume->io_handle->bytes_per_sector *= 2;
 
 				extended_partition_record_offset = partition_entry->start_address_lba * internal_volume->io_handle->bytes_per_sector;
 
+#if defined( HAVE_DEBUG_OUTPUT )
+				if( libcnotify_verbose != 0 )
+				{
+					libcnotify_printf(
+					 "%s: reading Extended Partition Record (EPR) at offset: %" PRIi64 " (0x%08" PRIx64 ").\n",
+					 function,
+					 extended_partition_record_offset,
+					 extended_partition_record_offset );
+				}
+#endif
 				result = libvsmbr_boot_record_read_file_io_handle(
-				          extended_partition_record,
-				          file_io_handle,
-				          extended_partition_record_offset,
-				          error );
+					  extended_partition_record,
+					  file_io_handle,
+					  extended_partition_record_offset,
+					  error );
 			}
 			if( result != 1 )
 			{
@@ -1051,6 +1051,7 @@ int libvsmbr_volume_read_partition_entries(
 		else
 		{
 /* TODO do bytes per sector check for known volume types and GPT */
+
 			if( libvsmbr_partition_values_initialize(
 			     &partition_values,
 			     error ) != 1 )
@@ -1088,7 +1089,6 @@ int libvsmbr_volume_read_partition_entries(
 			}
 			partition_values = NULL;
 		}
-		*first_partition_entry = 0;
 	}
 	if( extended_partition_record != NULL )
 	{
@@ -1097,7 +1097,7 @@ int libvsmbr_volume_read_partition_entries(
 		     file_io_handle,
 		     extended_partition_record_offset,
 		     extended_partition_record,
-		     first_partition_entry,
+		     0,
 		     error ) != 1 )
 		{
 			libcerror_error_set(

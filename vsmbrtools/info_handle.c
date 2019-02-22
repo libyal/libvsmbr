@@ -733,16 +733,25 @@ int info_handle_partition_fprint(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve type.",
+		 "%s: unable to retrieve partition type.",
 		 function );
 
 		return( -1 );
 	}
-	fprintf(
-	 info_handle->notify_stream,
-	 "\tType\t\t\t: 0x%02" PRIx8 "\n",
-	 type );
+	if( info_handle_partition_type_fprint(
+	     info_handle,
+	     type,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_PRINT_FAILED,
+		 "%s: unable to print partition type.",
+		 function );
 
+		return( -1 );
+	}
 	if( libvsmbr_partition_get_offset(
 	     partition,
 	     &offset,
@@ -752,7 +761,7 @@ int info_handle_partition_fprint(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve offset.",
+		 "%s: unable to retrieve partition offset.",
 		 function );
 
 		return( -1 );
@@ -772,7 +781,7 @@ int info_handle_partition_fprint(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
-		 "%s: unable to retrieve size.",
+		 "%s: unable to retrieve partition size.",
 		 function );
 
 		return( -1 );

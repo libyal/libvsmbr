@@ -71,6 +71,11 @@ int info_handle_close_input(
      info_handle_t *info_handle,
      libcerror_error_t **error );
 
+int info_handle_partition_type_fprint(
+     info_handle_t *info_handle,
+     uint8_t partition_type,
+     libcerror_error_t **error );
+
 int info_handle_partition_fprint(
      info_handle_t *info_handle,
      libvsmbr_partition_t *partition,

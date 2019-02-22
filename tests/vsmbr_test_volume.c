@@ -1242,10 +1242,9 @@ on_error:
 int vsmbr_test_volume_get_bytes_per_sector(
      libvsmbr_volume_t *volume )
 {
-	libcerror_error_t *error    = NULL;
-	uint32_t bytes_per_sector   = 0;
-	int bytes_per_sector_is_set = 0;
-	int result                  = 0;
+	libcerror_error_t *error  = NULL;
+	uint32_t bytes_per_sector = 0;
+	int result                = 0;
 
 	/* Test regular cases
 	 */
@@ -1254,16 +1253,14 @@ int vsmbr_test_volume_get_bytes_per_sector(
 	          &bytes_per_sector,
 	          &error );
 
-	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
-	 -1 );
+	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
-
-	bytes_per_sector_is_set = result;
 
 	/* Test error cases
 	 */
@@ -1284,25 +1281,23 @@ int vsmbr_test_volume_get_bytes_per_sector(
 	libcerror_error_free(
 	 &error );
 
-	if( bytes_per_sector_is_set != 0 )
-	{
-		result = libvsmbr_volume_get_bytes_per_sector(
-		          volume,
-		          NULL,
-		          &error );
+	result = libvsmbr_volume_get_bytes_per_sector(
+	          volume,
+	          NULL,
+	          &error );
 
-		VSMBR_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
 
-		VSMBR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
-		libcerror_error_free(
-		 &error );
-	}
+	libcerror_error_free(
+	 &error );
+
 	return( 1 );
 
 on_error:
@@ -1320,10 +1315,9 @@ on_error:
 int vsmbr_test_volume_get_number_of_partitions(
      libvsmbr_volume_t *volume )
 {
-	libcerror_error_t *error        = NULL;
-	int number_of_partitions        = 0;
-	int number_of_partitions_is_set = 0;
-	int result                      = 0;
+	libcerror_error_t *error = NULL;
+	int number_of_partitions = 0;
+	int result               = 0;
 
 	/* Test regular cases
 	 */
@@ -1332,16 +1326,14 @@ int vsmbr_test_volume_get_number_of_partitions(
 	          &number_of_partitions,
 	          &error );
 
-	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
-	 -1 );
+	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",
 	 error );
-
-	number_of_partitions_is_set = result;
 
 	/* Test error cases
 	 */
@@ -1362,25 +1354,23 @@ int vsmbr_test_volume_get_number_of_partitions(
 	libcerror_error_free(
 	 &error );
 
-	if( number_of_partitions_is_set != 0 )
-	{
-		result = libvsmbr_volume_get_number_of_partitions(
-		          volume,
-		          NULL,
-		          &error );
+	result = libvsmbr_volume_get_number_of_partitions(
+	          volume,
+	          NULL,
+	          &error );
 
-		VSMBR_TEST_ASSERT_EQUAL_INT(
-		 "result",
-		 result,
-		 -1 );
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 -1 );
 
-		VSMBR_TEST_ASSERT_IS_NOT_NULL(
-		 "error",
-		 error );
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "error",
+	 error );
 
-		libcerror_error_free(
-		 &error );
-	}
+	libcerror_error_free(
+	 &error );
+
 	return( 1 );
 
 on_error:
@@ -1400,20 +1390,39 @@ int vsmbr_test_volume_get_partition_by_index(
 {
 	libcerror_error_t *error                 = NULL;
 	libvsmbr_partition_t *partition_by_index = 0;
+	int number_of_partitions                 = 0;
 	int result                               = 0;
 
 	/* Test regular cases
 	 */
+	result = libvsmbr_volume_get_number_of_partitions(
+	          volume,
+	          &number_of_partitions,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
+	if( number_of_partitions == 0 )
+	{
+		return( 1 );
+	}
 	result = libvsmbr_volume_get_partition_by_index(
 	          volume,
 	          0,
 	          &partition_by_index,
 	          &error );
 
-	VSMBR_TEST_ASSERT_NOT_EQUAL_INT(
+	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
-	 -1 );
+	 1 );
 
 	VSMBR_TEST_ASSERT_IS_NULL(
 	 "error",

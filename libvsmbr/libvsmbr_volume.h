@@ -117,7 +117,7 @@ int libvsmbr_volume_read_partition_entries(
      libbfio_handle_t *file_io_handle,
      off64_t file_offset,
      libvsmbr_boot_record_t *boot_record,
-     uint8_t *first_partition_entry,
+     uint8_t is_master_boot_record,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \
