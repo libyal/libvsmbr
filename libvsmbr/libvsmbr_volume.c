@@ -1018,7 +1018,7 @@ int libvsmbr_volume_read_partition_entries(
 
 				internal_volume->io_handle->bytes_per_sector *= 2;
 
-				extended_partition_record_offset = partition_entry->start_address_lba * internal_volume->io_handle->bytes_per_sector;
+				extended_partition_record_offset = file_offset + ( partition_entry->start_address_lba * internal_volume->io_handle->bytes_per_sector );
 
 #if defined( HAVE_DEBUG_OUTPUT )
 				if( libcnotify_verbose != 0 )
@@ -1065,12 +1065,10 @@ int libvsmbr_volume_read_partition_entries(
 
 				goto on_error;
 			}
-			partition_values->type = partition_entry->type;
-
-			partition_values->offset = file_offset + ( partition_entry->start_address_lba * internal_volume->io_handle->bytes_per_sector );
-			partition_values->size   = partition_entry->number_of_sectors * internal_volume->io_handle->bytes_per_sector;
-
-/* TODO offset and size sanity check */
+			partition_values->type                    = partition_entry->type;
+			partition_values->partition_record_offset = file_offset;
+			partition_values->sector_number           = partition_entry->start_address_lba;
+			partition_values->number_of_sectors       = partition_entry->number_of_sectors;
 
 			if( libcdata_array_append_entry(
 			     internal_volume->partitions,
@@ -1299,6 +1297,7 @@ int libvsmbr_volume_get_partition_by_index(
 	}
 	if( libvsmbr_partition_initialize(
 	     partition,
+	     internal_volume->io_handle,
 	     internal_volume->file_io_handle,
 	     partition_values,
 	     error ) != 1 )

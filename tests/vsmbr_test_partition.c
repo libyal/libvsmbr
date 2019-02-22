@@ -36,6 +36,7 @@
 #include "vsmbr_test_rwlock.h"
 #include "vsmbr_test_unused.h"
 
+#include "../libvsmbr/libvsmbr_io_handle.h"
 #include "../libvsmbr/libvsmbr_partition.h"
 #include "../libvsmbr/libvsmbr_partition_values.h"
 
@@ -48,6 +49,7 @@ int vsmbr_test_partition_initialize(
      void )
 {
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	int result                                    = 0;
@@ -60,6 +62,23 @@ int vsmbr_test_partition_initialize(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -81,6 +100,7 @@ int vsmbr_test_partition_initialize(
 	 */
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -119,6 +139,7 @@ int vsmbr_test_partition_initialize(
 	 */
 	result = libvsmbr_partition_initialize(
 	          NULL,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -139,6 +160,7 @@ int vsmbr_test_partition_initialize(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -159,6 +181,7 @@ int vsmbr_test_partition_initialize(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          NULL,
 	          &error );
@@ -192,6 +215,7 @@ int vsmbr_test_partition_initialize(
 
 		result = libvsmbr_partition_initialize(
 		          &partition,
+		          io_handle,
 		          NULL,
 		          partition_values,
 		          &error );
@@ -238,6 +262,7 @@ int vsmbr_test_partition_initialize(
 
 		result = libvsmbr_partition_initialize(
 		          &partition,
+		          io_handle,
 		          NULL,
 		          partition_values,
 		          &error );
@@ -293,6 +318,23 @@ int vsmbr_test_partition_initialize(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -313,6 +355,12 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
 	return( 0 );
 }
 
@@ -323,9 +371,13 @@ int vsmbr_test_partition_free(
      void )
 {
 	libcerror_error_t *error                      = NULL;
+	int result                                    = 0;
+
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
-	int result                                    = 0;
+#endif
 
 	/* Test error cases
 	 */
@@ -349,6 +401,23 @@ int vsmbr_test_partition_free(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -368,6 +437,7 @@ int vsmbr_test_partition_free(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -453,6 +523,23 @@ int vsmbr_test_partition_free(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 #endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
 
 	return( 1 );
@@ -463,6 +550,7 @@ on_error:
 		libcerror_error_free(
 		 &error );
 	}
+#if defined( HAVE_VSMBR_TEST_RWLOCK )
 	if( partition != NULL )
 	{
 		libvsmbr_partition_free(
@@ -475,6 +563,14 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
+
 	return( 0 );
 }
 
@@ -485,6 +581,7 @@ int vsmbr_test_partition_get_type(
      void )
 {
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	int result                                    = 0;
@@ -492,6 +589,23 @@ int vsmbr_test_partition_get_type(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -511,6 +625,7 @@ int vsmbr_test_partition_get_type(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -675,6 +790,23 @@ int vsmbr_test_partition_get_type(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -695,6 +827,12 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
 	return( 0 );
 }
 
@@ -709,6 +847,7 @@ int vsmbr_test_internal_partition_read_buffer_from_file_io_handle(
 
 	libbfio_handle_t *file_io_handle              = NULL;
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	ssize_t read_count                            = 0;
@@ -716,6 +855,23 @@ int vsmbr_test_internal_partition_read_buffer_from_file_io_handle(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -733,10 +889,11 @@ int vsmbr_test_internal_partition_read_buffer_from_file_io_handle(
 	 "error",
 	 error );
 
-	partition_values->size = 2048;
+	partition_values->number_of_sectors = 4;
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -919,6 +1076,23 @@ int vsmbr_test_internal_partition_read_buffer_from_file_io_handle(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -945,6 +1119,12 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
 	return( 0 );
 }
 
@@ -960,6 +1140,7 @@ int vsmbr_test_partition_read_buffer(
 	libbfio_handle_t *file_io_handle              = NULL;
 
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	ssize_t read_count                            = 0;
@@ -967,6 +1148,23 @@ int vsmbr_test_partition_read_buffer(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -984,7 +1182,7 @@ int vsmbr_test_partition_read_buffer(
 	 "error",
 	 error );
 
-	partition_values->size = 2048;
+	partition_values->number_of_sectors = 4;
 
 	result = vsmbr_test_open_file_io_handle(
 	          &file_io_handle,
@@ -1007,6 +1205,7 @@ int vsmbr_test_partition_read_buffer(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          file_io_handle,
 	          partition_values,
 	          &error );
@@ -1206,6 +1405,23 @@ int vsmbr_test_partition_read_buffer(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -1232,6 +1448,12 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
 	return( 0 );
 }
 
@@ -1247,6 +1469,7 @@ int vsmbr_test_partition_read_buffer_at_offset(
 	libbfio_handle_t *file_io_handle              = NULL;
 
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	ssize_t read_count                            = 0;
@@ -1254,6 +1477,23 @@ int vsmbr_test_partition_read_buffer_at_offset(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -1271,7 +1511,7 @@ int vsmbr_test_partition_read_buffer_at_offset(
 	 "error",
 	 error );
 
-	partition_values->size = 2048;
+	partition_values->number_of_sectors = 4;
 
 	result = vsmbr_test_open_file_io_handle(
 	          &file_io_handle,
@@ -1294,6 +1534,7 @@ int vsmbr_test_partition_read_buffer_at_offset(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          file_io_handle,
 	          partition_values,
 	          &error );
@@ -1520,6 +1761,23 @@ int vsmbr_test_partition_read_buffer_at_offset(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -1546,6 +1804,12 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
 	return( 0 );
 }
 
@@ -1556,6 +1820,7 @@ int vsmbr_test_internal_partition_seek_offset(
      void )
 {
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	off64_t offset                                = 0;
@@ -1563,6 +1828,23 @@ int vsmbr_test_internal_partition_seek_offset(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -1580,10 +1862,11 @@ int vsmbr_test_internal_partition_seek_offset(
 	 "error",
 	 error );
 
-	partition_values->size = 2048;
+	partition_values->number_of_sectors = 4;
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -1755,6 +2038,23 @@ int vsmbr_test_internal_partition_seek_offset(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -1775,6 +2075,12 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
 	return( 0 );
 }
 
@@ -1785,6 +2091,7 @@ int vsmbr_test_partition_seek_offset(
      void )
 {
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	off64_t offset                                = 0;
@@ -1792,6 +2099,23 @@ int vsmbr_test_partition_seek_offset(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -1811,6 +2135,7 @@ int vsmbr_test_partition_seek_offset(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -1982,6 +2307,23 @@ int vsmbr_test_partition_seek_offset(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -2002,6 +2344,12 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
 	return( 0 );
 }
 
@@ -2012,6 +2360,7 @@ int vsmbr_test_partition_get_offset(
      void )
 {
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	off64_t offset                                = 0;
@@ -2019,6 +2368,23 @@ int vsmbr_test_partition_get_offset(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -2038,6 +2404,7 @@ int vsmbr_test_partition_get_offset(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -2202,6 +2569,23 @@ int vsmbr_test_partition_get_offset(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -2222,6 +2606,12 @@ on_error:
 		 &partition_values,
 		 NULL );
 	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
+		 NULL );
+	}
 	return( 0 );
 }
 
@@ -2232,6 +2622,7 @@ int vsmbr_test_partition_get_size(
      void )
 {
 	libcerror_error_t *error                      = NULL;
+	libvsmbr_io_handle_t *io_handle               = NULL;
 	libvsmbr_partition_t *partition               = NULL;
 	libvsmbr_partition_values_t *partition_values = NULL;
 	size64_t size                                 = 0;
@@ -2239,6 +2630,23 @@ int vsmbr_test_partition_get_size(
 
 	/* Initialize test
 	 */
+	result = libvsmbr_io_handle_initialize(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NOT_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	result = libvsmbr_partition_values_initialize(
 	          &partition_values,
 	          &error );
@@ -2258,6 +2666,7 @@ int vsmbr_test_partition_get_size(
 
 	result = libvsmbr_partition_initialize(
 	          &partition,
+	          io_handle,
 	          NULL,
 	          partition_values,
 	          &error );
@@ -2422,6 +2831,23 @@ int vsmbr_test_partition_get_size(
 	 "error",
 	 error );
 
+	result = libvsmbr_io_handle_free(
+	          &io_handle,
+	          &error );
+
+	VSMBR_TEST_ASSERT_EQUAL_INT(
+	 "result",
+	 result,
+	 1 );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "io_handle",
+	 io_handle );
+
+	VSMBR_TEST_ASSERT_IS_NULL(
+	 "error",
+	 error );
+
 	return( 1 );
 
 on_error:
@@ -2440,6 +2866,12 @@ on_error:
 	{
 		libvsmbr_partition_values_free(
 		 &partition_values,
+		 NULL );
+	}
+	if( io_handle != NULL )
+	{
+		libvsmbr_io_handle_free(
+		 &io_handle,
 		 NULL );
 	}
 	return( 0 );

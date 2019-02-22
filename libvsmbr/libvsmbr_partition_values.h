@@ -39,13 +39,17 @@ struct libvsmbr_partition_values
 	 */
 	uint8_t type;
 
-	/* The offset
+	/* The offset of the corresponding partition record
 	 */
-	off64_t offset;
+	off64_t partition_record_offset;
 
-	/* The size
+	/* The sector number
 	 */
-	size64_t size;
+	uint32_t sector_number;
+
+	/* The number of sectors
+	 */
+	uint32_t number_of_sectors;
 };
 
 int libvsmbr_partition_values_initialize(
@@ -61,14 +65,14 @@ int libvsmbr_partition_values_get_type(
      uint8_t *type,
      libcerror_error_t **error );
 
-int libvsmbr_partition_values_get_offset(
+int libvsmbr_partition_values_get_sector_number(
      libvsmbr_partition_values_t *partition_values,
-     off64_t *offset,
+     uint32_t *sector_number,
      libcerror_error_t **error );
 
-int libvsmbr_partition_values_get_size(
+int libvsmbr_partition_values_get_number_of_sectors(
      libvsmbr_partition_values_t *partition_values,
-     size64_t *size,
+     uint32_t *number_of_sectors,
      libcerror_error_t **error );
 
 #if defined( __cplusplus )

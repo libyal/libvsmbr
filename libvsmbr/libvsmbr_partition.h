@@ -26,6 +26,7 @@
 #include <types.h>
 
 #include "libvsmbr_extern.h"
+#include "libvsmbr_io_handle.h"
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcthreads.h"
@@ -75,6 +76,7 @@ struct libvsmbr_internal_partition
 
 int libvsmbr_partition_initialize(
      libvsmbr_partition_t **partition,
+     libvsmbr_io_handle_t *io_handle,
      libbfio_handle_t *file_io_handle,
      libvsmbr_partition_values_t *partition_values,
      libcerror_error_t **error );

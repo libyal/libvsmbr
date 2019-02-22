@@ -166,15 +166,15 @@ int libvsmbr_partition_values_get_type(
 	return( 1 );
 }
 
-/* Retrieves the partition offset
+/* Retrieves the partition sector number
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_partition_values_get_offset(
+int libvsmbr_partition_values_get_sector_number(
      libvsmbr_partition_values_t *partition_values,
-     off64_t *offset,
+     uint32_t *sector_number,
      libcerror_error_t **error )
 {
-	static char *function = "libvsmbr_partition_values_get_offset";
+	static char *function = "libvsmbr_partition_values_get_sector_number";
 
 	if( partition_values == NULL )
 	{
@@ -187,31 +187,31 @@ int libvsmbr_partition_values_get_offset(
 
 		return( -1 );
 	}
-	if( offset == NULL )
+	if( sector_number == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid offset.",
+		 "%s: invalid sector number.",
 		 function );
 
 		return( -1 );
 	}
-	*offset = partition_values->offset;
+	*sector_number = partition_values->sector_number;
 
 	return( 1 );
 }
 
-/* Retrieves the partition size
+/* Retrieves the partition number of sectors
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_partition_values_get_size(
+int libvsmbr_partition_values_get_number_of_sectors(
      libvsmbr_partition_values_t *partition_values,
-     size64_t *size,
+     uint32_t *number_of_sectors,
      libcerror_error_t **error )
 {
-	static char *function = "libvsmbr_partition_values_get_size";
+	static char *function = "libvsmbr_partition_values_get_number_of_sectors";
 
 	if( partition_values == NULL )
 	{
@@ -224,18 +224,18 @@ int libvsmbr_partition_values_get_size(
 
 		return( -1 );
 	}
-	if( size == NULL )
+	if( number_of_sectors == NULL )
 	{
 		libcerror_error_set(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
-		 "%s: invalid size.",
+		 "%s: invalid number of sectors.",
 		 function );
 
 		return( -1 );
 	}
-	*size = partition_values->size;
+	*number_of_sectors = partition_values->number_of_sectors;
 
 	return( 1 );
 }
