@@ -1,5 +1,5 @@
 /*
- * Master Boot Record (MBR) partition table definitions
+ * Master Boot Record (MBR) partition entry definitions
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -19,8 +19,8 @@
  * along with this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined( _VSMBR_PARTITION_H )
-#define _VSMBR_PARTITION_H
+#if !defined( _VSMBR_PARTITION_ENTRY_H )
+#define _VSMBR_PARTITION_ENTRY_H
 
 #include <common.h>
 #include <types.h>
@@ -68,5 +68,5 @@ struct vsmbr_partition_entry
 }
 #endif
 
-#endif /* !defined( _VSMBR_PARTITION_H ) */
+#endif /* !defined( _VSMBR_PARTITION_ENTRY_H ) */
 

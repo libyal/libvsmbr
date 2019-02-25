@@ -113,6 +113,8 @@ int vsmbr_test_section_values_initialize(
 	          &section_values,
 	          &error );
 
+	section_values = NULL;
+
 	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -124,8 +126,6 @@ int vsmbr_test_section_values_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	section_values = NULL;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 

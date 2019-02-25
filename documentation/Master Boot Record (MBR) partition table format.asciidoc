@@ -1,5 +1,5 @@
-= Master Boot Record (MBR) partition table
-Analysis of the MBR partition table
+= Master Boot Record (MBR) partition table format specification
+Analysis of the MBR partition table format
 
 :toc:
 :toclevels: 4
@@ -21,7 +21,7 @@ specification.
 [cols="1,5"]
 |===
 | Author(s): | Joachim Metz <joachim.metz@gmail.com>
-| Abstract: | This document contains information about the x86 partition table.
+| Abstract: | This document contains information about the MBR partition table.
 | Classification: | Public
 | Keywords: | Master Boot Record, x86 partition table, DOS partition table, Intel partition table
 |===

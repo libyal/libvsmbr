@@ -31,6 +31,7 @@
 #include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcdata.h"
 #include "libvsmbr_libcerror.h"
+#include "libvsmbr_libcthreads.h"
 #include "libvsmbr_types.h"
 
 #if defined( __cplusplus )
@@ -41,6 +42,10 @@ typedef struct libvsmbr_internal_volume libvsmbr_internal_volume_t;
 
 struct libvsmbr_internal_volume
 {
+	/* The volume size
+	 */
+	size64_t size;
+
 	/* The partitions array
 	 */
 	libcdata_array_t *partitions;
@@ -64,6 +69,12 @@ struct libvsmbr_internal_volume
 	/* Value to indicate if bytes per sector was set by library
 	 */
 	uint8_t bytes_per_sector_set_by_library;
+
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	/* The read/write lock
+	 */
+	libcthreads_read_write_lock_t *read_write_lock;
+#endif
 };
 
 LIBVSMBR_EXTERN \
@@ -111,12 +122,12 @@ int libvsmbr_volume_close(
      libvsmbr_volume_t *volume,
      libcerror_error_t **error );
 
-int libvsmbr_volume_open_read(
+int libvsmbr_internal_volume_open_read(
      libvsmbr_internal_volume_t *internal_volume,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error );
 
-int libvsmbr_volume_read_partition_entries(
+int libvsmbr_internal_volume_read_partition_entries(
      libvsmbr_internal_volume_t *internal_volume,
      libbfio_handle_t *file_io_handle,
      off64_t file_offset,

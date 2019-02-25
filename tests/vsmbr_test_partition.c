@@ -165,6 +165,8 @@ int vsmbr_test_partition_initialize(
 	          partition_values,
 	          &error );
 
+	partition = NULL;
+
 	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -176,8 +178,6 @@ int vsmbr_test_partition_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	partition = NULL;
 
 	result = libvsmbr_partition_initialize(
 	          &partition,

@@ -26,10 +26,10 @@
 
 #include "libvsmbr_boot_record.h"
 #include "libvsmbr_chs_address.h"
+#include "libvsmbr_libbfio.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcnotify.h"
 #include "libvsmbr_partition_entry.h"
-#include "libvsmbr_partition_values.h"
 
 #include "vsmbr_boot_record.h"
 #include "vsmbr_partition_entry.h"
@@ -427,7 +427,7 @@ int libvsmbr_boot_record_read_file_io_handle(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read boot record data.",
+		 "%s: unable to read boot record.",
 		 function );
 
 		return( -1 );

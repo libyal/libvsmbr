@@ -113,6 +113,8 @@ int vsmbr_test_partition_values_initialize(
 	          &partition_values,
 	          &error );
 
+	partition_values = NULL;
+
 	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -124,8 +126,6 @@ int vsmbr_test_partition_values_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	partition_values = NULL;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 

@@ -118,6 +118,8 @@ int vsmbr_test_sector_data_initialize(
 	          512,
 	          &error );
 
+	sector_data = NULL;
+
 	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -129,8 +131,6 @@ int vsmbr_test_sector_data_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	sector_data = NULL;
 
 	result = libvsmbr_sector_data_initialize(
 	          &sector_data,

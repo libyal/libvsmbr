@@ -63,6 +63,10 @@ struct libvsmbr_internal_partition
 	 */
 	off64_t current_offset;
 
+	/* The offset
+	 */
+	off64_t offset;
+
 	/* The size
 	 */
 	size64_t size;
@@ -90,6 +94,12 @@ LIBVSMBR_EXTERN \
 int libvsmbr_partition_get_type(
      libvsmbr_partition_t *partition,
      uint8_t *type,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_partition_get_volume_offset(
+     libvsmbr_partition_t *partition,
+     off64_t *volume_offset,
      libcerror_error_t **error );
 
 ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(

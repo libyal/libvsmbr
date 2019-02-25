@@ -116,6 +116,8 @@ int vsmbr_test_chs_address_initialize(
 	          &chs_address,
 	          &error );
 
+	chs_address = NULL;
+
 	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -127,8 +129,6 @@ int vsmbr_test_chs_address_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	chs_address = NULL;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 

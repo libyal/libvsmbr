@@ -1,5 +1,5 @@
 /*
- * Partition type functions
+ * The partition type functions
  *
  * Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>
  *

@@ -226,6 +226,7 @@ int libvsmbr_partition_initialize(
 #endif
 	internal_partition->file_io_handle   = file_io_handle;
 	internal_partition->partition_values = partition_values;
+	internal_partition->offset           = partition_offset;
 	internal_partition->size             = partition_size;
 
 	*partition = (libvsmbr_partition_t *) internal_partition;
@@ -387,6 +388,76 @@ int libvsmbr_partition_get_type(
 	}
 #endif
 	return( result );
+}
+
+/* Retrieves the partition offset relative to the start of the volume
+ * Returns 1 if successful or -1 on error
+ */
+int libvsmbr_partition_get_volume_offset(
+     libvsmbr_partition_t *partition,
+     off64_t *volume_offset,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_partition_t *internal_partition = NULL;
+	static char *function                             = "libvsmbr_partition_get_volume_offset";
+
+	if( partition == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid partition.",
+		 function );
+
+		return( -1 );
+	}
+	internal_partition = (libvsmbr_internal_partition_t *) partition;
+
+	if( volume_offset == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid volume offset.",
+		 function );
+
+		return( -1 );
+	}
+#if defined( HAVE_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_partition->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
+	*volume_offset = internal_partition->offset;
+
+#if defined( HAVE_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_partition->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
+	return( 1 );
 }
 
 /* Reads (partition) data at the current offset into a buffer using a Basic File IO (bfio) handle
@@ -841,7 +912,7 @@ off64_t libvsmbr_partition_seek_offset(
 	return( offset );
 }
 
-/* Retrieves the partition offset
+/* Retrieves the current offset
  * Returns 1 if successful or -1 on error
  */
 int libvsmbr_partition_get_offset(

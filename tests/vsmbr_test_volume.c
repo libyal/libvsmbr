@@ -268,6 +268,8 @@ int vsmbr_test_volume_initialize(
 	          &volume,
 	          &error );
 
+	volume = NULL;
+
 	VSMBR_TEST_ASSERT_EQUAL_INT(
 	 "result",
 	 result,
@@ -279,8 +281,6 @@ int vsmbr_test_volume_initialize(
 
 	libcerror_error_free(
 	 &error );
-
-	volume = NULL;
 
 #if defined( HAVE_VSMBR_TEST_MEMORY )
 

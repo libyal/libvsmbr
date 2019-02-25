@@ -130,6 +130,21 @@ int libvsmbr_volume_initialize(
 
 		goto on_error;
 	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_initialize(
+	     &( internal_volume->read_write_lock ),
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_INITIALIZE_FAILED,
+		 "%s: unable to initialize read/write lock.",
+		 function );
+
+		goto on_error;
+	}
+#endif
 	*volume = (libvsmbr_volume_t *) internal_volume;
 
 	return( 1 );
@@ -193,6 +208,21 @@ int libvsmbr_volume_free(
 		}
 		*volume = NULL;
 
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+		if( libcthreads_read_write_lock_free(
+		     &( internal_volume->read_write_lock ),
+		     error ) != 1 )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_FINALIZE_FAILED,
+			 "%s: unable to free read/write lock.",
+			 function );
+
+			result = -1;
+		}
+#endif
 		if( libcdata_array_free(
 		     &( internal_volume->partitions ),
 		     (int (*)(intptr_t **, libcerror_error_t **)) &libvsmbr_partition_values_free,
@@ -277,6 +307,7 @@ int libvsmbr_volume_open(
 	libbfio_handle_t *file_io_handle            = NULL;
 	libvsmbr_internal_volume_t *internal_volume = NULL;
 	static char *function                       = "libvsmbr_volume_open";
+	size_t filename_length                      = 0;
 
 	if( volume == NULL )
 	{
@@ -344,29 +375,31 @@ int libvsmbr_volume_open(
 	     1,
 	     error ) != 1 )
 	{
-                libcerror_error_set(
-                 error,
-                 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-                 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-                 "%s: unable to set track offsets read in file IO handle.",
-                 function );
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set track offsets read in file IO handle.",
+		 function );
 
 		goto on_error;
 	}
 #endif
+	filename_length = narrow_string_length(
+	                   filename );
+
 	if( libbfio_file_set_name(
 	     file_io_handle,
 	     filename,
-	     narrow_string_length(
-	      filename ) + 1,
+	     filename_length + 1,
 	     error ) != 1 )
 	{
-                libcerror_error_set(
-                 error,
-                 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-                 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-                 "%s: unable to set filename in file IO handle.",
-                 function );
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set filename in file IO handle.",
+		 function );
 
 		goto on_error;
 	}
@@ -380,14 +413,44 @@ int libvsmbr_volume_open(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_OPEN_FAILED,
-		 "%s: unable to open file: %s.",
+		 "%s: unable to open volume: %s.",
 		 function,
 		 filename );
 
 		goto on_error;
 	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	internal_volume->file_io_handle_created_in_library = 1;
 
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 
 on_error:
@@ -414,6 +477,7 @@ int libvsmbr_volume_open_wide(
 	libbfio_handle_t *file_io_handle            = NULL;
 	libvsmbr_internal_volume_t *internal_volume = NULL;
 	static char *function                       = "libvsmbr_volume_open_wide";
+	size_t filename_length                      = 0;
 
 	if( volume == NULL )
 	{
@@ -481,29 +545,31 @@ int libvsmbr_volume_open_wide(
 	     1,
 	     error ) != 1 )
 	{
-                libcerror_error_set(
-                 error,
-                 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-                 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-                 "%s: unable to set track offsets read in file IO handle.",
-                 function );
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set track offsets read in file IO handle.",
+		 function );
 
 		goto on_error;
 	}
 #endif
+	filename_length = wide_string_length(
+	                   filename );
+
 	if( libbfio_file_set_name_wide(
 	     file_io_handle,
 	     filename,
-	     wide_string_length(
-	      filename ) + 1,
+	     filename_length + 1,
 	     error ) != 1 )
 	{
-                libcerror_error_set(
-                 error,
-                 LIBCERROR_ERROR_DOMAIN_RUNTIME,
-                 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
-                 "%s: unable to set filename in file IO handle.",
-                 function );
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to set filename in file IO handle.",
+		 function );
 
 		goto on_error;
 	}
@@ -517,14 +583,44 @@ int libvsmbr_volume_open_wide(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_OPEN_FAILED,
-		 "%s: unable to open file: %ls.",
+		 "%s: unable to open volume: %ls.",
 		 function,
 		 filename );
 
 		goto on_error;
 	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	internal_volume->file_io_handle_created_in_library = 1;
 
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 
 on_error:
@@ -573,7 +669,7 @@ int libvsmbr_volume_open_file_io_handle(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_VALUE_ALREADY_SET,
-		 "%s: invalid volume - file IO handle already set.",
+		 "%s: invalid volume - file IO handle value already set.",
 		 function );
 
 		return( -1 );
@@ -626,7 +722,7 @@ int libvsmbr_volume_open_file_io_handle(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_OPEN_FAILED,
-		 "%s: unable to open file.",
+		 "%s: unable to open volume.",
 		 function );
 
 		goto on_error;
@@ -649,7 +745,7 @@ int libvsmbr_volume_open_file_io_handle(
 		}
 		file_io_handle_opened_in_library = 1;
 	}
-	if( libvsmbr_volume_open_read(
+	if( libvsmbr_internal_volume_open_read(
 	     internal_volume,
 	     file_io_handle,
 	     error ) != 1 )
@@ -663,14 +759,43 @@ int libvsmbr_volume_open_file_io_handle(
 
 		goto on_error;
 	}
-	internal_volume->file_io_handle                   = file_io_handle;
-	internal_volume->file_io_handle_opened_in_library = (uint8_t) file_io_handle_opened_in_library;
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
 
+		return( -1 );
+	}
+#endif
+	internal_volume->file_io_handle                   = file_io_handle;
+	internal_volume->file_io_handle_opened_in_library = file_io_handle_opened_in_library;
+
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 
 on_error:
-	if( ( file_io_handle_is_open == 0 )
-	 && ( file_io_handle_opened_in_library != 0 ) )
+	if( file_io_handle_opened_in_library != 0 )
 	{
 		libbfio_handle_close(
 		 file_io_handle,
@@ -714,10 +839,25 @@ int libvsmbr_volume_close(
 
 		return( -1 );
 	}
-	if( internal_volume->file_io_handle_created_in_library != 0 )
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
 	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 #if defined( HAVE_DEBUG_OUTPUT )
-		if( libcnotify_verbose != 0 )
+	if( libcnotify_verbose != 0 )
+	{
+		if( internal_volume->file_io_handle_created_in_library != 0 )
 		{
 			if( libvsmbr_debug_print_read_offsets(
 			     internal_volume->file_io_handle,
@@ -733,7 +873,10 @@ int libvsmbr_volume_close(
 				result = -1;
 			}
 		}
+	}
 #endif
+	if( internal_volume->file_io_handle_opened_in_library != 0 )
+	{
 		if( libbfio_handle_close(
 		     internal_volume->file_io_handle,
 		     error ) != 0 )
@@ -747,6 +890,10 @@ int libvsmbr_volume_close(
 
 			result = -1;
 		}
+		internal_volume->file_io_handle_opened_in_library = 0;
+	}
+	if( internal_volume->file_io_handle_created_in_library != 0 )
+	{
 		if( libbfio_handle_free(
 		     &( internal_volume->file_io_handle ),
 		     error ) != 1 )
@@ -760,9 +907,9 @@ int libvsmbr_volume_close(
 
 			result = -1;
 		}
+		internal_volume->file_io_handle_created_in_library = 0;
 	}
-	internal_volume->file_io_handle                    = NULL;
-	internal_volume->file_io_handle_created_in_library = 0;
+	internal_volume->file_io_handle = NULL;
 
 	if( libvsmbr_io_handle_clear(
 	     internal_volume->io_handle,
@@ -791,19 +938,34 @@ int libvsmbr_volume_close(
 
 		result = -1;
 	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( result );
 }
 
 /* Opens a volume for reading
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_volume_open_read(
+int libvsmbr_internal_volume_open_read(
      libvsmbr_internal_volume_t *internal_volume,
      libbfio_handle_t *file_io_handle,
      libcerror_error_t **error )
 {
 	libvsmbr_boot_record_t *master_boot_record = NULL;
-	static char *function                      = "libvsmbr_volume_open_read";
+	static char *function                      = "libvsmbr_internal_volume_open_read";
 
 	if( internal_volume == NULL )
 	{
@@ -815,6 +977,20 @@ int libvsmbr_volume_open_read(
 		 function );
 
 		return( -1 );
+	}
+	if( libbfio_handle_get_size(
+	     file_io_handle,
+	     &( internal_volume->size ),
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve size from file IO handle.",
+		 function );
+
+		goto on_error;
 	}
 #if defined( HAVE_DEBUG_OUTPUT )
 	if( libcnotify_verbose != 0 )
@@ -852,7 +1028,7 @@ int libvsmbr_volume_open_read(
 
 		goto on_error;
 	}
-	if( libvsmbr_volume_read_partition_entries(
+	if( libvsmbr_internal_volume_read_partition_entries(
 	     internal_volume,
 	     file_io_handle,
 	     0,
@@ -897,7 +1073,7 @@ on_error:
 /* Reads partition entries in a master boot record or extended partition record
  * Returns 1 if successful or -1 on error
  */
-int libvsmbr_volume_read_partition_entries(
+int libvsmbr_internal_volume_read_partition_entries(
      libvsmbr_internal_volume_t *internal_volume,
      libbfio_handle_t *file_io_handle,
      off64_t file_offset,
@@ -908,7 +1084,7 @@ int libvsmbr_volume_read_partition_entries(
 	libvsmbr_boot_record_t *extended_partition_record = NULL;
 	libvsmbr_partition_entry_t *partition_entry       = NULL;
 	libvsmbr_partition_values_t *partition_values     = NULL;
-	static char *function                             = "libvsmbr_volume_read_partition_entries";
+	static char *function                             = "libvsmbr_internal_volume_read_partition_entries";
 	off64_t extended_partition_record_offset          = 0;
 	int entry_index                                   = 0;
 	int partition_entry_index                         = 0;
@@ -1011,7 +1187,7 @@ int libvsmbr_volume_read_partition_entries(
 			 */
 			while( ( result != 1 )
 			    && ( is_master_boot_record != 0 )
-			    && ( internal_volume->io_handle->bytes_per_sector <= 4096 ) )
+			    && ( internal_volume->io_handle->bytes_per_sector < 4096 ) )
 			{
 				libcerror_error_free(
 				 error );
@@ -1091,7 +1267,7 @@ int libvsmbr_volume_read_partition_entries(
 	}
 	if( extended_partition_record != NULL )
 	{
-		if( libvsmbr_volume_read_partition_entries(
+		if( libvsmbr_internal_volume_read_partition_entries(
 		     internal_volume,
 		     file_io_handle,
 		     extended_partition_record_offset,
@@ -1186,8 +1362,38 @@ int libvsmbr_volume_get_bytes_per_sector(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	*bytes_per_sector = internal_volume->io_handle->bytes_per_sector;
 
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 }
 
@@ -1251,8 +1457,38 @@ int libvsmbr_volume_set_bytes_per_sector(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	bytes_per_sector = internal_volume->io_handle->bytes_per_sector = bytes_per_sector;
 
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_write(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for writing.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	return( 1 );
 }
 
@@ -1266,6 +1502,7 @@ int libvsmbr_volume_get_number_of_partitions(
 {
 	libvsmbr_internal_volume_t *internal_volume = NULL;
 	static char *function                       = "libvsmbr_volume_get_number_of_partitions";
+	int result                                  = 1;
 
 	if( volume == NULL )
 	{
@@ -1280,6 +1517,21 @@ int libvsmbr_volume_get_number_of_partitions(
 	}
 	internal_volume = (libvsmbr_internal_volume_t *) volume;
 
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	if( libcdata_array_get_number_of_entries(
 	     internal_volume->partitions,
 	     number_of_partitions,
@@ -1292,9 +1544,24 @@ int libvsmbr_volume_get_number_of_partitions(
 		 "%s: unable to retrieve number of partitions from array.",
 		 function );
 
+		result = -1;
+	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
 		return( -1 );
 	}
-	return( 1 );
+#endif
+	return( result );
 }
 
 /* Retrieves a specific partition
@@ -1345,6 +1612,21 @@ int libvsmbr_volume_get_partition_by_index(
 
 		return( -1 );
 	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
 	if( libcdata_array_get_entry_by_index(
 	     internal_volume->partitions,
 	     partition_index,
@@ -1359,7 +1641,7 @@ int libvsmbr_volume_get_partition_by_index(
 		 function,
 		 partition_index );
 
-		return( -1 );
+		goto on_error;
 	}
 	if( libvsmbr_partition_initialize(
 	     partition,
@@ -1376,8 +1658,31 @@ int libvsmbr_volume_get_partition_by_index(
 		 function,
 		 partition_index );
 
+		goto on_error;
+	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
 		return( -1 );
 	}
+#endif
 	return( 1 );
+
+on_error:
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	libcthreads_read_write_lock_release_for_read(
+	 internal_volume->read_write_lock,
+	 NULL );
+#endif
+	return( -1 );
 }
 
