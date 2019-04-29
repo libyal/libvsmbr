@@ -1,11 +1,9 @@
-.Dd February 22, 2019
+.Dd April 29, 2019
 .Dt libvsmbr 3
 .Os libvsmbr
 .Sh NAME
 .Nm libvsmbr.h
 .Nd Library to access the Master Boot Record (MBR) volume system format
-.Sh LIBRARY
-.Lb libvsmbr
 .Sh SYNOPSIS
 .In libvsmbr.h
 .Pp
@@ -19,27 +17,27 @@ Support functions
 .Ft int
 .Fn libvsmbr_get_access_flags_write "void"
 .Ft int
-.Fn libvsmbr_get_codepage "int *codepage, libvsmbr_error_t **error"
+.Fn libvsmbr_get_codepage "int *codepage" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_set_codepage "int codepage, libvsmbr_error_t **error"
+.Fn libvsmbr_set_codepage "int codepage" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_check_volume_signature "const char *filename, libvsmbr_error_t **error"
+.Fn libvsmbr_check_volume_signature "const char *filename" "libvsmbr_error_t **error"
 .Pp
 Available when compiled with wide character string support:
 .Ft int
-.Fn libvsmbr_check_volume_signature_wide "const wchar_t *filename, libvsmbr_error_t **error"
+.Fn libvsmbr_check_volume_signature_wide "const wchar_t *filename" "libvsmbr_error_t **error"
 .Pp
 Available when compiled with libbfio support:
 .Ft int
-.Fn libvsmbr_check_volume_signature_file_io_handle "libbfio_handle_t *file_io_handle, libvsmbr_error_t **error"
+.Fn libvsmbr_check_volume_signature_file_io_handle "libbfio_handle_t *file_io_handle" "libvsmbr_error_t **error"
 .Pp
 Notify functions
 .Ft void
 .Fn libvsmbr_notify_set_verbose "int verbose"
 .Ft int
-.Fn libvsmbr_notify_set_stream "FILE *stream, libvsmbr_error_t **error"
+.Fn libvsmbr_notify_set_stream "FILE *stream" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_notify_stream_open "const char *filename, libvsmbr_error_t **error"
+.Fn libvsmbr_notify_stream_open "const char *filename" "libvsmbr_error_t **error"
 .Ft int
 .Fn libvsmbr_notify_stream_close "libvsmbr_error_t **error"
 .Pp
@@ -47,57 +45,59 @@ Error functions
 .Ft void
 .Fn libvsmbr_error_free "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_error_fprint "libvsmbr_error_t *error, FILE *stream"
+.Fn libvsmbr_error_fprint "libvsmbr_error_t *error" "FILE *stream"
 .Ft int
-.Fn libvsmbr_error_sprint "libvsmbr_error_t *error, char *string, size_t size"
+.Fn libvsmbr_error_sprint "libvsmbr_error_t *error" "char *string" "size_t size"
 .Ft int
-.Fn libvsmbr_error_backtrace_fprint "libvsmbr_error_t *error, FILE *stream"
+.Fn libvsmbr_error_backtrace_fprint "libvsmbr_error_t *error" "FILE *stream"
 .Ft int
-.Fn libvsmbr_error_backtrace_sprint "libvsmbr_error_t *error, char *string, size_t size"
+.Fn libvsmbr_error_backtrace_sprint "libvsmbr_error_t *error" "char *string" "size_t size"
 .Pp
 Volume functions
 .Ft int
-.Fn libvsmbr_volume_initialize "libvsmbr_volume_t **volume, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_initialize "libvsmbr_volume_t **volume" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_volume_free "libvsmbr_volume_t **volume, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_free "libvsmbr_volume_t **volume" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_volume_signal_abort "libvsmbr_volume_t *volume, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_signal_abort "libvsmbr_volume_t *volume" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_volume_open "libvsmbr_volume_t *volume, const char *filename, int access_flags, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_open "libvsmbr_volume_t *volume" "const char *filename" "int access_flags" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_volume_close "libvsmbr_volume_t *volume, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_close "libvsmbr_volume_t *volume" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_volume_get_bytes_per_sector "libvsmbr_volume_t *volume, uint32_t *bytes_per_sector, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_get_bytes_per_sector "libvsmbr_volume_t *volume" "uint32_t *bytes_per_sector" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_volume_set_bytes_per_sector "libvsmbr_volume_t *volume, uint32_t bytes_per_sector, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_set_bytes_per_sector "libvsmbr_volume_t *volume" "uint32_t bytes_per_sector" "libvsmbr_error_t **error"
+.Ft int
+.Fn libvsmbr_volume_get_number_of_partitions "libvsmbr_volume_t *volume" "int *number_of_partitions" "libvsmbr_error_t **error"
+.Ft int
+.Fn libvsmbr_volume_get_partition_by_index "libvsmbr_volume_t *volume" "int partition_index" "libvsmbr_partition_t **partition" "libvsmbr_error_t **error"
 .Pp
 Available when compiled with wide character string support:
 .Ft int
-.Fn libvsmbr_volume_open_wide "libvsmbr_volume_t *volume, const wchar_t *filename, int access_flags, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_open_wide "libvsmbr_volume_t *volume" "const wchar_t *filename" "int access_flags" "libvsmbr_error_t **error"
 .Pp
 Available when compiled with libbfio support:
 .Ft int
-.Fn libvsmbr_volume_open_file_io_handle "libvsmbr_volume_t *volume, libbfio_handle_t *file_io_handle, int access_flags, libvsmbr_error_t **error"
+.Fn libvsmbr_volume_open_file_io_handle "libvsmbr_volume_t *volume" "libbfio_handle_t *file_io_handle" "int access_flags" "libvsmbr_error_t **error"
 .Pp
 Partition functions
 .Ft int
-.Fn libvsmbr_partition_free "libvsmbr_partition_t **partition, libvsmbr_error_t **error"
+.Fn libvsmbr_partition_free "libvsmbr_partition_t **partition" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_partition_get_type "libvsmbr_partition_t *partition, uint8_t *type, libvsmbr_error_t **error"
+.Fn libvsmbr_partition_get_type "libvsmbr_partition_t *partition" "uint8_t *type" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_partition_get_offset "libvsmbr_partition_t *partition, off64_t *offset, libvsmbr_error_t **error"
-.Ft int
-.Fn libvsmbr_partition_get_size "libvsmbr_partition_t *partition, size64_t *size, libvsmbr_error_t **error"
+.Fn libvsmbr_partition_get_volume_offset "libvsmbr_partition_t *partition" "off64_t *volume_offset" "libvsmbr_error_t **error"
 .Ft ssize_t
-.Fn libvsmbr_partition_read_buffer "libvsmbr_partition_t *partition, void *buffer, size_t buffer_size, libvsmbr_error_t **error"
+.Fn libvsmbr_partition_read_buffer "libvsmbr_partition_t *partition" "void *buffer" "size_t buffer_size" "libvsmbr_error_t **error"
 .Ft ssize_t
-.Fn libvsmbr_partition_read_buffer_at_offset "libvsmbr_partition_t *partition, void *buffer, size_t buffer_size, off64_t offset, libvsmbr_error_t **error"
+.Fn libvsmbr_partition_read_buffer_at_offset "libvsmbr_partition_t *partition" "void *buffer" "size_t buffer_size" "off64_t offset" "libvsmbr_error_t **error"
 .Ft off64_t
-.Fn libvsmbr_partition_seek_offset "libvsmbr_partition_t *partition, off64_t offset, int whence, libvsmbr_error_t **error"
+.Fn libvsmbr_partition_seek_offset "libvsmbr_partition_t *partition" "off64_t offset" "int whence" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_partition_get_offset "libvsmbr_partition_t *partition, off64_t *offset, libvsmbr_error_t **error"
+.Fn libvsmbr_partition_get_offset "libvsmbr_partition_t *partition" "off64_t *offset" "libvsmbr_error_t **error"
 .Ft int
-.Fn libvsmbr_partition_get_size "libvsmbr_partition_t *partition, size64_t *size, libvsmbr_error_t **error"
+.Fn libvsmbr_partition_get_size "libvsmbr_partition_t *partition" "size64_t *size" "libvsmbr_error_t **error"
 .Sh DESCRIPTION
 The
 .Fn libvsmbr_get_version
@@ -110,8 +110,8 @@ None
 .Sh FILES
 None
 .Sh NOTES
-libvsmbr allows to be compiled with wide character support (wchar_t).
-
+libvsmbr can be compiled with wide character support (wchar_t).
+.sp
 To compile libvsmbr with wide character support use:
 .Ar ./configure --enable-wide-character-type=yes
  or define:
@@ -119,7 +119,7 @@ To compile libvsmbr with wide character support use:
  or
 .Ar UNICODE
  during compilation.
-
+.sp
 .Ar LIBVSMBR_WIDE_CHARACTER_TYPE
  in libvsmbr/features.h can be used to determine if libvsmbr was compiled with wide character support.
 .Sh BUGS
@@ -128,7 +128,7 @@ Please report bugs of any kind on the project issue tracker: https://github.com/
 These man pages are generated from "libvsmbr.h".
 .Sh COPYRIGHT
 Copyright (C) 2010-2019, Joachim Metz <joachim.metz@gmail.com>.
-
+.sp
 This is free software; see the source for copying conditions.
 There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 .Sh SEE ALSO

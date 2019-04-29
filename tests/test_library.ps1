@@ -7,7 +7,7 @@ $ExitFailure = 1
 $ExitIgnore = 77
 
 $LibraryTests = "boot_record chs_address error io_handle notify partition partition_entry partition_type partition_values section_values sector_data"
-$LibraryTestsWithInput = "support handle"
+$LibraryTestsWithInput = "support volume"
 
 $InputGlob = "*"
 
