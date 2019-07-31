@@ -2,7 +2,7 @@ AC_PREREQ( 2.59 )
 
 AC_INIT(
  [libvsmbr],
- [20190429],
+ [20190731],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
