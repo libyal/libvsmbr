@@ -31,6 +31,7 @@ check_SCRIPTS = \
 	pyvsmbr_test_support.py \
 	pyvsmbr_test_volume.py \
 	test_library.sh \
+	test_manpage.sh \
 	test_python_module.sh \
 	test_runner.sh \
 	test_vsmbrinfo.sh
