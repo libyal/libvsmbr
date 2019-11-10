@@ -122,14 +122,14 @@ vsmbr_test_notify_LDADD = \
 
 vsmbr_test_partition_SOURCES = \
 	vsmbr_test_functions.c vsmbr_test_functions.h \
+	vsmbr_test_getopt.c vsmbr_test_getopt.h \
 	vsmbr_test_libbfio.h \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_libvsmbr.h \
 	vsmbr_test_macros.h \
 	vsmbr_test_memory.c vsmbr_test_memory.h \
 	vsmbr_test_partition.c \
-	vsmbr_test_rwlock.c vsmbr_test_rwlock.h \
-	vsmbr_test_unused.h
+	vsmbr_test_rwlock.c vsmbr_test_rwlock.h
 
 vsmbr_test_partition_LDADD = \
 	@LIBBFIO_LIBADD@ \

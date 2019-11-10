@@ -530,7 +530,7 @@ ssize_t libvsmbr_internal_partition_read_buffer_from_file_io_handle(
 	{
 		return( 0 );
 	}
-	if( (size64_t) ( internal_partition->current_offset + buffer_size ) > internal_partition->size )
+	if( (size64_t) buffer_size > ( internal_partition->size - internal_partition->current_offset ) )
 	{
 		buffer_size = (size_t) ( internal_partition->size - internal_partition->current_offset );
 	}

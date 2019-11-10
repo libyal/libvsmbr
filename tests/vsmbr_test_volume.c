@@ -43,6 +43,14 @@
 #include "../libvsmbr/libvsmbr_volume.h"
 #endif
 
+#if defined( HAVE_WIDE_SYSTEM_CHARACTER ) && SIZEOF_WCHAR_T != 2 && SIZEOF_WCHAR_T != 4
+#error Unsupported size of wchar_t
+#endif
+
+/* Define to make vsmbr_test_volume generate verbose output
+#define VSMBR_TEST_VOLUME_VERBOSE
+ */
+
 #if !defined( LIBVSMBR_HAVE_BFIO )
 
 LIBVSMBR_EXTERN \
@@ -58,14 +66,6 @@ int libvsmbr_volume_open_file_io_handle(
      libvsmbr_error_t **error );
 
 #endif /* !defined( LIBVSMBR_HAVE_BFIO ) */
-
-#if defined( HAVE_WIDE_SYSTEM_CHARACTER ) && SIZEOF_WCHAR_T != 2 && SIZEOF_WCHAR_T != 4
-#error Unsupported size of wchar_t
-#endif
-
-/* Define to make vsmbr_test_volume generate verbose output
-#define VSMBR_TEST_HANDLE_VERBOSE
- */
 
 /* Creates and opens a source volume
  * Returns 1 if successful or -1 on error
@@ -1565,7 +1565,7 @@ int main(
 	{
 		source = argv[ optind ];
 	}
-#if defined( HAVE_DEBUG_OUTPUT ) && defined( VSMBR_TEST_HANDLE_VERBOSE )
+#if defined( HAVE_DEBUG_OUTPUT ) && defined( VSMBR_TEST_VOLUME_VERBOSE )
 	libvsmbr_notify_set_verbose(
 	 1 );
 	libvsmbr_notify_set_stream(
