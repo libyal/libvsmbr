@@ -180,6 +180,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tests\vsmbr_test_getopt.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tests\vsmbr_test_memory.c"
 				>
 			</File>
@@ -199,6 +203,10 @@
 			>
 			<File
 				RelativePath="..\..\tests\vsmbr_test_functions.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tests\vsmbr_test_getopt.h"
 				>
 			</File>
 			<File
@@ -223,10 +231,6 @@
 			</File>
 			<File
 				RelativePath="..\..\tests\vsmbr_test_rwlock.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tests\vsmbr_test_unused.h"
 				>
 			</File>
 		</Filter>
