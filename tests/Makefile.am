@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS = subdir-objects
+
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/common \
@@ -23,6 +25,7 @@ endif
 
 TESTS = \
 	test_library.sh \
+	test_tools.sh \
 	test_vsmbrinfo.sh \
 	$(TESTS_PYVSMBR)
 
@@ -34,6 +37,7 @@ check_SCRIPTS = \
 	test_manpage.sh \
 	test_python_module.sh \
 	test_runner.sh \
+	test_tools.sh \
 	test_vsmbrinfo.sh
 
 EXTRA_DIST = \
@@ -52,6 +56,9 @@ check_PROGRAMS = \
 	vsmbr_test_section_values \
 	vsmbr_test_sector_data \
 	vsmbr_test_support \
+	vsmbr_test_tools_info_handle \
+	vsmbr_test_tools_output \
+	vsmbr_test_tools_signal \
 	vsmbr_test_volume
 
 vsmbr_test_boot_record_SOURCES = \
@@ -238,6 +245,41 @@ vsmbr_test_support_LDADD = \
 	@LIBCNOTIFY_LIBADD@ \
 	@LIBCLOCALE_LIBADD@ \
 	@LIBCDATA_LIBADD@ \
+	../libvsmbr/libvsmbr.la \
+	@LIBCERROR_LIBADD@
+
+vsmbr_test_tools_info_handle_SOURCES = \
+	../vsmbrtools/info_handle.c ../vsmbrtools/info_handle.h \
+	vsmbr_test_libcerror.h \
+	vsmbr_test_macros.h \
+	vsmbr_test_memory.c vsmbr_test_memory.h \
+	vsmbr_test_tools_info_handle.c \
+	vsmbr_test_unused.h
+
+vsmbr_test_tools_info_handle_LDADD = \
+	@LIBCLOCALE_LIBADD@ \
+	../libvsmbr/libvsmbr.la \
+	@LIBCERROR_LIBADD@
+
+vsmbr_test_tools_output_SOURCES = \
+	../vsmbrtools/vsmbrtools_output.c ../vsmbrtools/vsmbrtools_output.h \
+	vsmbr_test_libcerror.h \
+	vsmbr_test_macros.h \
+	vsmbr_test_tools_output.c \
+	vsmbr_test_unused.h
+
+vsmbr_test_tools_output_LDADD = \
+	../libvsmbr/libvsmbr.la \
+	@LIBCERROR_LIBADD@
+
+vsmbr_test_tools_signal_SOURCES = \
+	../vsmbrtools/vsmbrtools_signal.c ../vsmbrtools/vsmbrtools_signal.h \
+	vsmbr_test_libcerror.h \
+	vsmbr_test_macros.h \
+	vsmbr_test_tools_signal.c \
+	vsmbr_test_unused.h
+
+vsmbr_test_tools_signal_LDADD = \
 	../libvsmbr/libvsmbr.la \
 	@LIBCERROR_LIBADD@
 

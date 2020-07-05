@@ -25,6 +25,9 @@ MSVSCPP_FILES = \
 	vsmbr_test_section_values/vsmbr_test_section_values.vcproj \
 	vsmbr_test_sector_data/vsmbr_test_sector_data.vcproj \
 	vsmbr_test_support/vsmbr_test_support.vcproj \
+	vsmbr_test_tools_info_handle/vsmbr_test_tools_info_handle.vcproj \
+	vsmbr_test_tools_output/vsmbr_test_tools_output.vcproj \
+	vsmbr_test_tools_signal/vsmbr_test_tools_signal.vcproj \
 	vsmbr_test_volume/vsmbr_test_volume.vcproj \
 	vsmbrinfo/vsmbrinfo.vcproj \
 	libvsmbr.sln
