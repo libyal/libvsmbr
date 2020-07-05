@@ -30,6 +30,7 @@
 #include "pyvsmbr.h"
 #include "pyvsmbr_error.h"
 #include "pyvsmbr_file_object_io_handle.h"
+#include "pyvsmbr_libbfio.h"
 #include "pyvsmbr_libcerror.h"
 #include "pyvsmbr_libvsmbr.h"
 #include "pyvsmbr_partition.h"
@@ -153,7 +154,7 @@ PyObject *pyvsmbr_check_volume_signature(
 	if( PyArg_ParseTupleAndKeywords(
 	     arguments,
 	     keywords,
-	     "|O",
+	     "O|",
 	     keyword_list,
 	     &string_object ) == 0 )
 	{
@@ -537,23 +538,6 @@ PyMODINIT_FUNC initpyvsmbr(
 
 	gil_state = PyGILState_Ensure();
 
-	/* Setup the volume type object
-	 */
-	pyvsmbr_volume_type_object.tp_new = PyType_GenericNew;
-
-	if( PyType_Ready(
-	     &pyvsmbr_volume_type_object ) < 0 )
-	{
-		goto on_error;
-	}
-	Py_IncRef(
-	 (PyObject *) &pyvsmbr_volume_type_object );
-
-	PyModule_AddObject(
-	 module,
-	 "volume",
-	 (PyObject *) &pyvsmbr_volume_type_object );
-
 	/* Setup the partition type object
 	 */
 	pyvsmbr_partition_type_object.tp_new = PyType_GenericNew;
@@ -587,6 +571,23 @@ PyMODINIT_FUNC initpyvsmbr(
 	 module,
 	 "partitions",
 	 (PyObject *) &pyvsmbr_partitions_type_object );
+
+	/* Setup the volume type object
+	 */
+	pyvsmbr_volume_type_object.tp_new = PyType_GenericNew;
+
+	if( PyType_Ready(
+	     &pyvsmbr_volume_type_object ) < 0 )
+	{
+		goto on_error;
+	}
+	Py_IncRef(
+	 (PyObject *) &pyvsmbr_volume_type_object );
+
+	PyModule_AddObject(
+	 module,
+	 "volume",
+	 (PyObject *) &pyvsmbr_volume_type_object );
 
 	PyGILState_Release(
 	 gil_state );

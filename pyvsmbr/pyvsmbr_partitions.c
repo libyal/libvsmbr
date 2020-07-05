@@ -244,7 +244,7 @@ int pyvsmbr_partitions_init(
 	 "%s: initialize of partitions not supported.",
 	 function );
 
-	return( 0 );
+	return( -1 );
 }
 
 /* Frees a partitions sequence object

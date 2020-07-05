@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #endif
 
-#include "vsmbr_test_libcerror.h"
 #include "vsmbr_test_libvsmbr.h"
 #include "vsmbr_test_macros.h"
 #include "vsmbr_test_unused.h"
