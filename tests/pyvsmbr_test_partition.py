@@ -21,6 +21,7 @@
 
 import argparse
 import os
+import random
 import sys
 import unittest
 
@@ -33,34 +34,71 @@ class PartitionTypeTests(unittest.TestCase):
   def test_read_buffer(self):
     """Tests the read_buffer function."""
     if not unittest.source:
-      return
+      raise unittest.SkipTest("missing source")
 
     vsmbr_partition = pyvsmbr.partition()
 
     vsmbr_partition.open(unittest.source)
 
-    file_size = vsmbr_partition.get_size()
+    size = vsmbr_partition.get_size()
 
-    # Test normal read.
-    data = vsmbr_partition.read_buffer(size=4096)
+    if size < 4096:
+      # Test read without maximum size.
+      vsmbr_partition.seek_offset(0, os.SEEK_SET)
 
-    self.assertIsNotNone(data)
-    self.assertEqual(len(data), min(file_size, 4096))
-
-    if file_size < 4096:
       data = vsmbr_partition.read_buffer()
 
       self.assertIsNotNone(data)
-      self.assertEqual(len(data), file_size)
+      self.assertEqual(len(data), size)
 
-    # Test read beyond file size.
-    if file_size > 16:
-      vsmbr_partition.seek_offset(-16, os.SEEK_END)
+    # Test read with maximum size.
+    vsmbr_partition.seek_offset(0, os.SEEK_SET)
 
+    data = vsmbr_partition.read_buffer(size=4096)
+
+    self.assertIsNotNone(data)
+    self.assertEqual(len(data), min(size, 4096))
+
+    if size > 8:
+      vsmbr_partition.seek_offset(-8, os.SEEK_END)
+
+      # Read buffer on size boundary.
       data = vsmbr_partition.read_buffer(size=4096)
 
       self.assertIsNotNone(data)
-      self.assertEqual(len(data), 16)
+      self.assertEqual(len(data), 8)
+
+      # Read buffer beyond size boundary.
+      data = vsmbr_partition.read_buffer(size=4096)
+
+      self.assertIsNotNone(data)
+      self.assertEqual(len(data), 0)
+
+    # Stress test read buffer.
+    vsmbr_partition.seek_offset(0, os.SEEK_SET)
+
+    remaining_size = size
+
+    for _ in range(1024):
+      read_size = int(random.random() * 4096)
+
+      data = vsmbr_partition.read_buffer(size=read_size)
+
+      self.assertIsNotNone(data)
+
+      data_size = len(data)
+
+      if read_size > remaining_size:
+        read_size = remaining_size
+
+      self.assertEqual(data_size, read_size)
+
+      remaining_size -= data_size
+
+      if not remaining_size:
+        vsmbr_partition.seek_offset(0, os.SEEK_SET)
+
+        remaining_size = size
 
     with self.assertRaises(ValueError):
       vsmbr_partition.read_buffer(size=-1)
@@ -74,47 +112,80 @@ class PartitionTypeTests(unittest.TestCase):
   def test_read_buffer_file_object(self):
     """Tests the read_buffer function on a file-like object."""
     if not unittest.source:
-      return
+      raise unittest.SkipTest("missing source")
 
-    file_object = open(unittest.source, "rb")
+    if not os.path.isfile(unittest.source):
+      raise unittest.SkipTest("source not a regular file")
 
     vsmbr_partition = pyvsmbr.partition()
 
-    vsmbr_partition.open_file_object(file_object)
+    with open(unittest.source, "rb") as file_object:
+      vsmbr_partition.open_file_object(file_object)
 
-    file_size = vsmbr_partition.get_size()
+      size = vsmbr_partition.get_size()
 
-    # Test normal read.
-    data = vsmbr_partition.read_buffer(size=4096)
+      # Test normal read.
+      data = vsmbr_partition.read_buffer(size=4096)
 
-    self.assertIsNotNone(data)
-    self.assertEqual(len(data), min(file_size, 4096))
+      self.assertIsNotNone(data)
+      self.assertEqual(len(data), min(size, 4096))
 
-    vsmbr_partition.close()
+      vsmbr_partition.close()
 
   def test_read_buffer_at_offset(self):
     """Tests the read_buffer_at_offset function."""
     if not unittest.source:
-      return
+      raise unittest.SkipTest("missing source")
 
     vsmbr_partition = pyvsmbr.partition()
 
     vsmbr_partition.open(unittest.source)
 
-    file_size = vsmbr_partition.get_size()
+    size = vsmbr_partition.get_size()
 
     # Test normal read.
     data = vsmbr_partition.read_buffer_at_offset(4096, 0)
 
     self.assertIsNotNone(data)
-    self.assertEqual(len(data), min(file_size, 4096))
+    self.assertEqual(len(data), min(size, 4096))
 
-    # Test read beyond file size.
-    if file_size > 16:
-      data = vsmbr_partition.read_buffer_at_offset(4096, file_size - 16)
+    if size > 8:
+      # Read buffer on size boundary.
+      data = vsmbr_partition.read_buffer_at_offset(4096, size - 8)
 
       self.assertIsNotNone(data)
-      self.assertEqual(len(data), 16)
+      self.assertEqual(len(data), 8)
+
+      # Read buffer beyond size boundary.
+      data = vsmbr_partition.read_buffer_at_offset(4096, size + 8)
+
+      self.assertIsNotNone(data)
+      self.assertEqual(len(data), 0)
+
+    # Stress test read buffer.
+    for _ in range(1024):
+      random_number = random.random()
+
+      media_offset = int(random_number * size)
+      read_size = int(random_number * 4096)
+
+      data = vsmbr_partition.read_buffer_at_offset(read_size, media_offset)
+
+      self.assertIsNotNone(data)
+
+      remaining_size = size - media_offset
+
+      data_size = len(data)
+
+      if read_size > remaining_size:
+        read_size = remaining_size
+
+      self.assertEqual(data_size, read_size)
+
+      remaining_size -= data_size
+
+      if not remaining_size:
+        vsmbr_partition.seek_offset(0, os.SEEK_SET)
 
     with self.assertRaises(ValueError):
       vsmbr_partition.read_buffer_at_offset(-1, 0)
@@ -131,13 +202,13 @@ class PartitionTypeTests(unittest.TestCase):
   def test_seek_offset(self):
     """Tests the seek_offset function."""
     if not unittest.source:
-      return
+      raise unittest.SkipTest("missing source")
 
     vsmbr_partition = pyvsmbr.partition()
 
     vsmbr_partition.open(unittest.source)
 
-    file_size = vsmbr_partition.get_size()
+    size = vsmbr_partition.get_size()
 
     vsmbr_partition.seek_offset(16, os.SEEK_SET)
 
@@ -154,15 +225,16 @@ class PartitionTypeTests(unittest.TestCase):
     offset = vsmbr_partition.get_offset()
     self.assertEqual(offset, 16)
 
-    vsmbr_partition.seek_offset(-16, os.SEEK_END)
+    if size > 16:
+      vsmbr_partition.seek_offset(-16, os.SEEK_END)
 
-    offset = vsmbr_partition.get_offset()
-    self.assertEqual(offset, file_size - 16)
+      offset = vsmbr_partition.get_offset()
+      self.assertEqual(offset, size - 16)
 
     vsmbr_partition.seek_offset(16, os.SEEK_END)
 
     offset = vsmbr_partition.get_offset()
-    self.assertEqual(offset, file_size + 16)
+    self.assertEqual(offset, size + 16)
 
     # TODO: change IOError into ValueError
     with self.assertRaises(IOError):
@@ -170,11 +242,11 @@ class PartitionTypeTests(unittest.TestCase):
 
     # TODO: change IOError into ValueError
     with self.assertRaises(IOError):
-      vsmbr_partition.seek_offset(-32 - file_size, os.SEEK_CUR)
+      vsmbr_partition.seek_offset(-32 - size, os.SEEK_CUR)
 
     # TODO: change IOError into ValueError
     with self.assertRaises(IOError):
-      vsmbr_partition.seek_offset(-32 - file_size, os.SEEK_END)
+      vsmbr_partition.seek_offset(-32 - size, os.SEEK_END)
 
     # TODO: change IOError into ValueError
     with self.assertRaises(IOError):
@@ -185,6 +257,68 @@ class PartitionTypeTests(unittest.TestCase):
     # Test the seek without open.
     with self.assertRaises(IOError):
       vsmbr_partition.seek_offset(16, os.SEEK_SET)
+
+  def test_get_type(self):
+    """Tests the get_type function and type property."""
+    if not unittest.source:
+      raise unittest.SkipTest("missing source")
+
+    vsmbr_partition = pyvsmbr.partition()
+
+    vsmbr_partition.open(unittest.source)
+
+    type = vsmbr_partition.get_type()
+    self.assertIsNotNone(type)
+
+    self.assertIsNotNone(vsmbr_partition.type)
+
+    vsmbr_partition.close()
+
+  def test_get_volume_offset(self):
+    """Tests the get_volume_offset function and volume_offset property."""
+    if not unittest.source:
+      raise unittest.SkipTest("missing source")
+
+    vsmbr_partition = pyvsmbr.partition()
+
+    vsmbr_partition.open(unittest.source)
+
+    volume_offset = vsmbr_partition.get_volume_offset()
+    self.assertIsNotNone(volume_offset)
+
+    self.assertIsNotNone(vsmbr_partition.volume_offset)
+
+    vsmbr_partition.close()
+
+  def test_get_offset(self):
+    """Tests the get_offset function."""
+    if not unittest.source:
+      raise unittest.SkipTest("missing source")
+
+    vsmbr_partition = pyvsmbr.partition()
+
+    vsmbr_partition.open(unittest.source)
+
+    offset = vsmbr_partition.get_offset()
+    self.assertIsNotNone(offset)
+
+    vsmbr_partition.close()
+
+  def test_get_size(self):
+    """Tests the get_size function and size property."""
+    if not unittest.source:
+      raise unittest.SkipTest("missing source")
+
+    vsmbr_partition = pyvsmbr.partition()
+
+    vsmbr_partition.open(unittest.source)
+
+    size = vsmbr_partition.get_size()
+    self.assertIsNotNone(size)
+
+    self.assertIsNotNone(vsmbr_partition.size)
+
+    vsmbr_partition.close()
 
 
 if __name__ == "__main__":

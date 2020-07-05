@@ -39,7 +39,7 @@ class VolumeTypeTests(unittest.TestCase):
   def test_open(self):
     """Tests the open function."""
     if not unittest.source:
-      return
+      raise unittest.SkipTest("missing source")
 
     vsmbr_volume = pyvsmbr.volume()
 
@@ -59,30 +59,32 @@ class VolumeTypeTests(unittest.TestCase):
   def test_open_file_object(self):
     """Tests the open_file_object function."""
     if not unittest.source:
-      return
+      raise unittest.SkipTest("missing source")
 
-    file_object = open(unittest.source, "rb")
+    if not os.path.isfile(unittest.source):
+      raise unittest.SkipTest("source not a regular file")
 
     vsmbr_volume = pyvsmbr.volume()
 
-    vsmbr_volume.open_file_object(file_object)
+    with open(unittest.source, "rb") as file_object:
 
-    with self.assertRaises(IOError):
       vsmbr_volume.open_file_object(file_object)
 
-    vsmbr_volume.close()
+      with self.assertRaises(IOError):
+        vsmbr_volume.open_file_object(file_object)
 
-    # TODO: change IOError into TypeError
-    with self.assertRaises(IOError):
-      vsmbr_volume.open_file_object(None)
+      vsmbr_volume.close()
 
-    with self.assertRaises(ValueError):
-      vsmbr_volume.open_file_object(file_object, mode="w")
+      with self.assertRaises(TypeError):
+        vsmbr_volume.open_file_object(None)
+
+      with self.assertRaises(ValueError):
+        vsmbr_volume.open_file_object(file_object, mode="w")
 
   def test_close(self):
     """Tests the close function."""
     if not unittest.source:
-      return
+      raise unittest.SkipTest("missing source")
 
     vsmbr_volume = pyvsmbr.volume()
 
@@ -104,19 +106,52 @@ class VolumeTypeTests(unittest.TestCase):
     vsmbr_volume.open(unittest.source)
     vsmbr_volume.close()
 
-    file_object = open(unittest.source, "rb")
+    if os.path.isfile(unittest.source):
+      with open(unittest.source, "rb") as file_object:
 
-    # Test open_file_object and close.
-    vsmbr_volume.open_file_object(file_object)
+        # Test open_file_object and close.
+        vsmbr_volume.open_file_object(file_object)
+        vsmbr_volume.close()
+
+        # Test open_file_object and close a second time to validate clean up on close.
+        vsmbr_volume.open_file_object(file_object)
+        vsmbr_volume.close()
+
+        # Test open_file_object and close and dereferencing file_object.
+        vsmbr_volume.open_file_object(file_object)
+        del file_object
+        vsmbr_volume.close()
+
+  def test_get_bytes_per_sector(self):
+    """Tests the get_bytes_per_sector function and bytes_per_sector property."""
+    if not unittest.source:
+      raise unittest.SkipTest("missing source")
+
+    vsmbr_volume = pyvsmbr.volume()
+
+    vsmbr_volume.open(unittest.source)
+
+    bytes_per_sector = vsmbr_volume.get_bytes_per_sector()
+    self.assertIsNotNone(bytes_per_sector)
+
+    self.assertIsNotNone(vsmbr_volume.bytes_per_sector)
+
     vsmbr_volume.close()
 
-    # Test open_file_object and close a second time to validate clean up on close.
-    vsmbr_volume.open_file_object(file_object)
-    vsmbr_volume.close()
+  def test_get_number_of_partitions(self):
+    """Tests the get_number_of_partitions function and number_of_partitions property."""
+    if not unittest.source:
+      raise unittest.SkipTest("missing source")
 
-    # Test open_file_object and close and dereferencing file_object.
-    vsmbr_volume.open_file_object(file_object)
-    del file_object
+    vsmbr_volume = pyvsmbr.volume()
+
+    vsmbr_volume.open(unittest.source)
+
+    number_of_partitions = vsmbr_volume.get_number_of_partitions()
+    self.assertIsNotNone(number_of_partitions)
+
+    self.assertIsNotNone(vsmbr_volume.number_of_partitions)
+
     vsmbr_volume.close()
 
 

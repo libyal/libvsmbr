@@ -28,7 +28,6 @@
 
 #include "pyvsmbr_error.h"
 #include "pyvsmbr_file_object_io_handle.h"
-#include "pyvsmbr_volume.h"
 #include "pyvsmbr_libbfio.h"
 #include "pyvsmbr_libcerror.h"
 #include "pyvsmbr_libvsmbr.h"
@@ -36,6 +35,7 @@
 #include "pyvsmbr_partitions.h"
 #include "pyvsmbr_python.h"
 #include "pyvsmbr_unused.h"
+#include "pyvsmbr_volume.h"
 
 #if !defined( LIBVSMBR_HAVE_BFIO )
 
@@ -629,12 +629,42 @@ PyObject *pyvsmbr_volume_open_file_object(
 
 		return( NULL );
 	}
+	PyErr_Clear();
+
+	result = PyObject_HasAttrString(
+	          file_object,
+	          "read" );
+
+	if( result != 1 )
+	{
+		PyErr_Format(
+		 PyExc_TypeError,
+		 "%s: unsupported file object - missing read attribute.",
+		 function );
+
+		return( NULL );
+	}
+	PyErr_Clear();
+
+	result = PyObject_HasAttrString(
+	          file_object,
+	          "seek" );
+
+	if( result != 1 )
+	{
+		PyErr_Format(
+		 PyExc_TypeError,
+		 "%s: unsupported file object - missing seek attribute.",
+		 function );
+
+		return( NULL );
+	}
 	if( pyvsmbr_volume->file_io_handle != NULL )
 	{
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: invalid volume - file IO volume already set.",
+		 "%s: invalid volume - file IO handle already set.",
 		 function );
 
 		goto on_error;
@@ -647,7 +677,7 @@ PyObject *pyvsmbr_volume_open_file_object(
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_MemoryError,
-		 "%s: unable to initialize file IO volume.",
+		 "%s: unable to initialize file IO handle.",
 		 function );
 
 		libcerror_error_free(
@@ -751,7 +781,7 @@ PyObject *pyvsmbr_volume_close(
 			pyvsmbr_error_raise(
 			 error,
 			 PyExc_MemoryError,
-			 "%s: unable to free libbfio file IO volume.",
+			 "%s: unable to free libbfio file IO handle.",
 			 function );
 
 			libcerror_error_free(

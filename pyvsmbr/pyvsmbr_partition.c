@@ -43,6 +43,13 @@ PyMethodDef pyvsmbr_partition_object_methods[] = {
 	  "\n"
 	  "Retrieves the type." },
 
+	{ "get_volume_offset",
+	  (PyCFunction) pyvsmbr_partition_get_volume_offset,
+	  METH_NOARGS,
+	  "get_volume_offset() -> Integer\n"
+	  "\n"
+	  "Retrieves the volume offset." },
+
 	{ "read_buffer",
 	  (PyCFunction) pyvsmbr_partition_read_buffer,
 	  METH_VARARGS | METH_KEYWORDS,
@@ -69,7 +76,7 @@ PyMethodDef pyvsmbr_partition_object_methods[] = {
 	  METH_NOARGS,
 	  "get_offset() -> Integer\n"
 	  "\n"
-	  "Retrieves the current offset within the data." },
+	  "Retrieves the current offset." },
 
 	{ "read",
 	  (PyCFunction) pyvsmbr_partition_read_buffer,
@@ -90,7 +97,7 @@ PyMethodDef pyvsmbr_partition_object_methods[] = {
 	  METH_NOARGS,
 	  "tell() -> Integer\n"
 	  "\n"
-	  "Retrieves the current offset within the data." },
+	  "Retrieves the current offset." },
 
 	{ "get_size",
 	  (PyCFunction) pyvsmbr_partition_get_size,
@@ -109,6 +116,12 @@ PyGetSetDef pyvsmbr_partition_object_get_set_definitions[] = {
 	  (getter) pyvsmbr_partition_get_type,
 	  (setter) 0,
 	  "The type.",
+	  NULL },
+
+	{ "volume_offset",
+	  (getter) pyvsmbr_partition_get_volume_offset,
+	  (setter) 0,
+	  "The volume offset.",
 	  NULL },
 
 	{ "size",
@@ -425,6 +438,65 @@ PyObject *pyvsmbr_partition_get_type(
 	return( integer_object );
 }
 
+/* Retrieves the volume offset
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_partition_get_volume_offset(
+           pyvsmbr_partition_t *pyvsmbr_partition,
+           PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyvsmbr_partition_get_volume_offset";
+	off64_t offset           = 0;
+	int result               = 0;
+
+	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyvsmbr_partition == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid partition.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libvsmbr_partition_get_volume_offset(
+	          pyvsmbr_partition->partition,
+	          &offset,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result == -1 )
+	{
+		pyvsmbr_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve volume offset.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	else if( result == 0 )
+	{
+		Py_IncRef(
+		 Py_None );
+
+		return( Py_None );
+	}
+	integer_object = pyvsmbr_integer_signed_new_from_64bit(
+	                  (int64_t) offset );
+
+	return( integer_object );
+}
+
 /* Reads data at the current offset into a buffer
  * Returns a Python object if successful or NULL on error
  */
@@ -510,7 +582,7 @@ PyObject *pyvsmbr_partition_read_buffer(
 		{
 			pyvsmbr_error_raise(
 			 error,
-			 PyExc_IOError,
+			 PyExc_ValueError,
 			 "%s: unable to convert integer object into read size.",
 			 function );
 
@@ -730,7 +802,7 @@ PyObject *pyvsmbr_partition_read_buffer_at_offset(
 		{
 			pyvsmbr_error_raise(
 			 error,
-			 PyExc_IOError,
+			 PyExc_ValueError,
 			 "%s: unable to convert integer object into read size.",
 			 function );
 
@@ -916,7 +988,7 @@ PyObject *pyvsmbr_partition_seek_offset(
 	return( Py_None );
 }
 
-/* Retrieves the offset
+/* Retrieves the current offset
  * Returns a Python object if successful or NULL on error
  */
 PyObject *pyvsmbr_partition_get_offset(
@@ -954,7 +1026,7 @@ PyObject *pyvsmbr_partition_get_offset(
 		pyvsmbr_error_raise(
 		 error,
 		 PyExc_IOError,
-		 "%s: unable to retrieve offset.",
+		 "%s: unable to retrieve current offset.",
 		 function );
 
 		libcerror_error_free(

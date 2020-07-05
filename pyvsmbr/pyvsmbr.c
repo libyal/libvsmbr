@@ -427,19 +427,47 @@ PyObject *pyvsmbr_open_new_volume(
            PyObject *arguments,
            PyObject *keywords )
 {
-	PyObject *pyvsmbr_volume = NULL;
+	pyvsmbr_volume_t *pyvsmbr_volume = NULL;
+	static char *function            = "pyvsmbr_open_new_volume";
 
 	PYVSMBR_UNREFERENCED_PARAMETER( self )
 
-	pyvsmbr_volume_init(
-	 (pyvsmbr_volume_t *) pyvsmbr_volume );
+	/* PyObject_New does not invoke tp_init
+	 */
+	pyvsmbr_volume = PyObject_New(
+	                  struct pyvsmbr_volume,
+	                  &pyvsmbr_volume_type_object );
 
-	pyvsmbr_volume_open(
-	 (pyvsmbr_volume_t *) pyvsmbr_volume,
-	 arguments,
-	 keywords );
+	if( pyvsmbr_volume == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create volume.",
+		 function );
 
-	return( pyvsmbr_volume );
+		goto on_error;
+	}
+	if( pyvsmbr_volume_init(
+	     pyvsmbr_volume ) != 0 )
+	{
+		goto on_error;
+	}
+	if( pyvsmbr_volume_open(
+	     pyvsmbr_volume,
+	     arguments,
+	     keywords ) == NULL )
+	{
+		goto on_error;
+	}
+	return( (PyObject *) pyvsmbr_volume );
+
+on_error:
+	if( pyvsmbr_volume != NULL )
+	{
+		Py_DecRef(
+		 (PyObject *) pyvsmbr_volume );
+	}
+	return( NULL );
 }
 
 /* Creates a new volume object and opens it using a file-like object
@@ -450,19 +478,47 @@ PyObject *pyvsmbr_open_new_volume_with_file_object(
            PyObject *arguments,
            PyObject *keywords )
 {
-	PyObject *pyvsmbr_volume = NULL;
+	pyvsmbr_volume_t *pyvsmbr_volume = NULL;
+	static char *function            = "pyvsmbr_open_new_volume_with_file_object";
 
 	PYVSMBR_UNREFERENCED_PARAMETER( self )
 
-	pyvsmbr_volume_init(
-	 (pyvsmbr_volume_t *) pyvsmbr_volume );
+	/* PyObject_New does not invoke tp_init
+	 */
+	pyvsmbr_volume = PyObject_New(
+	                  struct pyvsmbr_volume,
+	                  &pyvsmbr_volume_type_object );
 
-	pyvsmbr_volume_open_file_object(
-	 (pyvsmbr_volume_t *) pyvsmbr_volume,
-	 arguments,
-	 keywords );
+	if( pyvsmbr_volume == NULL )
+	{
+		PyErr_Format(
+		 PyExc_MemoryError,
+		 "%s: unable to create volume.",
+		 function );
 
-	return( pyvsmbr_volume );
+		goto on_error;
+	}
+	if( pyvsmbr_volume_init(
+	     pyvsmbr_volume ) != 0 )
+	{
+		goto on_error;
+	}
+	if( pyvsmbr_volume_open_file_object(
+	     pyvsmbr_volume,
+	     arguments,
+	     keywords ) == NULL )
+	{
+		goto on_error;
+	}
+	return( (PyObject *) pyvsmbr_volume );
+
+on_error:
+	if( pyvsmbr_volume != NULL )
+	{
+		Py_DecRef(
+		 (PyObject *) pyvsmbr_volume );
+	}
+	return( NULL );
 }
 
 #if PY_MAJOR_VERSION >= 3

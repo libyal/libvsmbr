@@ -19,6 +19,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import argparse
+import os
+import sys
 import unittest
 
 import pyvsmbr
@@ -30,10 +33,4 @@ class SupportFunctionsTests(unittest.TestCase):
   def test_get_version(self):
     """Tests the get_version function."""
     version = pyvsmbr.get_version()
-
-    # TODO: check version.
-    # self.assertEqual(version, "00000000")
-
-
-if __name__ == "__main__":
-  unittest.main(verbosity=2)
+    self.assertIsNotNone(version)

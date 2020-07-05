@@ -66,6 +66,10 @@ PyObject *pyvsmbr_partition_get_type(
            pyvsmbr_partition_t *pyvsmbr_partition,
            PyObject *arguments );
 
+PyObject *pyvsmbr_partition_get_volume_offset(
+           pyvsmbr_partition_t *pyvsmbr_partition,
+           PyObject *arguments );
+
 PyObject *pyvsmbr_partition_read_buffer(
            pyvsmbr_partition_t *pyvsmbr_partition,
            PyObject *arguments,
