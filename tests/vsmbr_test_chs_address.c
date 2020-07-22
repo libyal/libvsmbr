@@ -279,9 +279,9 @@ on_error:
 int vsmbr_test_chs_address_copy_from_byte_stream(
      void )
 {
-	libcerror_error_t *error          = NULL;
+	libcerror_error_t *error            = NULL;
 	libvsmbr_chs_address_t *chs_address = NULL;
-	int result                        = 0;
+	int result                          = 0;
 
 	/* Initialize test
 	 */

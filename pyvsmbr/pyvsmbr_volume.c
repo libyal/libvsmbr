@@ -386,13 +386,13 @@ PyObject *pyvsmbr_volume_open(
            PyObject *arguments,
            PyObject *keywords )
 {
-	PyObject *string_object      = NULL;
-	libcerror_error_t *error     = NULL;
-	const char *filename_narrow  = NULL;
-	static char *function        = "pyvsmbr_volume_open";
-	static char *keyword_list[]  = { "filename", "mode", NULL };
-	char *mode                   = NULL;
-	int result                   = 0;
+	PyObject *string_object     = NULL;
+	libcerror_error_t *error    = NULL;
+	const char *filename_narrow = NULL;
+	static char *function       = "pyvsmbr_volume_open";
+	static char *keyword_list[] = { "filename", "mode", NULL };
+	char *mode                  = NULL;
+	int result                  = 0;
 
 #if defined( HAVE_WIDE_SYSTEM_CHARACTER )
 	const wchar_t *filename_wide = NULL;
@@ -667,7 +667,7 @@ PyObject *pyvsmbr_volume_open_file_object(
 		 "%s: invalid volume - file IO handle already set.",
 		 function );
 
-		goto on_error;
+		return( NULL );
 	}
 	if( pyvsmbr_file_object_initialize(
 	     &( pyvsmbr_volume->file_io_handle ),

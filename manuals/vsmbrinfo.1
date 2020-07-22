@@ -1,0 +1,78 @@
+.Dd July  6, 2020
+.Dt vsgptinfo
+.Os libvsgpt
+.Sh NAME
+.Nm vsgptinfo
+.Nd determines information about a GUID Partition Table (GPT) volume system
+.Sh SYNOPSIS
+.Nm vsgptinfo
+.Op Fl hvV
+.Ar source
+.Sh DESCRIPTION
+.Nm vsgptinfo
+is a utility to determine information about a GUID Partition Table (GPT) volume system
+.Pp
+.Nm vsgptinfo
+is part of the
+.Nm libvsgpt
+package.
+.Nm libvsgpt
+is a library to access the GUID Partition Table (GPT) volume system format
+.Pp
+.Ar source
+is the source file.
+.Pp
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl h
+shows this help
+.It Fl v
+verbose output to stderr
+.It Fl V
+print version
+.El
+.Sh ENVIRONMENT
+None
+.Sh FILES
+None
+.Sh EXAMPLES
+.Bd -literal
+# vsgptinfo /dev/sda
+vsgptinfo 20200706
+.sp
+GUID Partition Table (GPT) information:
+	Bytes per sector	: 512
+	Number of partitions	: 4
+.sp
+Partition: 1
+	Type			: 0x00 (Empty)
+	Offset			: 1048576 (0x00100000)
+	Size			: 65024
+.sp
+Partition: 2
+	Type			: 0x00 (Empty)
+	Offset			: 2097152 (0x00200000)
+	Size			: 65024
+.sp
+Partition: 3
+	Type			: 0x00 (Empty)
+	Offset			: 3145728 (0x00300000)
+	Size			: 65024
+.sp
+Partition: 4
+	Type			: 0x00 (Empty)
+	Offset			: 17408 (0x00004400)
+	Size			: 65024
+.sp
+.Ed
+.Sh DIAGNOSTICS
+Errors, verbose and debug output are printed to stderr when verbose output \-v is enabled.
+Verbose and debug output are only printed when enabled at compilation.
+.Sh BUGS
+Please report bugs of any kind to <joachim.metz@gmail.com> or on the project website:
+https://github.com/libyal/libvsgpt/
+.Sh AUTHOR
+These man pages were written by Joachim Metz.
+.Sh COPYRIGHT
+Copyright (C) 2019-2020, Joachim Metz <joachim.metz@gmail.com>.
+This is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

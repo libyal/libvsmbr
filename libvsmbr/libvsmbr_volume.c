@@ -1034,6 +1034,7 @@ int libvsmbr_internal_volume_open_read(
 	     0,
 	     master_boot_record,
 	     1,
+	     0,
 	     error ) != 1 )
 	{
 		libcerror_error_set(
@@ -1079,6 +1080,7 @@ int libvsmbr_internal_volume_read_partition_entries(
      off64_t file_offset,
      libvsmbr_boot_record_t *boot_record,
      uint8_t is_master_boot_record,
+     int recursion_depth,
      libcerror_error_t **error )
 {
 	libvsmbr_boot_record_t *extended_partition_record = NULL;
@@ -1097,6 +1099,18 @@ int libvsmbr_internal_volume_read_partition_entries(
 		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
 		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
 		 "%s: invalid internal volume.",
+		 function );
+
+		return( -1 );
+	}
+	if( ( recursion_depth < 0 )
+	 || ( recursion_depth > LIBVSMBR_MAXIMUM_RECURSION_DEPTH ) )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+		 "%s: invalid recursion depth value out of bounds.",
 		 function );
 
 		return( -1 );
@@ -1267,12 +1281,25 @@ int libvsmbr_internal_volume_read_partition_entries(
 	}
 	if( extended_partition_record != NULL )
 	{
+		if( ( extended_partition_record_offset == 0 )
+		 || ( extended_partition_record_offset == file_offset ) )
+		{
+			libcerror_error_set(
+			 error,
+			 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+			 LIBCERROR_RUNTIME_ERROR_VALUE_OUT_OF_BOUNDS,
+			 "%s: unsupported extended partition record offset.",
+			 function );
+
+			goto on_error;
+		}
 		if( libvsmbr_internal_volume_read_partition_entries(
 		     internal_volume,
 		     file_io_handle,
 		     extended_partition_record_offset,
 		     extended_partition_record,
 		     0,
+		     recursion_depth + 1,
 		     error ) != 1 )
 		{
 			libcerror_error_set(
