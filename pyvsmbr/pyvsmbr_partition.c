@@ -282,7 +282,7 @@ on_error:
 	return( NULL );
 }
 
-/* Intializes a partition object
+/* Initializes a partition object
  * Returns 0 if successful or -1 on error
  */
 int pyvsmbr_partition_init(
