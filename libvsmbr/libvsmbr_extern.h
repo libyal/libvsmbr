@@ -30,7 +30,11 @@
 
 #include <libvsmbr/extern.h>
 
+#if defined( __CYGWIN__ ) || defined( __MINGW32__ )
+#define LIBVSMBR_EXTERN_VARIABLE	extern
+#else
 #define LIBVSMBR_EXTERN_VARIABLE	LIBVSMBR_EXTERN
+#endif
 
 #else
 #define LIBVSMBR_EXTERN		/* extern */
