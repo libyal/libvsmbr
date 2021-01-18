@@ -1,7 +1,7 @@
 /*
  * The boot record functions
  *
- * Copyright (C) 2010-2020, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2010-2021, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
@@ -377,33 +377,17 @@ int libvsmbr_boot_record_read_file_io_handle(
 	if( libcnotify_verbose != 0 )
 	{
 		libcnotify_printf(
-		 "%s: reading boot record at offset: %" PRIu64 " (0x%08" PRIx64 ").\n",
+		 "%s: reading boot record at offset: %" PRIi64 " (0x%08" PRIx64 ").\n",
 		 function,
 		 file_offset,
 		 file_offset );
 	}
 #endif
-	if( libbfio_handle_seek_offset(
-	     file_io_handle,
-	     file_offset,
-	     SEEK_SET,
-	     error ) == -1 )
-	{
-		libcerror_error_set(
-		 error,
-		 LIBCERROR_ERROR_DOMAIN_IO,
-		 LIBCERROR_IO_ERROR_SEEK_FAILED,
-		 "%s: unable to seek offset: %" PRIu64 " (0x%08" PRIx64 ").",
-		 function,
-		 file_offset,
-		 file_offset );
-
-		return( -1 );
-	}
-	read_count = libbfio_handle_read_buffer(
+	read_count = libbfio_handle_read_buffer_at_offset(
 	              file_io_handle,
 	              boot_record_data,
 	              sizeof( vsmbr_boot_record_classical_t ),
+	              file_offset,
 	              error );
 
 	if( read_count != (ssize_t) sizeof( vsmbr_boot_record_classical_t ) )
@@ -412,8 +396,10 @@ int libvsmbr_boot_record_read_file_io_handle(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_IO,
 		 LIBCERROR_IO_ERROR_READ_FAILED,
-		 "%s: unable to read boot record data.",
-		 function );
+		 "%s: unable to read boot record data at offset: %" PRIi64 " (0x%08" PRIx64 ").",
+		 function,
+		 file_offset,
+		 file_offset );
 
 		return( -1 );
 	}
