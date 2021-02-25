@@ -962,7 +962,7 @@ int libvsmbr_partition_get_offset(
 		return( -1 );
 	}
 #endif
-	*offset = internal_partition->current_offset;
+	*offset = internal_partition->offset;
 
 #if defined( HAVE_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_release_for_read(
