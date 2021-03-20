@@ -39,7 +39,7 @@
 
 #include "../vsmbrtools/vsmbrtools_output.h"
 
-/* Tests the vsmbrtools_output_initialize and function
+/* Tests the vsmbrtools_output_initialize function
  * Returns 1 if successful or 0 if not
  */
 int vsmbr_test_tools_output_initialize(
