@@ -61,8 +61,8 @@ void usage_fprint(
 	{
 		return;
 	}
-	fprintf( stream, "Use vsmbrinfo to determine information about a Master Record (MBR)\n"
-	                 "volume system.\n\n" );
+	fprintf( stream, "Use vsmbrinfo to determine information about a Master Boot Record\n"
+	                 "(MBR) volume system.\n\n" );
 
 	fprintf( stream, "Usage: vsmbrinfo [ -b bytes_per_sector ] [ -hvV ] source\n\n" );
 

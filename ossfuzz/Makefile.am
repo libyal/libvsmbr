@@ -12,7 +12,26 @@ AM_CPPFLAGS = \
 	@LIBBFIO_CPPFLAGS@
 
 bin_PROGRAMS = \
+	partition_fuzzer \
 	volume_fuzzer
+
+partition_fuzzer_SOURCES = \
+	ossfuzz_libbfio.h \
+	ossfuzz_libvsmbr.h \
+	partition_fuzzer.cc
+
+partition_fuzzer_LDADD = \
+	@LIB_FUZZING_ENGINE@ \
+	@LIBBFIO_LIBADD@ \
+	@LIBCPATH_LIBADD@ \
+	@LIBCFILE_LIBADD@ \
+	@LIBUNA_LIBADD@ \
+	@LIBCDATA_LIBADD@ \
+	../libvsmbr/libvsmbr.la \
+	@LIBCNOTIFY_LIBADD@ \
+	@LIBCLOCALE_LIBADD@ \
+	@LIBCERROR_LIBADD@ \
+	@LIBINTL@
 
 volume_fuzzer_SOURCES = \
 	ossfuzz_libbfio.h \
@@ -40,6 +59,8 @@ distclean: clean
 	/bin/rm -f Makefile
 
 splint:
+	@echo "Running splint on partition_fuzzer ..."
+	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(partition_fuzzer_SOURCES)
 	@echo "Running splint on volume_fuzzer ..."
 	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(volume_fuzzer_SOURCES)
 
