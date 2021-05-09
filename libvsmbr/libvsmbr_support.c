@@ -334,6 +334,26 @@ on_error:
 
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
+/* Find subarray in src */
+static const void *memmem(const void *src, size_t src_len,
+					const void * const need, const size_t need_len) {
+
+	if (src == NULL) return( NULL );
+	if (src_len == 0) return( NULL );
+	if (need == NULL) return( NULL );
+	if (need_len == 0) return( NULL );
+
+	for (const char *h = src; need_len <= src_len; ++h, --src_len)
+	{
+		if (memcmp(h, need, need_len) == 0)
+		{
+			return( h );
+		}
+	}
+
+	return( NULL );
+}
+
 /* Determines if a volume contains a Master Boot Record (MBR) signature using a Basic File IO (bfio) handle
  * Returns 1 if true, 0 if not or -1 on error
  */
@@ -346,6 +366,9 @@ int libvsmbr_check_volume_signature_file_io_handle(
 	static char *function      = "libvsmbr_check_volume_signature_file_io_handle";
 	ssize_t read_count         = 0;
 	int file_io_handle_is_open = 0;
+	static const char c_ntfs_signature[] = "NTFS";
+	static const char c_fat_signature[] = "FAT";
+	static const size_t c_boot_code_size = 446;
 
 	if( file_io_handle == NULL )
 	{
@@ -425,7 +448,9 @@ int libvsmbr_check_volume_signature_file_io_handle(
 		}
 	}
 	if( ( signature[ 510 ] == 0x55 )
-	 && ( signature[ 511 ] == 0xaa ) )
+	 && ( signature[ 511 ] == 0xaa )
+	 && ( memmem(signature, c_boot_code_size, c_ntfs_signature, sizeof(c_ntfs_signature) -1 ) == NULL )
+	 && ( memmem(signature, c_boot_code_size, c_fat_signature, sizeof(c_fat_signature) -1 ) == NULL ))
 	{
 		return( 1 );
 	}
