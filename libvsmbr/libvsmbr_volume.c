@@ -1153,7 +1153,8 @@ int libvsmbr_internal_volume_read_partition_entries(
 		{
 			continue;
 		}
-		if( partition_entry->type == 0x05 )
+		if( partition_entry->type == 0x05 ||
+			partition_entry->type == 0x0F)
 		{
 			if( extended_partition_record != NULL )
 			{
