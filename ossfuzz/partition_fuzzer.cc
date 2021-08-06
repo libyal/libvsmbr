@@ -1,7 +1,7 @@
 /*
- * OSS-Fuzz target for libvsmbr volume type
+ * OSS-Fuzz target for libvsmbr partition type
  *
- * Copyright (C) 2019-2020, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2019-2021, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
