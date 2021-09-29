@@ -303,6 +303,15 @@ void pyvsmbr_volume_free(
 
 		return;
 	}
+	if( pyvsmbr_volume->file_io_handle != NULL )
+	{
+		if( pyvsmbr_volume_close(
+		     pyvsmbr_volume,
+		     NULL ) == NULL )
+		{
+			return;
+		}
+	}
 	if( pyvsmbr_volume->volume != NULL )
 	{
 		Py_BEGIN_ALLOW_THREADS
