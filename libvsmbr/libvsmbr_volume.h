@@ -42,6 +42,10 @@ typedef struct libvsmbr_internal_volume libvsmbr_internal_volume_t;
 
 struct libvsmbr_internal_volume
 {
+	/* The disk identity
+	 */
+	uint32_t disk_identity;
+
 	/* The volume size
 	 */
 	size64_t size;
@@ -146,6 +150,12 @@ LIBVSMBR_EXTERN \
 int libvsmbr_volume_set_bytes_per_sector(
      libvsmbr_volume_t *volume,
      uint32_t bytes_per_sector,
+     libcerror_error_t **error );
+
+LIBVSMBR_EXTERN \
+int libvsmbr_volume_get_disk_identity(
+     libvsmbr_volume_t *volume,
+     uint32_t *disk_identity,
      libcerror_error_t **error );
 
 LIBVSMBR_EXTERN \

@@ -85,6 +85,13 @@ PyMethodDef pyvsmbr_volume_object_methods[] = {
 	  "\n"
 	  "Retrieves the number of bytes per sector." },
 
+	{ "get_disk_identity",
+	  (PyCFunction) pyvsmbr_volume_get_disk_identity,
+	  METH_NOARGS,
+	  "get_disk_identity() -> Integer\n"
+	  "\n"
+	  "Retrieves the disk identity." },
+
 	{ "get_number_of_partitions",
 	  (PyCFunction) pyvsmbr_volume_get_number_of_partitions,
 	  METH_NOARGS,
@@ -109,6 +116,12 @@ PyGetSetDef pyvsmbr_volume_object_get_set_definitions[] = {
 	  (getter) pyvsmbr_volume_get_bytes_per_sector,
 	  (setter) 0,
 	  "The number of bytes per sector.",
+	  NULL },
+
+	{ "disk_identity",
+	  (getter) pyvsmbr_volume_get_disk_identity,
+	  (setter) 0,
+	  "The disk identity.",
 	  NULL },
 
 	{ "number_of_partitions",
@@ -844,6 +857,58 @@ PyObject *pyvsmbr_volume_get_bytes_per_sector(
 		 error,
 		 PyExc_IOError,
 		 "%s: unable to retrieve number of bytes per sector.",
+		 function );
+
+		libcerror_error_free(
+		 &error );
+
+		return( NULL );
+	}
+	integer_object = PyLong_FromUnsignedLong(
+	                  (unsigned long) value_32bit );
+
+	return( integer_object );
+}
+
+/* Retrieves the disk identity (or disk identifier)
+ * Returns a Python object if successful or NULL on error
+ */
+PyObject *pyvsmbr_volume_get_disk_identity(
+           pyvsmbr_volume_t *pyvsmbr_volume,
+           PyObject *arguments PYVSMBR_ATTRIBUTE_UNUSED )
+{
+	PyObject *integer_object = NULL;
+	libcerror_error_t *error = NULL;
+	static char *function    = "pyvsmbr_volume_get_disk_identity";
+	uint32_t value_32bit     = 0;
+	int result               = 0;
+
+	PYVSMBR_UNREFERENCED_PARAMETER( arguments )
+
+	if( pyvsmbr_volume == NULL )
+	{
+		PyErr_Format(
+		 PyExc_ValueError,
+		 "%s: invalid volume.",
+		 function );
+
+		return( NULL );
+	}
+	Py_BEGIN_ALLOW_THREADS
+
+	result = libvsmbr_volume_get_disk_identity(
+	          pyvsmbr_volume->volume,
+	          &value_32bit,
+	          &error );
+
+	Py_END_ALLOW_THREADS
+
+	if( result != 1 )
+	{
+		pyvsmbr_error_raise(
+		 error,
+		 PyExc_IOError,
+		 "%s: unable to retrieve disk identity.",
 		 function );
 
 		libcerror_error_free(

@@ -290,6 +290,15 @@ int libvsmbr_volume_set_bytes_per_sector(
      uint32_t bytes_per_sector,
      libvsmbr_error_t **error );
 
+/* Retrieves the disk identity (or disk identifier)
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+LIBVSMBR_EXTERN \
+int libvsmbr_volume_get_disk_identity(
+     libvsmbr_volume_t *volume,
+     uint32_t *disk_identity,
+     libvsmbr_error_t **error );
+
 /* Retrieves the number of partitions
  * Returns 1 if successful or -1 on error
  */

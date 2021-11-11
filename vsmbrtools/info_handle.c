@@ -989,6 +989,7 @@ int info_handle_partitions_fprint(
 	libvsmbr_partition_t *partition = NULL;
 	static char *function           = "info_handle_partitions_fprint";
 	uint32_t bytes_per_sector       = 0;
+	uint32_t disk_identity          = 0;
 	int number_of_partitions        = 0;
 	int partition_index             = 0;
 
@@ -1006,6 +1007,26 @@ int info_handle_partitions_fprint(
 	fprintf(
 	 info_handle->notify_stream,
 	 "Master Boot Record (MBR) information:\n" );
+
+	if( libvsmbr_volume_get_disk_identity(
+	     info_handle->input_volume,
+	     &disk_identity,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_GET_FAILED,
+		 "%s: unable to retrieve disk_ dentity.",
+		 function );
+
+		goto on_error;
+	}
+	fprintf(
+	 info_handle->notify_stream,
+	 "\tDisk identity\t\t: 0x%08" PRIx32 " (%" PRIu32 ")\n",
+	 disk_identity,
+	 disk_identity );
 
 	if( libvsmbr_volume_get_bytes_per_sector(
 	     info_handle->input_volume,

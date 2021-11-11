@@ -1028,6 +1028,8 @@ int libvsmbr_internal_volume_open_read(
 
 		goto on_error;
 	}
+	internal_volume->disk_identity = master_boot_record->disk_identity;
+
 	if( libvsmbr_internal_volume_read_partition_entries(
 	     internal_volume,
 	     file_io_handle,
@@ -1517,6 +1519,80 @@ int libvsmbr_volume_set_bytes_per_sector(
 	}
 #endif
 	return( 1 );
+}
+
+/* Retrieves the disk identity (or disk identifier)
+ * Returns 1 if successful, 0 if not available or -1 on error
+ */
+int libvsmbr_volume_get_disk_identity(
+     libvsmbr_volume_t *volume,
+     uint32_t *disk_identity,
+     libcerror_error_t **error )
+{
+	libvsmbr_internal_volume_t *internal_volume = NULL;
+	static char *function                       = "libvsmbr_volume_get_disk_identity";
+	int result                                  = 1;
+
+	if( volume == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid volume.",
+		 function );
+
+		return( -1 );
+	}
+	internal_volume = (libvsmbr_internal_volume_t *) volume;
+
+	if( disk_identity == NULL )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_ARGUMENTS,
+		 LIBCERROR_ARGUMENT_ERROR_INVALID_VALUE,
+		 "%s: invalid disk identity.",
+		 function );
+
+		return( -1 );
+	}
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_grab_for_read(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to grab read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
+
+/* TODO add support to return 0 if not available */
+
+	*disk_identity = internal_volume->disk_identity;
+
+#if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
+	if( libcthreads_read_write_lock_release_for_read(
+	     internal_volume->read_write_lock,
+	     error ) != 1 )
+	{
+		libcerror_error_set(
+		 error,
+		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
+		 LIBCERROR_RUNTIME_ERROR_SET_FAILED,
+		 "%s: unable to release read/write lock for reading.",
+		 function );
+
+		return( -1 );
+	}
+#endif
+	return( result );
 }
 
 /* Retrieves the number of partitions

@@ -81,6 +81,10 @@ PyObject *pyvsmbr_volume_get_bytes_per_sector(
            pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments );
 
+PyObject *pyvsmbr_volume_get_disk_identity(
+           pyvsmbr_volume_t *pyvsmbr_volume,
+           PyObject *arguments );
+
 PyObject *pyvsmbr_volume_get_number_of_partitions(
            pyvsmbr_volume_t *pyvsmbr_volume,
            PyObject *arguments );

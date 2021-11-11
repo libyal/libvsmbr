@@ -1,4 +1,4 @@
-.Dd April 29, 2019
+.Dd November 11, 2021
 .Dt libvsmbr 3
 .Os libvsmbr
 .Sh NAME
@@ -68,6 +68,8 @@ Volume functions
 .Fn libvsmbr_volume_get_bytes_per_sector "libvsmbr_volume_t *volume" "uint32_t *bytes_per_sector" "libvsmbr_error_t **error"
 .Ft int
 .Fn libvsmbr_volume_set_bytes_per_sector "libvsmbr_volume_t *volume" "uint32_t bytes_per_sector" "libvsmbr_error_t **error"
+.Ft int
+.Fn libvsmbr_volume_get_disk_identity "libvsmbr_volume_t *volume" "uint32_t *disk_identity" "libvsmbr_error_t **error"
 .Ft int
 .Fn libvsmbr_volume_get_number_of_partitions "libvsmbr_volume_t *volume" "int *number_of_partitions" "libvsmbr_error_t **error"
 .Ft int
