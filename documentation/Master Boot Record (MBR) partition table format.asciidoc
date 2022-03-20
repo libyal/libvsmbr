@@ -55,7 +55,7 @@ in the section entitled "GNU Free Documentation License".
 :numbered:
 == Overview
 
-The Master Boot Record (MBR) partition table is mainly used on the family of 
+The Master Boot Record (MBR) partition table is mainly used on the family of
 Intel x86 based computers.
 
 The MBR partition table consists of:
@@ -101,7 +101,7 @@ The Cylinder Head Sector (CHS) address is 24 bits of size and consists of:
 | 1.5 | 10 bits | | Cylinder
 |===
 
-The logical block address (LBA) can be determined from the CHS with the 
+The logical block address (LBA) can be determined from the CHS with the
 following calculation:
 
 ....
@@ -111,11 +111,11 @@ LBA = ( ( ( cylinder x heads per cylinder ) + head ) x sectors per track )
 
 == The Master Boot Record (MBR)
 
-The Master Boot Record (MBR) is a data structure that describes the properties 
+The Master Boot Record (MBR) is a data structure that describes the properties
 of the storage medium and its partitions.
 
-The classical MBR can only contain 4 partition table entries. Additional 
-partition entries must be stored using extended partition records (EBR). The 
+The classical MBR can only contain 4 partition table entries. Additional
+partition entries must be stored using extended partition records (EPR). The
 classical MBR has evolved into different variants like:
 
 * The modern MBR
@@ -206,7 +206,7 @@ The AAP MBR is 512 bytes of size and consists of:
 
 === The NEWLDR MBR
 
-The NEWLDR MBR is a variant based on the Advanced Active Partitions (AAP) MBR 
+The NEWLDR MBR is a variant based on the Advanced Active Partitions (AAP) MBR
 and is used by:
 
 * DR-DOS 7.07
@@ -299,9 +299,10 @@ The Disk Manager MBR is 512 bytes of size and consists of:
 
 == The extended partition record
 
-The extended partition record (EBR) starts with a 64 byte (extended) partition 
-record (EPR) like the MBR. This partition table contains information about the 
-logical partition (volume) and additional extended partition tables.
+The extended partition record (EPR) (also referred to as extended boot record
+(EBR)) starts with a 64 byte (extended) partition record (EPR) like the MBR.
+This partition table contains information about the logical partition (volume)
+and additional extended partition tables.
 
 [cols="1,1,1,5",options="header"]
 |===
@@ -318,8 +319,13 @@ Unused and should contain zero bytes
 | 510 | 2 | "\x55\xaa" | Signature
 |===
 
-The second partition entry contains an extended partition which points to the 
-next EPR. The LBA addresses in the EPR are relative to the start of the EPR.
+The second partition entry contains an extended partition which points to the
+next EPR. The LBA addresses in the EPR are relative to the start of the first
+EPR.
+
+The first EPR typically has a <<partition_types,partition type>> of 0x05 but
+certain version of Windows are known to use a partition type 0x0f, such as
+Windows 98.
 
 [NOTE]
 What about CHS addresses?
@@ -386,25 +392,25 @@ The partition types consist of the following values:
 | 0x16 | | Hidden FAT16 (32 MiB - 2 GiB CHS)
 | 0x17 | | Hidden HPFS/NTFS
 | 0x18 | | AST SmartSleep
-| | | 
+| | |
 | 0x1b | | Hidden FAT32 (CHS)
 | 0x1c | | Hidden FAT32 (LBA)
-| | | 
+| | |
 | 0x1e | | Hidden FAT16 (32 MiB - 2 GiB LBA)
-| | | 
+| | |
 | 0x24 | | NEC DOS
-| | | 
+| | |
 | 0x27 | | [yellow-background]*Unknown (PackardBell recovery/installation partition)*
-| | | 
+| | |
 | 0x39 | | Plan 9
-| | | 
+| | |
 | 0x3c | | PartitionMagic recovery
-| | | 
+| | |
 | 0x40 | | Venix 80286
 | 0x41 | | PPC PReP Boot
 | 0x42 | | SFS +
 LDM: Microsoft MBR (Dynamic Disk)
-| | | 
+| | |
 | 0x4d | | QNX4.x
 | 0x4e | | QNX4.x 2nd part
 | 0x4f | | QNX4.x 3rd part
@@ -415,21 +421,21 @@ LDM: Microsoft MBR (Dynamic Disk)
 | 0x54 | | OnTrackDM6
 | 0x55 | | EZ-Drive
 | 0x56 | | Golden Bow
-| | | 
+| | |
 | 0x5c | | Priam Edisk
-| | | 
+| | |
 | 0x61 | | SpeedStor
-| | | 
+| | |
 | 0x63 | | GNU HURD or SysV
 | 0x64 | | Novell Netware 286
 | 0x65 | | Novell Netware 386
-| | | 
+| | |
 | 0x70 | | DiskSecure Multi-Boot
-| | | 
+| | |
 | 0x75 | | PC/IX
-| | | 
+| | |
 | 0x78 | | XOSL
-| | | 
+| | |
 | 0x80 | | Old Minix
 | 0x81 | | Minix / old Linux
 | 0x82 | | Solaris x86 +
@@ -440,59 +446,59 @@ OS/2 hidden C: drive
 | 0x85 | | Linux extended
 | 0x86 | | NTFS volume set
 | 0x87 | | NTFS volume set
-| | | 
+| | |
 | 0x8e | | Linux LVM
-| | | 
+| | |
 | 0x93 | | Amoeba
 | 0x94 | | Amoeba BBT
-| | | 
+| | |
 | 0x9f | | BSD/OS
 | 0xa0 | | IBM Thinkpad hibernation
 | 0xa1 | | Hibernation
-| | | 
+| | |
 | 0xa5 | | FreeBSD
 | 0xa6 | | OpenBSD
 | 0xa7 | | NeXTSTEP
 | 0xa8 | | Mac OS X
 | 0xa9 | | NetBSD
-| | | 
+| | |
 | 0xab | | Mac OS X Boot
-| | | 
+| | |
 | 0xaf | | Mac OS X
-| | | 
+| | |
 | 0xb7 | | BSDI
 | 0xb8 | | BSDI swap
-| | | 
+| | |
 | 0xbb | | Boot Wizard hidden
-| | | 
+| | |
 | 0xc1 | | DRDOS/sec (FAT-12)
-| | | 
+| | |
 | 0xc4 | | DRDOS/sec (FAT-16 < 32M)
-| | | 
+| | |
 | 0xc6 | | DRDOS/sec (FAT-16)
 | 0xc7 | | Syrinx
-| | | 
+| | |
 | 0xda | | Non-FS data
 | 0xdb | | CP/M / CTOS / ...
-| | | 
+| | |
 | 0xde | | Dell Utility
 | 0xdf | | BootIt
-| | | 
+| | |
 | 0xe1 | | DOS access
-| | | 
+| | |
 | 0xe3 | | DOS R/O
 | 0xe4 | | SpeedStor
-| | | 
+| | |
 | 0xeb | | BeOS
-| | | 
+| | |
 | 0xee | | EFI GPT protective partition
 | 0xef | | EFI system partition (FAT)
 | 0xf0 | | Linux/PA-RISC boot
 | 0xf1 | | SpeedStor
 | 0xf2 | | DOS secondary
-| | | 
+| | |
 | 0xf4 | | SpeedStor
-| | | 
+| | |
 | 0xfb | | VMWare file system
 | 0xfc | | VMWare swap
 | 0xfd | | Linux RAID auto-detect
