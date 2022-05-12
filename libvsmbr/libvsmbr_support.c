@@ -335,7 +335,7 @@ on_error:
 #endif /* defined( HAVE_WIDE_CHARACTER_TYPE ) */
 
 /* Find subarray in src */
-static const void *memmem(const void *src, size_t src_len,
+static const void *memmemcmp(const void *src, size_t src_len,
 					const void * const need, const size_t need_len) {
 
 	if (src == NULL) return( NULL );
@@ -449,8 +449,8 @@ int libvsmbr_check_volume_signature_file_io_handle(
 	}
 	if( ( signature[ 510 ] == 0x55 )
 	 && ( signature[ 511 ] == 0xaa )
-	 && ( memmem(signature, c_boot_code_size, c_ntfs_signature, sizeof(c_ntfs_signature) -1 ) == NULL )
-	 && ( memmem(signature, c_boot_code_size, c_fat_signature, sizeof(c_fat_signature) -1 ) == NULL ))
+	 && ( memmemcmp(signature, c_boot_code_size, c_ntfs_signature, sizeof(c_ntfs_signature) -1 ) == NULL )
+	 && ( memmemcmp(signature, c_boot_code_size, c_fat_signature, sizeof(c_fat_signature) -1 ) == NULL ))
 	{
 		return( 1 );
 	}
