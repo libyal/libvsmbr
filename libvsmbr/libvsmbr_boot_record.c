@@ -27,6 +27,7 @@
 #include "libvsmbr_boot_record.h"
 #include "libvsmbr_chs_address.h"
 #include "libvsmbr_libbfio.h"
+#include "libvsmbr_libcdata.h"
 #include "libvsmbr_libcerror.h"
 #include "libvsmbr_libcnotify.h"
 #include "libvsmbr_partition_entry.h"
