@@ -1,7 +1,7 @@
 /*
  * OSS-Fuzz target for libvsmbr partition type
  *
- * Copyright (C) 2019-2022, Joachim Metz <joachim.metz@gmail.com>
+ * Copyright (C) 2019-2023, Joachim Metz <joachim.metz@gmail.com>
  *
  * Refer to AUTHORS for acknowledgements.
  *
