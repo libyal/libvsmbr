@@ -332,7 +332,8 @@ int libvsmbr_partition_entry_read_data(
 			goto on_error;
 		}
 	}
-#endif
+#endif /* defined( HAVE_DEBUG_OUTPUT ) */
+
 	return( 1 );
 
 on_error:

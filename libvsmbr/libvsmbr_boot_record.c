@@ -239,7 +239,7 @@ int libvsmbr_boot_record_read_data(
 		 error,
 		 LIBCERROR_ERROR_DOMAIN_RUNTIME,
 		 LIBCERROR_RUNTIME_ERROR_UNSUPPORTED_VALUE,
-		 "%s: invalid boot signature: 0x%02" PRIx8 " 0x%02", PRIx8 ".",
+		 "%s: invalid boot signature: 0x%02" PRIx8 " 0x%02" PRIx8 ".",
 		 function,
 		 ( (vsmbr_boot_record_classical_t *) data )->boot_signature[ 0 ],
 		 ( (vsmbr_boot_record_classical_t *) data )->boot_signature[ 1 ] );

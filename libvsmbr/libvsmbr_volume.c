@@ -1510,7 +1510,7 @@ int libvsmbr_volume_set_bytes_per_sector(
 		return( -1 );
 	}
 #endif
-	bytes_per_sector = internal_volume->io_handle->bytes_per_sector = bytes_per_sector;
+	internal_volume->io_handle->bytes_per_sector = bytes_per_sector;
 
 #if defined( HAVE_LIBVSMBR_MULTI_THREAD_SUPPORT )
 	if( libcthreads_read_write_lock_release_for_write(
