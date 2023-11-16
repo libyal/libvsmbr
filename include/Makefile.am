@@ -19,9 +19,9 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 distclean: clean
-	/bin/rm -f libvsmbr.h
-	/bin/rm -f libvsmbr/definitions.h
-	/bin/rm -f libvsmbr/features.h
-	/bin/rm -f libvsmbr/types.h
-	/bin/rm -f Makefile
+	-rm -f libvsmbr.h
+	-rm -f libvsmbr/definitions.h
+	-rm -f libvsmbr/features.h
+	-rm -f libvsmbr/types.h
+	-rm -f Makefile
 

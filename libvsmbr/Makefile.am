@@ -75,11 +75,13 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 distclean: clean
-	/bin/rm -f libvsmbr_definitions.h
-	/bin/rm -f libvsmbr.rc
-	/bin/rm -f Makefile
+	-rm -f libvsmbr_definitions.h
+	-rm -f libvsmbr.rc
+	-rm -f Makefile
 
-splint:
+sources-local: $(BUILT_SOURCES)
+
+splint-local:
 	@echo "Running splint on libvsmbr ..."
 	-splint -preproc -redef $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(libvsmbr_la_SOURCES)
 
