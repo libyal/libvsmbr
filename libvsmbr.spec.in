@@ -32,7 +32,7 @@ Header files and libraries for developing applications for libvsmbr.
 Summary: Python 3 bindings for libvsmbr
 Group: System Environment/Libraries
 Requires: libvsmbr = %{version}-%{release} python3
-BuildRequires: python3-devel
+BuildRequires: python3-devel python3-setuptools
 
 %description -n libvsmbr-python3
 Python 3 bindings for libvsmbr
@@ -49,7 +49,7 @@ Several tools for Several tools for reading Master Boot Record (MBR) volume syst
 %setup -q
 
 %build
-%configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} --enable-python3
+%configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} --enable-python
 make %{?_smp_mflags}
 
 %install

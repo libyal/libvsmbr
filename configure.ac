@@ -2,7 +2,7 @@ AC_PREREQ([2.71])
 
 AC_INIT(
  [libvsmbr],
- [20231116],
+ [20240302],
  [joachim.metz@gmail.com])
 
 AC_CONFIG_SRCDIR(
@@ -110,7 +110,7 @@ dnl Check if libvsmbr Python bindings (pyvsmbr) required headers and functions a
 AX_PYTHON_CHECK_ENABLE
 
 AS_IF(
-  [test "x${ac_cv_enable_python}" != xno || test "x${ac_cv_enable_python2}" != xno || test "x${ac_cv_enable_python3}" != xno],
+  [test "x${ac_cv_enable_python}" != xno],
   [dnl Headers included in pyvsmbr/pyvsmbr_error.c
   AC_CHECK_HEADERS([stdarg.h varargs.h])
 
@@ -171,8 +171,6 @@ AC_CONFIG_FILES([libfcache/Makefile])
 AC_CONFIG_FILES([libfdata/Makefile])
 AC_CONFIG_FILES([libvsmbr/Makefile])
 AC_CONFIG_FILES([pyvsmbr/Makefile])
-AC_CONFIG_FILES([pyvsmbr-python2/Makefile])
-AC_CONFIG_FILES([pyvsmbr-python3/Makefile])
 AC_CONFIG_FILES([vsmbrtools/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([po/Makevars])
