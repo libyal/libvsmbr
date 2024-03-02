@@ -31,8 +31,10 @@ DPKG_FILES = \
 	dpkg/control \
 	dpkg/copyright \
 	dpkg/rules \
-	dpkg/libvsmbr-dev.install \
 	dpkg/libvsmbr.install \
+	dpkg/libvsmbr-dev.install \
+	dpkg/libvsmbr-python3.install \
+	dpkg/libvsmbr-tools.install \
 	dpkg/source/format
 
 GETTEXT_FILES = \
