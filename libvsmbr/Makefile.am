@@ -1,6 +1,6 @@
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/include \
-	-I$(top_srcdir)/common \
+	-I../include -I$(top_srcdir)/include \
+	-I../common -I$(top_srcdir)/common \
 	@LIBCERROR_CPPFLAGS@ \
 	@LIBCTHREADS_CPPFLAGS@ \
 	@LIBCDATA_CPPFLAGS@ \
@@ -71,13 +71,11 @@ EXTRA_DIST = \
 	libvsmbr.rc \
 	libvsmbr.rc.in
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	libvsmbr_definitions.h \
+	libvsmbr.rc \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f libvsmbr_definitions.h
-	-rm -f libvsmbr.rc
-	-rm -f Makefile
 
 sources-local: $(BUILT_SOURCES)
 

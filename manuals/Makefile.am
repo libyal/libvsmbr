@@ -6,9 +6,7 @@ EXTRA_DIST = \
 	libvsmbr.3 \
 	vsmbrinfo.1
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f Makefile
 

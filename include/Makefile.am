@@ -15,13 +15,11 @@ EXTRA_DIST = \
 	libvsmbr/features.h.in \
 	libvsmbr/types.h.in
 
-MAINTAINERCLEANFILES = \
+DISTCLEANFILES = \
+	libvsmbr.h \
+	libvsmbr/definitions.h \
+	libvsmbr/features.h \
+	libvsmbr/types.h \
+	Makefile \
 	Makefile.in
-
-distclean: clean
-	-rm -f libvsmbr.h
-	-rm -f libvsmbr/definitions.h
-	-rm -f libvsmbr/features.h
-	-rm -f libvsmbr/types.h
-	-rm -f Makefile
 

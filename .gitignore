@@ -132,6 +132,7 @@ stamp-h[1-9]
 /vsmbrtools/vsmbrinfo
 /tests/*.exe
 /tests/input
+/tests/notify_stream.log
 /tests/tmp*
 /tests/vsmbr_test_boot_record
 /tests/vsmbr_test_chs_address
