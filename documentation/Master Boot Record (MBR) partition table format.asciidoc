@@ -479,7 +479,7 @@ OS/2 hidden C: drive
 | 0xc7 | | Syrinx
 | | |
 | 0xda | | Non-FS data
-| 0xdb | | CP/M / CTOS / ...
+| 0xdb | | CP/M / CTOS
 | | |
 | 0xde | | Dell Utility
 | 0xdf | | BootIt
