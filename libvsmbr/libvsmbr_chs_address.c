@@ -205,16 +205,12 @@ int libvsmbr_chs_address_copy_from_byte_stream(
 		byte_stream_copy_to_uint24_little_endian(
 		 byte_stream,
 		 value_32bit );
-
-		byte_stream += 3;
 	}
 	else if( byte_order == LIBVSMBR_ENDIAN_BIG )
 	{
 		byte_stream_copy_to_uint24_big_endian(
 		 byte_stream,
 		 value_32bit );
-
-		byte_stream += 3;
 	}
 	chs_address->head = (uint8_t) ( value_32bit & 0x000000ffUL );
 

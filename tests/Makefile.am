@@ -18,6 +18,10 @@ AM_CPPFLAGS = \
 	@PTHREAD_CPPFLAGS@ \
 	@LIBVSMBR_DLL_IMPORT@
 
+AM_TESTS_ENVIRONMENT = \
+	export PYTHON="@PYTHON@"; \
+	export TESTS_USE_WINAPI="@TESTS_USE_WINAPI@";
+
 if HAVE_PYTHON_TESTS
 TESTS_PYVSMBR = \
 	test_python_module.sh
@@ -270,7 +274,8 @@ vsmbr_test_tools_output_SOURCES = \
 
 vsmbr_test_tools_output_LDADD = \
 	../libvsmbr/libvsmbr.la \
-	@LIBCERROR_LIBADD@
+	@LIBCERROR_LIBADD@ \
+	@LIBINTL@
 
 vsmbr_test_tools_signal_SOURCES = \
 	../vsmbrtools/vsmbrtools_signal.c ../vsmbrtools/vsmbrtools_signal.h \

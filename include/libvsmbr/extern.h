@@ -31,14 +31,17 @@
  */
 #if defined( LIBVSMBR_DLL_EXPORT )
 #define LIBVSMBR_EXTERN __declspec(dllexport)
+#define LIBVSMBR_EXTERN_VARIABLE extern __declspec(dllexport)
 
 #elif defined( LIBVSMBR_DLL_IMPORT )
-#define LIBVSMBR_EXTERN extern __declspec(dllimport)
+#define LIBVSMBR_EXTERN __declspec(dllimport)
+#define LIBVSMBR_EXTERN_VARIABLE extern __declspec(dllimport)
 
 #else
 #define LIBVSMBR_EXTERN extern
+#define LIBVSMBR_EXTERN_VARIABLE extern
 
-#endif
+#endif /* defined( LIBVSMBR_DLL_EXPORT ) */
 
 #endif /* !defined( _LIBVSMBR_EXTERN_H ) */
 
