@@ -35,24 +35,14 @@
 
 #include "vsmbr_test_rwlock.h"
 
-#if defined( HAVE_VSMBR_TEST_RWLOCK )
-
-static int (*vsmbr_test_real_pthread_rwlock_init)(pthread_rwlock_t *, const pthread_rwlockattr_t *) = NULL;
-static int (*vsmbr_test_real_pthread_rwlock_destroy)(pthread_rwlock_t *)                            = NULL;
-static int (*vsmbr_test_real_pthread_rwlock_rdlock)(pthread_rwlock_t *)                             = NULL;
-static int (*vsmbr_test_real_pthread_rwlock_wrlock)(pthread_rwlock_t *)                             = NULL;
-static int (*vsmbr_test_real_pthread_rwlock_unlock)(pthread_rwlock_t *)                             = NULL;
-
-int vsmbr_test_pthread_rwlock_init_attempts_before_fail                                             = -1;
-int vsmbr_test_pthread_rwlock_destroy_attempts_before_fail                                          = -1;
-int vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail                                           = -1;
-int vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail                                           = -1;
-int vsmbr_test_pthread_rwlock_unlock_attempts_before_fail                                           = -1;
+#if defined( HAVE_VSMBR_TEST_RWLOCK_HOOK )
 
 #if defined( TODO )
 
 /* TODO currently disabled since this causes the tests to segfault on Ubuntu 14.04
  */
+static int (*vsmbr_test_real_pthread_rwlock_init)(pthread_rwlock_t *, const pthread_rwlockattr_t *) = NULL;
+int vsmbr_test_pthread_rwlock_init_attempts_before_fail                                             = -1;
 
 /* Custom pthread_rwlock_init for testing error cases
  * Returns 0 if successful or an error value otherwise
@@ -66,8 +56,13 @@ int pthread_rwlock_init(
 	if( vsmbr_test_real_pthread_rwlock_init == NULL )
 	{
 		vsmbr_test_real_pthread_rwlock_init = dlsym(
-		                                       RTLD_NEXT,
-		                                       "pthread_rwlock_init" );
+		                                                        RTLD_NEXT,
+		                                                        "pthread_rwlock_init" );
+
+		if( vsmbr_test_real_pthread_rwlock_init == NULL )
+		{
+			return( EBUSY );
+		}
 	}
 	if( vsmbr_test_pthread_rwlock_init_attempts_before_fail == 0 )
 	{
@@ -88,6 +83,9 @@ int pthread_rwlock_init(
 
 #endif /* defined( TODO ) */
 
+static int (*vsmbr_test_real_pthread_rwlock_destroy)(pthread_rwlock_t *) = NULL;
+int vsmbr_test_pthread_rwlock_destroy_attempts_before_fail               = -1;
+
 /* Custom pthread_rwlock_destroy for testing error cases
  * Returns 0 if successful or an error value otherwise
  */
@@ -99,8 +97,13 @@ int pthread_rwlock_destroy(
 	if( vsmbr_test_real_pthread_rwlock_destroy == NULL )
 	{
 		vsmbr_test_real_pthread_rwlock_destroy = dlsym(
-		                                          RTLD_NEXT,
-		                                          "pthread_rwlock_destroy" );
+		                                                           RTLD_NEXT,
+		                                                           "pthread_rwlock_destroy" );
+
+		if( vsmbr_test_real_pthread_rwlock_destroy == NULL )
+		{
+			return( EBUSY );
+		}
 	}
 	if( vsmbr_test_pthread_rwlock_destroy_attempts_before_fail == 0 )
 	{
@@ -118,6 +121,9 @@ int pthread_rwlock_destroy(
 	return( result );
 }
 
+static int (*vsmbr_test_real_pthread_rwlock_rdlock)(pthread_rwlock_t *) = NULL;
+int vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail               = -1;
+
 /* Custom pthread_rwlock_rdlock for testing error cases
  * Returns 0 if successful or an error value otherwise
  */
@@ -129,8 +135,13 @@ int pthread_rwlock_rdlock(
 	if( vsmbr_test_real_pthread_rwlock_rdlock == NULL )
 	{
 		vsmbr_test_real_pthread_rwlock_rdlock = dlsym(
-		                                         RTLD_NEXT,
-		                                         "pthread_rwlock_rdlock" );
+		                                                          RTLD_NEXT,
+		                                                          "pthread_rwlock_rdlock" );
+
+		if( vsmbr_test_real_pthread_rwlock_rdlock == NULL )
+		{
+			return( EBUSY );
+		}
 	}
 	if( vsmbr_test_pthread_rwlock_rdlock_attempts_before_fail == 0 )
 	{
@@ -148,6 +159,9 @@ int pthread_rwlock_rdlock(
 	return( result );
 }
 
+static int (*vsmbr_test_real_pthread_rwlock_wrlock)(pthread_rwlock_t *) = NULL;
+int vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail               = -1;
+
 /* Custom pthread_rwlock_wrlock for testing error cases
  * Returns 0 if successful or an error value otherwise
  */
@@ -159,8 +173,13 @@ int pthread_rwlock_wrlock(
 	if( vsmbr_test_real_pthread_rwlock_wrlock == NULL )
 	{
 		vsmbr_test_real_pthread_rwlock_wrlock = dlsym(
-		                                         RTLD_NEXT,
-		                                         "pthread_rwlock_wrlock" );
+		                                                          RTLD_NEXT,
+		                                                          "pthread_rwlock_wrlock" );
+
+		if( vsmbr_test_real_pthread_rwlock_wrlock == NULL )
+		{
+			return( EBUSY );
+		}
 	}
 	if( vsmbr_test_pthread_rwlock_wrlock_attempts_before_fail == 0 )
 	{
@@ -178,6 +197,11 @@ int pthread_rwlock_wrlock(
 	return( result );
 }
 
+#if defined( HAVE_PTHREAD_RWLOCK_UNLOCK_HOOK )
+
+static int (*vsmbr_test_real_pthread_rwlock_unlock)(pthread_rwlock_t *) = NULL;
+int vsmbr_test_pthread_rwlock_unlock_attempts_before_fail               = -1;
+
 /* Custom pthread_rwlock_unlock for testing error cases
  * Returns 0 if successful or an error value otherwise
  */
@@ -189,8 +213,13 @@ int pthread_rwlock_unlock(
 	if( vsmbr_test_real_pthread_rwlock_unlock == NULL )
 	{
 		vsmbr_test_real_pthread_rwlock_unlock = dlsym(
-		                                         RTLD_NEXT,
-		                                         "pthread_rwlock_unlock" );
+		                                                          RTLD_NEXT,
+		                                                          "pthread_rwlock_unlock" );
+
+		if( vsmbr_test_real_pthread_rwlock_unlock == NULL )
+		{
+			return( EBUSY );
+		}
 	}
 	if( vsmbr_test_pthread_rwlock_unlock_attempts_before_fail == 0 )
 	{
@@ -213,5 +242,7 @@ int pthread_rwlock_unlock(
 	return( result );
 }
 
-#endif /* defined( HAVE_VSMBR_TEST_RWLOCK ) */
+#endif /* defined( HAVE_PTHREAD_RWLOCK_UNLOCK_HOOK ) */
+
+#endif /* defined( HAVE_VSMBR_TEST_RWLOCK_HOOK ) */
 
