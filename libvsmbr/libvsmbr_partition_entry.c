@@ -336,15 +336,15 @@ int libvsmbr_partition_entry_read_data(
 
 	return( 1 );
 
-on_error:
 #if defined( HAVE_DEBUG_OUTPUT )
+on_error:
 	if( chs_address != NULL )
 	{
 		libvsmbr_chs_address_free(
 		 &chs_address,
 		 NULL );
 	}
-#endif
 	return( -1 );
+#endif
 }
 

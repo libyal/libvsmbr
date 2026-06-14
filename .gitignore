@@ -1,6 +1,6 @@
 # Files to ignore by git
 #
-# Version: 20251129
+# Version: 20260604
 
 # Generic auto-generated build files
 *~
@@ -130,9 +130,20 @@ stamp-h[1-9]
 /pyproject.toml
 /vsmbrtools/*.exe
 /vsmbrtools/vsmbrinfo
+/tests/*.dir
 /tests/*.exe
+/tests/*.log
+/tests/*.tmp
+/tests/atconfig
+/tests/atlocal
 /tests/input
 /tests/notify_stream.log
+/tests/package.m4
+/tests/test_inputs_*.at
+/tests/test_library
+/tests/test_manpages
+/tests/test_python_module
+/tests/test_tools
 /tests/tmp*
 /tests/vsmbr_test_boot_record
 /tests/vsmbr_test_chs_address
