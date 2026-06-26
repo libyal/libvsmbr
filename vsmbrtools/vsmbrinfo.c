@@ -1,5 +1,5 @@
 /*
- * Shows information obtained from a Master Boot Record (MBR) volume system
+ * Shows information obtained from a Master Boot Record (MBR) volume system.
  *
  * Copyright (C) 2010-2026, Joachim Metz <joachim.metz@gmail.com>
  *
@@ -21,11 +21,8 @@
 
 #include <common.h>
 #include <file_stream.h>
-#include <memory.h>
 #include <system_string.h>
 #include <types.h>
-
-#include <stdio.h>
 
 #if defined( HAVE_FCNTL_H ) || defined( WINAPI )
 #include <fcntl.h>
@@ -55,29 +52,6 @@
 
 info_handle_t *vsmbrinfo_info_handle = NULL;
 int vsmbrinfo_abort                  = 0;
-
-/* Prints the executable usage information
- */
-void usage_fprint(
-      FILE *stream )
-{
-	if( stream == NULL )
-	{
-		return;
-	}
-	fprintf( stream, "Use vsmbrinfo to determine information about a Master Boot Record\n"
-	                 "(MBR) volume system.\n\n" );
-
-	fprintf( stream, "Usage: vsmbrinfo [ -b bytes_per_sector ] [ -hvV ] source\n\n" );
-
-	fprintf( stream, "\tsource: the source file\n\n" );
-
-	fprintf( stream, "\t-b:     specify the number of bytes per sector (default is 512)\n"
-	                 "\t        (use this to override the automatic bytes per sector detection)\n" );
-	fprintf( stream, "\t-h:     shows this help\n" );
-	fprintf( stream, "\t-v:     verbose output to stderr\n" );
-	fprintf( stream, "\t-V:     print version\n" );
-}
 
 /* Signal handler for vsmbrinfo
  */
@@ -131,11 +105,24 @@ int wmain( int argc, wchar_t * const argv[] )
 int main( int argc, char * const argv[] )
 #endif
 {
-	libcerror_error_t *error                    = NULL;
+	const char *description = \
+		"Use vsmbrinfo to determine information about a Master Boot Record (MBR) volume system.";
+
+	vsmbrtools_option_t options[ ] = {
+		{ 'b', "bytes_per_sector", "specify the number of bytes per sector (default is 512). Use this to override the automatic bytes per sector detection" },
+		{ 'h', NULL, "shows this help" },
+		{ 'v', NULL, "verbose output to stderr" },
+		{ 'V', NULL, "print version" },
+		{ 0, "source", "the source image" },
+	};
+	system_character_t options_string[ 32 ];
+
+	libvsmbr_error_t *error                     = NULL;
 	system_character_t *option_bytes_per_sector = NULL;
 	system_character_t *source                  = NULL;
 	char *program                               = "vsmbrinfo";
 	system_integer_t option                     = 0;
+	int number_of_options                       = (int) ( sizeof( options ) / sizeof( vsmbrtools_option_t ) );
 	int result                                  = 0;
 	int verbose                                 = 0;
 
@@ -174,10 +161,22 @@ int main( int argc, char * const argv[] )
 	 stdout,
 	 program );
 
+	if( vsmbrtools_getopt_get_options_string(
+	     options,
+	     number_of_options,
+	     options_string,
+	     32 ) != 1 )
+	{
+		fprintf(
+		 stderr,
+		 "Unable to determine options string.\n" );
+
+		goto on_error;
+	}
 	while( ( option = vsmbrtools_getopt(
 	                   argc,
 	                   argv,
-	                   _SYSTEM_STRING( "b:hvV" ) ) ) != (system_integer_t) -1 )
+	                   options_string ) ) != (system_integer_t) -1 )
 	{
 		switch( option )
 		{
@@ -188,8 +187,12 @@ int main( int argc, char * const argv[] )
 				 "Invalid argument: %" PRIs_SYSTEM "\n",
 				 argv[ optind - 1 ] );
 
-				usage_fprint(
-				 stdout );
+				vsmbrtools_getopt_usage_fprint(
+				 stdout,
+				 program,
+				 description,
+				 options,
+				 number_of_options );
 
 				return( EXIT_FAILURE );
 
@@ -199,8 +202,12 @@ int main( int argc, char * const argv[] )
 				break;
 
 			case (system_integer_t) 'h':
-				usage_fprint(
-				 stdout );
+				vsmbrtools_getopt_usage_fprint(
+				 stdout,
+				 program,
+				 description,
+				 options,
+				 number_of_options );
 
 				return( EXIT_SUCCESS );
 
@@ -220,10 +227,14 @@ int main( int argc, char * const argv[] )
 	{
 		fprintf(
 		 stderr,
-		 "Missing source file.\n" );
+		 "Missing source image.\n" );
 
-		usage_fprint(
-		 stdout );
+		vsmbrtools_getopt_usage_fprint(
+		 stdout,
+		 program,
+		 description,
+		 options,
+		 number_of_options );
 
 		return( EXIT_FAILURE );
 	}

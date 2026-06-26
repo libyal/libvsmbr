@@ -3,8 +3,7 @@ man_MANS = \
 	vsmbrinfo.1
 
 EXTRA_DIST = \
-	libvsmbr.3 \
-	vsmbrinfo.1
+	$(man_MANS)
 
 DISTCLEANFILES = \
 	Makefile \
