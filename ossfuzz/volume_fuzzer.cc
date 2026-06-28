@@ -48,7 +48,9 @@ int LLVMFuzzerTestOneInput(
      size_t size )
 {
 	libbfio_handle_t *file_io_handle = NULL;
-	libvsmbr_volume_t *volume       = NULL;
+	libvsmbr_volume_t *volume        = NULL;
+	uint32_t value_32bit             = 0;
+	int number_of_partitions         = 0;
 
 	if( libbfio_memory_range_initialize(
 	     &file_io_handle,
@@ -74,6 +76,27 @@ int LLVMFuzzerTestOneInput(
 	     volume,
 	     file_io_handle,
 	     LIBVSMBR_OPEN_READ,
+	     NULL ) != 1 )
+	{
+		goto on_error_libvsmbr;
+	}
+	if( libvsmbr_volume_get_bytes_per_sector(
+	     volume,
+	     &value_32bit,
+	     NULL ) != 1 )
+	{
+		goto on_error_libvsmbr;
+	}
+	if( libvsmbr_volume_get_disk_identity(
+	     volume,
+	     &value_32bit,
+	     NULL ) != 1 )
+	{
+		goto on_error_libvsmbr;
+	}
+	if( libvsmbr_volume_get_number_of_partitions(
+	     volume,
+	     &number_of_partitions,
 	     NULL ) != 1 )
 	{
 		goto on_error_libvsmbr;
