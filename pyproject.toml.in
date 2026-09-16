@@ -23,6 +23,11 @@ Documentation = "https://github.com/libyal/libvsmbr/wiki/Home"
 Homepage = "https://github.com/libyal/libvsmbr"
 Repository = "https://github.com/libyal/libvsmbr"
 
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+include = "\\.pyi?$"
+
 [tool.setuptools]
 py-modules = ["_build"]
 
