@@ -2,7 +2,7 @@ AC_PREREQ([2.71])
 
 AC_INIT(
   [libvsmbr],
-  [20260916],
+  [20260919],
   [https://github.com/libyal/libvsmbr/issues])
 
 AC_CONFIG_SRCDIR(
